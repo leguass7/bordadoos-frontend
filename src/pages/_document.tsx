@@ -3,10 +3,7 @@ import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/do
 import { ServerStyleSheet } from 'styled-components'
 
 import { appThemeDark } from '~/components/AppThemeProvider/themes'
-import { imageBase } from '~/config'
 import { preInnerHtml, scriptProps } from '~/services/gtag'
-
-import favicon from '~/assets/images/favicon.png'
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -38,7 +35,7 @@ export default class MyDocument extends Document {
     return (
       <Html lang="pt-br">
         <Head>
-          <link rel="icon" href={`${imageBase}${favicon}`} />
+          <link rel="icon" href={`/favicon.png`} />
           <link rel="manifest" href="manifest.json" />
           <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
           <meta name="theme-color" content={appThemeDark.colors.primary} />
