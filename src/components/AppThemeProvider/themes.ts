@@ -13,8 +13,8 @@ const spacing: IThemeSpacing = {
 
 export const appThemeDark: IAppTheme = {
   colors: {
-    primary: '#b07b80',
-    secondary: '#F7ABAF',
+    primary: '#292B2B',
+    secondary: '#FCB91C',
     contrast: '#FBE5CA',
     text: '#ffffff',
     white: '#FFFFFF',
@@ -35,8 +35,8 @@ export const appThemeDark: IAppTheme = {
 
 export const appThemeLigth: IAppTheme = {
   colors: {
-    primary: '#b07b80',
-    secondary: '#F7ABAF',
+    primary: '#292B2B',
+    secondary: '#FCB91C',
     contrast: '#FBE5CA',
     text: '#ffffff',
     white: '#FFFFFF',
@@ -58,10 +58,10 @@ export const appThemeLigth: IAppTheme = {
 export const appMuiTheme = createTheme({
   palette: {
     primary: {
-      main: '#b07b80'
+      main: appThemeLigth.colors.primary
     },
     secondary: {
-      main: '#F7ABAF'
+      main: appThemeLigth.colors.secondary
     },
     contrastThreshold: 3,
     tonalOffset: 0.2
