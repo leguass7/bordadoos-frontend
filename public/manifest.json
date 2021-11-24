@@ -1,0 +1,15 @@
+{
+  "short_name": "Jr Bordados",
+  "name": "JR Bordados",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "type": "image/png",
+      "sizes": "250x250"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#b07b80",
+  "background_color": "#F7ABAF"
+}
