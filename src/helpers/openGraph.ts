@@ -6,15 +6,15 @@ import { imageBase } from '~/config'
 type OpenGraphParams = OpenGraph & { asPath?: string }
 export const openGraph: OpenGraph = {
   url: `${imageBase}`,
-  site_name: 'Tato ateliê',
-  title: 'Tato ateliê',
-  description: `Preparar um doce com amor e dedicação é também, alimentar a alma.`,
+  site_name: 'JR Bordados',
+  title: 'JR Bordados',
+  description: `O melhor bordado de Fortaleza`,
   images: [
     {
       url: `${imageBase}${logoFace}`,
       width: 512,
       height: 512,
-      alt: 'Tato ateliê',
+      alt: 'JR Bordados',
       type: 'image/png'
     }
   ]

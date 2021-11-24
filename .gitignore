@@ -36,5 +36,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
+#custom
 .vscode/settings.json
+*_remove*.*
 .env
+*Cópia_*
+*Copy_*
+*client_*
+public/workbox-*
+public/*sw*
+public/fallback-*
+debug.log
+task.md
+

@@ -3,6 +3,16 @@
   "name": "JR Bordados",
   "icons": [
     {
+      "src": "logo32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "logo64.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    },
+    {
       "src": "favicon.png",
       "type": "image/png",
       "sizes": "250x250"
