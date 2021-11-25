@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import { createGlobalStyle } from 'styled-components'
+
 // import { renderToStaticMarkup } from 'react-dom/server'
 import back from '~/assets/images/background.svg'
 
@@ -10,11 +11,12 @@ const renderBackground = (orientation: 'portrait' | 'landscape', color?: string)
 }
 
 const GlobalStyle = createGlobalStyle`
-
   * {
-     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-
+  
   html {
     height: 100%;
     margin: 0 auto;
@@ -33,6 +35,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     background-image: ${renderBackground('landscape')};
+    background-color: ${({ theme }) => theme.colors.background};
   }
 
   #__next{
