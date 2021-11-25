@@ -37,7 +37,7 @@ const PageIndex: NextPage = () => {
     }
   }, [loaded])
 
-  console.log('session', session)
+  // console.log('PageIndex session', session)
 
   return (
     <LayoutCenter>

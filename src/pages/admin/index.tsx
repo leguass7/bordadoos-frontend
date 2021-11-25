@@ -1,12 +1,12 @@
 import { Container } from '@mui/material'
 import type { NextPage } from 'next'
-import { useSession } from 'next-auth/client'
+// import { useSession } from 'next-auth/client'
 
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
 import { PageTitle } from '~/components/PageTitle'
 
 const PageAdminIndex: NextPage = () => {
-  const [session] = useSession()
+  // const [session] = useSession()
 
   return (
     <LayoutAdmin>
