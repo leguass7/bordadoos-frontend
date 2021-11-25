@@ -2,6 +2,14 @@
   "extends": "next/core-web-vitals",
   "plugins": ["prettier", "react-hooks", "jsx-a11y", "import-helpers"],
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always",
+        "alphabetize": { "order": "asc", "ignoreCase": true },
+        "groups": ["module", "/^@shared-/", "/^@src/", "/^~//", ["parent", "sibling", "index"]]
+      }
+    ]
   }
 }
