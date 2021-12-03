@@ -20,6 +20,7 @@
     "@unform/core": "^2.1.6",
     "@unform/web": "^2.1.6",
     "axios": "^0.24.0",
+    "celebrate": "^15.0.0",
     "chroma-js": "^2.1.2",
     "cross-env": "^7.0.3",
     "date-fns": "^2.26.0",
