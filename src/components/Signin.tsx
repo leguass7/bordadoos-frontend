@@ -1,26 +1,48 @@
 import { Button } from '@mui/material'
 import { useSession, signIn, signOut } from 'next-auth/client'
 import React, { useMemo } from 'react'
-import { FaGoogle } from 'react-icons/fa'
+import { FaGoogle, FaGithub } from 'react-icons/fa'
+import styled from 'styled-components'
 
 type Props = {
   processing?: boolean
 }
 
+const providers = [
+  { name: 'google', label: 'Login com o Google', Icon: <FaGoogle /> },
+  { name: 'github', label: 'Login com o Github', Icon: <FaGithub /> }
+]
+
 export const Signin: React.FC<Props> = ({ processing }) => {
   const [session] = useSession()
 
-  const { onClick, label } = useMemo(() => {
-    const name = session && (session?.user?.name || 'Sair')
-    return {
-      onClick: session ? () => signOut() : () => signIn('google'),
-      label: session ? name : 'LOGIN COM O GOOGLE'
-    }
+  const items = useMemo(() => {
+    const username = session && (session?.user?.name || 'Sair')
+    return providers.map(({ name, label, Icon }) => ({
+      onClick: session ? () => signOut() : () => signIn(name),
+      label: session ? username : label,
+      Icon
+    }))
   }, [session])
 
   return (
-    <Button variant="outlined" color="primary" startIcon={<FaGoogle />} onClick={onClick}>
-      {`${label}${processing ? ' aguarde' : ''}`}
-    </Button>
+    <LoginContainer>
+      {items.map(({ onClick, label, Icon }) => {
+        return (
+          <div key={label} style={{ padding: 4 }}>
+            <Button variant="outlined" color="primary" startIcon={Icon} onClick={onClick}>
+              {`${label}${processing ? ' aguarde' : ''}`}
+            </Button>
+          </div>
+        )
+      })}
+    </LoginContainer>
   )
 }
+
+const LoginContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row wrap;
+`

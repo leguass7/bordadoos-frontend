@@ -22,6 +22,10 @@ const options: NextAuthOptions = {
       // authorizationUrl força o google a perguntar "qual conta usar" e renovar token
       authorizationUrl:
         'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code'
+    }),
+    Providers.GitHub({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET
     })
     // https://github.com/nextauthjs/next-auth/blob/main/src/providers/instagram.js
     // Providers.Instagram({
