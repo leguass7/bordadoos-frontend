@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,12 +16,12 @@ model User {
   cpf           String?   @db.VarChar(15)
   cnpj          String?   @db.VarChar(18)
   cellPhone     String?   @db.VarChar(20)
-  level         Int?      @db.UnsignedInt
+  level         Int? // @db.UnsignedInt
   meta          Json?
   image         String?   @db.Text
   actived       Boolean?  @default(false)
-  createdAt     DateTime?  @default(now()) @db.Timestamp(0)
-  updatedAt     DateTime?  @updatedAt
+  createdAt     DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt     DateTime? @updatedAt
   accounts      Account[]
   sessions      Session[]
 
@@ -73,3 +73,9 @@ model VerificationRequest {
   @@map(name: "verification_requests")
 }
 
+model Client {
+  id      Int     @id @default(autoincrement())
+  name    String  @unique
+  phone   String  @unique
+  actived Boolean @default(true)
+}
