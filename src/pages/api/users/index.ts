@@ -1,6 +1,6 @@
 import nc from 'next-connect'
 
-import { authProtect } from '~/serverSide/auth/auth-protect.middleware'
+// import { authProtect } from '~/serverSide/auth/auth-protect.middleware'
 import { ncConfig } from '~/serverSide/ErrorApi'
 import { factoryUserController } from '~/serverSide/users/user.controller'
 import { UserService } from '~/serverSide/users/user.service'

@@ -17,10 +17,9 @@ export const Signin: React.FC<Props> = ({ processing }) => {
   const [session] = useSession()
 
   const items = useMemo(() => {
-    const username = session && (session?.user?.name || 'Sair')
     return providers.map(({ name, label, Icon }) => ({
       onClick: session ? () => signOut() : () => signIn(name),
-      label: session ? username : label,
+      label,
       Icon
     }))
   }, [session])
