@@ -12,8 +12,7 @@ function create(userService: IUserService) {
 
 function findOne(userService: IUserService) {
   return async (req: IRequestUserDto, res: NextApiResponse<IResponseUserDto>) => {
-    const { query } = req
-    const userId = query?.userId ? parseInt(query?.userId) || 0 : 0
+    const { userId } = req.query
     const user = await userService.findOne(userId)
     return res.status(201).json({ success: true, user })
   }
