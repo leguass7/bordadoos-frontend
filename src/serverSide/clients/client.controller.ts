@@ -13,11 +13,11 @@ import type { IClientService } from './client.service'
 
 function create(clientService: IClientService) {
   return async (req: IRequestCreateClientDto, res: NextApiResponse) => {
-    const { name, phone } = req.body
+    const { name, phone, doc } = req.body
     const hasClient = await clientService.findOne({ name, phone })
     if (hasClient) throw ErrorApi({ status: 400, message: 'client already exists' })
 
-    await clientService.create({ name, phone, actived: true })
+    await clientService.create({ name, phone, doc, actived: true })
     return res.status(201).json({ success: true })
   }
 }

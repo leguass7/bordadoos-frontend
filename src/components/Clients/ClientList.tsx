@@ -8,13 +8,11 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { CircleLoading } from '../CircleLoading'
 import { Container } from '../Container'
 import { Paragraph } from '../shared/web/src/styled'
-import { ClientItem } from './ClientItem'
+import { ClientItemMemo } from './ClientItem'
 
-interface Props {
-  modalChange: () => void
-}
+interface Props {}
 
-export const ClientList: React.FC<Props> = ({ modalChange }) => {
+export const ClientList: React.FC<Props> = () => {
   const { pagination, data, fetchMoreData, hasMore } = usePagination<Client>()
 
   const renderMessage = useCallback((text: string) => {
@@ -40,7 +38,7 @@ export const ClientList: React.FC<Props> = ({ modalChange }) => {
         endMessage={renderMessage('FIM')}
       >
         {data?.map?.(item => {
-          return <ClientItem key={`${item.id}`} modalChange={modalChange} {...item} />
+          return <ClientItemMemo key={`${item.id}`} {...item} />
         })}
       </InfiniteScroll>
     </div>

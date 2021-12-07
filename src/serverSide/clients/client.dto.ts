@@ -17,6 +17,7 @@ export interface ICreateClientDto {
   id?: number
   name: string
   phone: string
+  doc?: string
   actived?: boolean
 }
 

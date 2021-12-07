@@ -74,9 +74,9 @@ model VerificationRequest {
 }
 
 model Client {
-  id      Int     @id @default(autoincrement())
+  id      Int      @id @default(autoincrement())
   name    String
-  phone   String  @unique
-  doc     String  @unique
-  actived Boolean @default(true)
+  phone   String   @unique
+  doc     String?  @unique
+  actived Boolean  @default(true)
 }

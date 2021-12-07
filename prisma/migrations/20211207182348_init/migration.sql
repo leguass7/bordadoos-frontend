@@ -73,10 +73,11 @@ CREATE TABLE `Client` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `phone` VARCHAR(191) NOT NULL,
-    `actived` BOOLEAN NULL DEFAULT true,
+    `doc` VARCHAR(191) NOT NULL,
+    `actived` BOOLEAN NOT NULL DEFAULT true,
 
-    UNIQUE INDEX `Client_name_key`(`name`),
     UNIQUE INDEX `Client_phone_key`(`phone`),
+    UNIQUE INDEX `Client_doc_key`(`doc`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
