@@ -17,6 +17,6 @@ export interface IRequestCreateUserDto extends AuthorizedApiRequest {
   body: ICreateUserDto
 }
 
-export interface IRequestUserDto extends AuthorizedApiRequest {
-  query: { userId: string }
+export interface IRequestUserDto extends Omit<AuthorizedApiRequest, 'query'> {
+  query: { userId: number }
 }

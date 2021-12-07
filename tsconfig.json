@@ -16,17 +16,10 @@
     "incremental": true,
     "baseUrl": "./",
     "paths": {
-      "~/*": ["src/*"],
+      "~/*": ["src/*"]
     }
   },
-  "include": [
-    "next-env.d.ts", 
-    "**/*.ts", 
-    "**/*.tsx", 
-    "./src/@types/database.d.ts", 
-    "./src/@types/additional.d.ts",
-    "./src/@types/styles.d.ts",
-    "./prisma/seed"
-  ],
-  "exclude": ["node_modules", "./prisma"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/@types/*.d.ts", "./prisma/seed"],
+  "exclude": ["node_modules", "./prisma", ".next"]
+
 }
