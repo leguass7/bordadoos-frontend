@@ -8,7 +8,7 @@ CREATE TABLE `users` (
     `cpf` VARCHAR(15) NULL,
     `cnpj` VARCHAR(18) NULL,
     `cellPhone` VARCHAR(20) NULL,
-    `level` INTEGER UNSIGNED NULL,
+    `level` INTEGER NULL,
     `meta` JSON NULL,
     `image` TEXT NULL,
     `actived` BOOLEAN NULL DEFAULT false,
@@ -65,6 +65,19 @@ CREATE TABLE `verification_requests` (
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `verification_requests_token_key`(`token`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Client` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `phone` VARCHAR(191) NOT NULL,
+    `doc` VARCHAR(191) NOT NULL,
+    `actived` BOOLEAN NOT NULL DEFAULT true,
+
+    UNIQUE INDEX `Client_phone_key`(`phone`),
+    UNIQUE INDEX `Client_doc_key`(`doc`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

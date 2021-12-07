@@ -9,11 +9,38 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 # bordadoos-frontend
 
-First, run the development server:
+## Scripts de inicialização
 
-```bash
-yarn dev
-```
+```yarn install``` para instalar as dependências
+```yarn dev``` para iniciar em modo de desenvolvimento
+
+```yarn prisma generate``` para gerar typescript dos modelos do banco de dados
+```yarn prisma migrate dev``` para gerar tabelas no banco de dados **(*)**
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Iniciar database (*)
+
+1) Configure no arquivo `.env` a variável `DATABASE_URL` para o funcionamento do [Prisma.io](https://www.prisma.io/docs/concepts/database-connectors/postgresql)
+
+2) Configure também no arquivo `.env` as variáveis para container do [Docker](https://www.docker.com/): `POSTGRES_DB`, `POSTGRES_USER` e `POSTGRES_PASSWORD`.
+
+ex.:
+```
+DATABASE_URL="postgresql://bordadoos:123456@localhost:5432/bordadoos"
+
+POSTGRES_DB=bordadoos
+POSTGRES_USER=bordadoos
+POSTGRES_PASSWORD=123456
+```
+
+
+3) Rode o docker compose na raiz do diretório
+
+```
+docker-compose -f "docker-compose.yml" up -d --build
+```
+
+
 
