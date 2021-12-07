@@ -7,6 +7,7 @@ import styled, { keyframes } from 'styled-components'
 
 import { ClientForm } from '~/components/Clients/ClientForm'
 import { ClientList } from '~/components/Clients/ClientList'
+import { ClientSearch } from '~/components/Clients/ClientSearch'
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
 import { ModalForm } from '~/components/ModalForm'
 import { PageTitle } from '~/components/PageTitle'
@@ -28,6 +29,9 @@ const PageAdminClients: NextPage = () => {
               </IconButton>
             </Toolbar>
           </PageTitle>
+        </Container>
+        <Container>
+          <ClientSearch />
         </Container>
         <Container>
           <ClientList />
