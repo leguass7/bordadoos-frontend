@@ -81,7 +81,7 @@ export const FlatTitle = styled.span<FontType>`
   width: 100%;
   max-width: 100%;
   font-size: ${({ size = 16 }) => size}px;
-  line-height: ${({ size = 18 }) => size}px;
+  /* line-height: ${({ size = 18 }) => size}px; */
   padding: 0;
   margin: 0;
   color: ${({ textColor = 'inherit' }) => textColor};
@@ -99,7 +99,7 @@ export const FlatTitle = styled.span<FontType>`
 export const FlatDescriptionLine = styled.div<FontType>`
   display: block;
   max-width: 100%;
-  max-height: 20px;
+  /* max-height: 20px; */
   overflow: hidden;
   padding: 0;
   margin: 0;

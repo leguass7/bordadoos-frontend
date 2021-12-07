@@ -2,6 +2,8 @@ import { celebrate, Joi, Segments } from 'celebrate'
 import { NextApiResponse } from 'next'
 import { NextHandler } from 'next-connect'
 
+import { isDefined } from '~/helpers/variables'
+
 import ErrorApi from '../ErrorApi'
 import { IRequestCreateClientDto, IRequestPaginateClientDto } from './client.dto'
 
@@ -16,7 +18,7 @@ async function createValidation(req: IRequestCreateClientDto, res: NextApiRespon
 async function paginateValidation(req: IRequestPaginateClientDto, res: NextApiResponse, next: NextHandler) {
   const { query } = req
 
-  query.actived = !!(query.actived === 'true')
+  if (isDefined(query.actived)) query.actived = !!(`${query.actived}` === 'true')
 
   next()
 }

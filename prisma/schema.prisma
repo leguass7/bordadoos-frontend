@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -75,7 +76,8 @@ model VerificationRequest {
 
 model Client {
   id      Int      @id @default(autoincrement())
-  name    String   @unique
+  name    String
   phone   String   @unique
-  actived Boolean? @default(true)
+  doc     String?  @unique
+  actived Boolean  @default(true)
 }

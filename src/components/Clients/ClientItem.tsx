@@ -1,34 +1,25 @@
 import { Client } from '.prisma/client'
 
 import { Delete, Edit } from '@mui/icons-material'
-import { IconButton } from '@mui/material'
-import { useRouter } from 'next/router'
-import { useCallback, useMemo } from 'react'
+import { IconButton, Modal } from '@mui/material'
+import { memo, useCallback, useState } from 'react'
 
 import { api } from '~/services/api'
 
 import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, FlatText } from '../FlatItem'
+import { ModalForm } from '../ModalForm'
 import { usePagination } from '../Providers/PaginationProvider'
+import { ClientForm } from './ClientForm'
 
-interface Props extends Client {
-  modalChange: () => void
-}
+interface Props extends Client {}
 
-export const ClientItem: React.FC<Props> = ({ id, phone, name, modalChange }) => {
-  const { replace, pathname, query } = useRouter()
+export const ClientItem: React.FC<Props> = ({ id, phone, name }) => {
+  const [openModal, setOpenModal] = useState(false)
   const { refreshData } = usePagination()
 
-  const clientId = useMemo(() => parseInt(`${query?.clientId ?? 0}`), [query])
+  const handleCancel = () => setOpenModal(false)
 
-  const handleEdit = useCallback(
-    (id: number) => () => {
-      if (id !== clientId) {
-        if (modalChange) modalChange()
-        replace(`${pathname}?clientId=${id}`, undefined, { shallow: true, scroll: true })
-      }
-    },
-    [replace, pathname, clientId, modalChange]
-  )
+  const handleEditOpen = () => setOpenModal(true)
 
   const handleDelete = useCallback(
     (clientId: number) => async () => {
@@ -39,21 +30,32 @@ export const ClientItem: React.FC<Props> = ({ id, phone, name, modalChange }) =>
   )
 
   return (
-    <FlatItem>
-      <FlatDescriptionContainer style={{ padding: 10 }} grow={1}>
-        <FlatDescriptionLine>
-          <FlatTitle>{name}</FlatTitle>
-        </FlatDescriptionLine>
-        <FlatDescriptionLine>
-          <FlatText>{phone}</FlatText>
-        </FlatDescriptionLine>
-      </FlatDescriptionContainer>
-      <IconButton color="primary" onClick={handleEdit(id)} disabled={clientId === id}>
-        <Edit />
-      </IconButton>
-      <IconButton color="error" onClick={handleDelete(id)}>
-        <Delete />
-      </IconButton>
-    </FlatItem>
+    <>
+      <FlatItem>
+        <FlatDescriptionContainer style={{ padding: 10 }} grow={1}>
+          <FlatDescriptionLine>
+            <FlatTitle>{name}</FlatTitle>
+          </FlatDescriptionLine>
+          <FlatDescriptionLine>
+            <FlatText>{phone}</FlatText>
+          </FlatDescriptionLine>
+        </FlatDescriptionContainer>
+        <IconButton color="primary" onClick={handleEditOpen} disabled={!!openModal}>
+          <Edit />
+        </IconButton>
+        <IconButton color="error" onClick={handleDelete(id)}>
+          <Delete />
+        </IconButton>
+      </FlatItem>
+      <Modal open={!!openModal} onClose={handleCancel}>
+        <div>
+          <ModalForm title={'Editar cliente'}>
+            <ClientForm clientId={id} onCancel={handleCancel} />
+          </ModalForm>
+        </div>
+      </Modal>
+    </>
   )
 }
+
+export const ClientItemMemo = memo(ClientItem) as typeof ClientItem

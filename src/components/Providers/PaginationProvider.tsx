@@ -3,14 +3,8 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { querystring } from '../../helpers/string'
 import { useIsMounted } from '../../hooks/useIsMounted'
 import { api } from '../../services/api'
-import { IResponsePaginate } from '../../services/api/api.types'
+import { IPagination, IResponsePaginate } from '../../services/api/api.types'
 import { CircleLoading } from '../CircleLoading'
-
-interface IPagination {
-  page: number
-  total?: number
-  size?: number
-}
 
 export interface IPaginationContext<T> {
   pagination: IPagination
@@ -33,15 +27,15 @@ interface Props {
   url: string
   initialPagination?: IPagination
   initialFilter?: Record<string, any>
-  customFetchData?: <Q>(paginateData: Partial<IPagination & Q>) => void
+  // customFetchData?: (paginateData: Partial<IPagination & Record<string, any>>) => IResponsePaginate<any>
 }
 
 export const PaginationProvider: React.FC<Props> = ({
   children,
   initialPagination = {},
   initialFilter = {},
-  customFetchData,
-  url = ''
+  url
+  // customFetchData,
 }) => {
   const [pagination, setPagination] = useState<IPagination>({ page: 1, size: 12, ...initialPagination })
   const [filter, setFilter] = useState(initialFilter)
@@ -54,14 +48,12 @@ export const PaginationProvider: React.FC<Props> = ({
 
   const fetchData = useCallback(
     async function <T>(paginateData: Partial<T & IPagination> = {}) {
-      if (customFetchData) return customFetchData(paginateData)
-      if (paginateData?.page === 1) setLoading(true)
+      // if (customFetchData) return customFetchData(paginateData)
 
-      const query = querystring({ ...filter, size: 12, page: 1, ...paginateData })
+      const payload = { ...filter, size: 12, page: 1, ...paginateData }
+      if (payload.page === 1) setLoading(true)
 
-      const currentURL = `${url}?${query}`
-      if (currentURL.startsWith('?')) return null
-
+      const currentURL = `${url}?${querystring(payload)}`
       const { data: response } = (await api.get(currentURL)) as { data: IResponsePaginate<any> }
 
       if (isMounted.current) {
@@ -69,11 +61,11 @@ export const PaginationProvider: React.FC<Props> = ({
         if (response && response.success) {
           setPagination({ page: response.page })
           setData(old => [...old, ...response.data])
-          if (response.page >= response.pages) setHasMore(false)
+          setHasMore(!!(response.page < response.pages))
         }
       }
     },
-    [isMounted, url, customFetchData, filter]
+    [isMounted, url, filter]
   )
 
   const clearData = useCallback((persistData = []) => {
@@ -88,23 +80,24 @@ export const PaginationProvider: React.FC<Props> = ({
     setPagination(old => ({ ...old, ...paginateData }))
   }, [])
 
-  const updateFilter = useCallback((newFilter: Record<string, any>) => {
-    setFilter(old => ({ ...old, ...newFilter }))
-  }, [])
+  const updateFilter = useCallback(
+    (newFilter: Record<string, any>) => {
+      clearData()
+      setFilter(old => ({ ...old, ...newFilter }))
+    },
+    [clearData]
+  )
 
   const clearFilter = useCallback((persistData = {}) => {
     setFilter(persistData)
   }, [])
 
-  const refreshData = useCallback(
-    (filter = {}) => {
-      setHasMore(true)
-      updatePagination({ page: 1 })
-      clearData()
-      fetchData(filter)
-    },
-    [fetchData, clearData, updatePagination]
-  )
+  const refreshData = useCallback(() => {
+    // setHasMore(true)
+    updatePagination({ page: 1 })
+    clearData()
+    fetchData()
+  }, [fetchData, clearData, updatePagination])
 
   useEffect(() => {
     fetchData()

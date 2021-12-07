@@ -17,13 +17,19 @@ export interface ICreateClientDto {
   id?: number
   name: string
   phone: string
+  doc?: string
   actived?: boolean
 }
 
-export interface IPaginateClientDTO extends PaginationQueryDto, Client {}
+export interface IClientFilter {
+  search?: string
+  actived?: boolean
+}
+
+export type IPaginateClientDTO = PaginationQueryDto & IClientFilter
 
 export interface IRequestPaginateClientDto extends Omit<AuthorizedApiRequest, 'query'> {
-  query: Record<keyof IPaginateClientDTO, string> | IPaginateClientDTO
+  query: IPaginateClientDTO
 }
 
 export interface IRequestCreateClientDto extends AuthorizedApiRequest {

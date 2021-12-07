@@ -1,9 +1,9 @@
-import { Client } from '.prisma/client'
+import { Prisma, Client } from '.prisma/client'
 
 import prisma from '../database/prisma'
 import { PaginationDto, PaginationQueryDto } from '../pagination/pagination.dto'
 import { PrismaService } from '../pagination/pagination.service'
-import type { ICreateClientDto } from './client.dto'
+import type { IClientFilter, ICreateClientDto } from './client.dto'
 
 async function create(data: ICreateClientDto): Promise<number> {
   const client = await prisma.client.create({ data })
@@ -33,11 +33,22 @@ async function deleteClient(clientId: number, force = false): Promise<boolean> {
   }
 }
 
-async function paginate(pagination: PaginationQueryDto, filter: Partial<Client> = {}): Promise<PaginationDto<Client>> {
+async function paginate(pagination: PaginationQueryDto, filter: IClientFilter = {}): Promise<PaginationDto<Client>> {
+  const { search, actived } = filter
+  const where: Prisma.ClientWhereInput = { id: { not: 0 }, actived }
+
+  if (search)
+    where.AND = {
+      OR: [
+        { name: { contains: `${search}` } },
+        { phone: { contains: `${search}` } },
+        { doc: { contains: `${search}` } }
+      ]
+    }
   const clients = await PrismaService.paginate<Client>({
     model: 'Client',
     ...pagination,
-    where: { ...filter }
+    where
   })
   return clients
 }

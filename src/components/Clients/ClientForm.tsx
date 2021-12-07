@@ -1,7 +1,6 @@
 import { Button, ButtonGroup, Typography } from '@mui/material'
 import { Client } from '@prisma/client'
 import { Form } from '@unform/web'
-import { useRouter } from 'next/router'
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 
@@ -10,23 +9,18 @@ import { api } from '~/services/api'
 
 import { CircleLoading } from '../CircleLoading'
 import { Input } from '../Form/Input'
-import { usePagination } from '../Providers/PaginationProvider'
 
 interface Props {
-  onSubmit?: (data: Partial<Client>) => void
-  onClose?: () => void
+  clientId?: number
+  onCancel?: () => void
+  onSuccess?: () => void
 }
 
-export const ClientForm: React.FC<Props> = ({ onSubmit, onClose }) => {
+export const ClientForm: React.FC<Props> = ({ onCancel, onSuccess, clientId }) => {
   const [data, setData] = useState<Partial<Client>>({})
-  const { refreshData } = usePagination()
 
   const [loading, setLoading] = useState(false)
   const isMounted = useIsMounted()
-
-  const { query } = useRouter()
-
-  const clientId = useMemo(() => parseInt(`${query?.clientId ?? 0}`), [query])
 
   const fetchClient = useCallback(async () => {
     if (clientId && clientId !== data.id) {
@@ -46,63 +40,59 @@ export const ClientForm: React.FC<Props> = ({ onSubmit, onClose }) => {
 
   const handleSubmit = useCallback(
     async (values: Partial<Client>) => {
-      if (onSubmit) return onSubmit(values)
-
       const url = clientId ? `/clients/${clientId}` : '/clients'
       const { data: response } = await api[clientId ? 'put' : 'post'](url, values)
-
       if (response && response.success) {
-        refreshData()
         setData({})
+        if (onSuccess) onSuccess()
       }
-
-      if (onClose) onClose()
     },
-    [refreshData, clientId, onSubmit, onClose]
+    [clientId, onSuccess]
   )
 
   return (
     <>
-      {loading ? (
-        <CircleLoading />
-      ) : (
-        <Form onSubmit={handleSubmit} initialData={data} key={data.id}>
-          <Typography variant="h6" align="center">
-            {clientId ? 'Editar' : 'Adicionar'} cliente
-          </Typography>
-          <FormContainer>
-            <FieldContainer>
-              <Input autoComplete="off" name="name" placeholder="nome" />
-            </FieldContainer>
-            <FieldContainer>
-              <Input autoComplete="off" name="phone" placeholder="telefone" />
-            </FieldContainer>
-            <FieldContainer>
-              <ButtonGroup>
-                <Button type="button" onClick={() => onClose()} color="primary" variant="outlined">
-                  Cancelar
-                </Button>
-                <Button type="submit" color="primary" variant="contained">
-                  Enviar
-                </Button>
-              </ButtonGroup>
-            </FieldContainer>
-          </FormContainer>
-        </Form>
-      )}
+      <Form onSubmit={handleSubmit} initialData={data} key={data.id}>
+        <FormContainer>
+          <FieldContainer>
+            <Input required fullWidth autoComplete="off" name="name" placeholder="nome" />
+          </FieldContainer>
+          <FieldContainer>
+            <Input required fullWidth autoComplete="off" name="phone" placeholder="telefone" />
+          </FieldContainer>
+          <FieldContainer>
+            <Input fullWidth autoComplete="off" name="doc" placeholder="cpf/cnpj" />
+          </FieldContainer>
+          <FieldContainer>
+            <ButtonGroup>
+              <Button type="button" onClick={onCancel} color="primary" variant="outlined" disabled={loading}>
+                Cancelar
+              </Button>
+              <Button type="submit" color="primary" variant="contained" disabled={loading}>
+                Enviar
+              </Button>
+            </ButtonGroup>
+          </FieldContainer>
+        </FormContainer>
+      </Form>
+      {loading ? <CircleLoading light /> : null}
     </>
   )
 }
 
 const FieldContainer = styled.div`
-  padding: 4px;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: ${({ theme }) => theme.spacing.l}px 0px;
 `
 
 const FormContainer = styled.div`
   display: flex;
   flex-flow: column wrap;
-  max-width: 600px;
+  max-width: 100%;
+
   justify-content: center;
   align-items: center;
-  padding: 4px;
+  padding: ${({ theme }) => theme.spacing.l}px;
 `
