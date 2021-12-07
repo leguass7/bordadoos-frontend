@@ -46,15 +46,17 @@ function paginate(clientService: IClientService) {
     const { page, size, orderBy, order, ...filter } = req.query as PaginationQueryDto
     const paginateData = { page, size, orderBy, order }
 
+    console.log('filter', req.query)
+
     const { data, ...pagination } = await clientService.paginate(paginateData, filter)
-    return res.status(201).json({ success: true, data, ...pagination })
+    return res.status(200).json({ success: true, data, ...pagination })
   }
 }
 
 function remove(clientService: IClientService) {
   return async (req: IRequestClientDto, res: NextApiResponse<IResponseClientDto>) => {
     const { query } = req
-    const clientId = query?.clientId ? parseInt(query?.clientId) || 0 : 0
+    const clientId = query?.clientId ? parseInt(query.clientId) || 0 : 0
 
     const success = await clientService.deleteClient(clientId)
 

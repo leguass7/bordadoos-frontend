@@ -20,7 +20,7 @@ const PageAdminClients: NextPage = () => {
 
   return (
     <LayoutAdmin>
-      <PaginationProvider url="/clients" initialFilter={{ actived: true }}>
+      <PaginationProvider url="/clients" initialFilter={{}}>
         <Container>
           <PageTitle spotlight="Clientes" title="cadastrados" description={'Lista de clientes cadastrados no sistema.'}>
             <Toolbar>

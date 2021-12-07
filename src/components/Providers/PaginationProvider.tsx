@@ -69,7 +69,7 @@ export const PaginationProvider: React.FC<Props> = ({
         if (response && response.success) {
           setPagination({ page: response.page })
           setData(old => [...old, ...response.data])
-          if (response.page >= response.pages) setHasMore(false)
+          setHasMore(!!(response.page < response.pages))
         }
       }
     },
@@ -88,9 +88,13 @@ export const PaginationProvider: React.FC<Props> = ({
     setPagination(old => ({ ...old, ...paginateData }))
   }, [])
 
-  const updateFilter = useCallback((newFilter: Record<string, any>) => {
-    setFilter(old => ({ ...old, ...newFilter }))
-  }, [])
+  const updateFilter = useCallback(
+    (newFilter: Record<string, any>) => {
+      clearData()
+      setFilter(old => ({ ...old, ...newFilter }))
+    },
+    [clearData]
+  )
 
   const clearFilter = useCallback((persistData = {}) => {
     setFilter(persistData)
