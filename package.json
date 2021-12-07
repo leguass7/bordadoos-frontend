@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "prisma": {
+    "seed": "ts-node --project ./tsconfig.seed.json ./prisma/seed.ts"
+  },
   "dependencies": {
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
@@ -22,6 +25,7 @@
     "axios": "^0.24.0",
     "celebrate": "^15.0.0",
     "chroma-js": "^2.1.2",
+    "cpf-cnpj-validator": "^1.0.3",
     "cross-env": "^7.0.3",
     "date-fns": "^2.26.0",
     "next": "12.0.4",
@@ -39,8 +43,9 @@
   },
   "devDependencies": {
     "@types/chroma-js": "^2.1.3",
+    "@types/faker": "^5.5.9",
     "@types/gtag.js": "^0.0.8",
-    "@types/node": "16.11.7",
+    "@types/node": "^16.11.11",
     "@types/react": "17.0.35",
     "@types/react-dom": "^17.0.11",
     "@types/styled-components": "^5.1.15",
@@ -50,9 +55,11 @@
     "eslint-config-next": "12.0.4",
     "eslint-plugin-import-helpers": "^1.1.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "faker": "^5.5.3",
     "prettier": "^2.4.1",
     "prisma": "^3.5.0",
     "standard-version": "^9.3.2",
-    "typescript": "4.4.4"
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
   }
 }

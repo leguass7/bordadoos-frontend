@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -14,7 +14,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "~/*": ["src/*"],
     }
@@ -25,7 +25,8 @@
     "**/*.tsx", 
     "./src/@types/database.d.ts", 
     "./src/@types/additional.d.ts",
-    "./src/@types/styles.d.ts"
+    "./src/@types/styles.d.ts",
+    "./prisma/seed"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "./prisma"]
 }
