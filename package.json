@@ -1,8 +1,9 @@
 {
   "name": "bordadoos-frontend",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
+    "release": "standard-version --no-verify --skip.tag --release-as patch",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -10,6 +11,9 @@
   },
   "prisma": {
     "seed": "ts-node --project ./tsconfig.seed.json ./prisma/seed.ts"
+  },
+  "standard-version": {
+    "infile": "docs/CHANGELOG.md"
   },
   "dependencies": {
     "@emotion/react": "^11.6.0",
