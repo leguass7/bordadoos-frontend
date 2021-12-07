@@ -1,9 +1,7 @@
 import { Add } from '@mui/icons-material'
-import { Button, Modal, Container, Toolbar, IconButton } from '@mui/material'
+import { Modal, Container, Toolbar, IconButton } from '@mui/material'
 import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
-import { useState, useCallback, useMemo } from 'react'
-import styled, { keyframes } from 'styled-components'
+import { useState } from 'react'
 
 import { ClientForm } from '~/components/Clients/ClientForm'
 import { ClientList } from '~/components/Clients/ClientList'
@@ -49,28 +47,3 @@ const PageAdminClients: NextPage = () => {
 }
 
 export default PageAdminClients
-
-const show = keyframes`
-  from {
-    opacity: 0;
-  } to {
-    opacity: 1;
-  }
-  `
-
-const ModalContainer = styled.div`
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-  background-color: #d5d5d5;
-  box-shadow: 1px 1px 0 1px #0003;
-  padding: ${({ theme }) => theme.spacing.xl}px;
-  border-radius: ${({ theme }) => theme.rounded}px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  animation: ${show} 0.4s ease forwards;
-  border: 1px dashed #f00;
-`

@@ -10,3 +10,9 @@ export interface IResponsePaginate<T> extends ResponseApi {
   total: number
   data: T[]
 }
+
+export interface IPagination {
+  page: number
+  total?: number
+  size?: number
+}
