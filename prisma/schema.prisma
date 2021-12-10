@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
 }
 
@@ -25,6 +25,7 @@ model User {
   updatedAt     DateTime? @updatedAt
   accounts      Account[]
   sessions      Session[]
+  clients       Client[]
 
   @@map(name: "users")
 }
@@ -75,9 +76,17 @@ model VerificationRequest {
 }
 
 model Client {
-  id      Int      @id @default(autoincrement())
-  name    String
-  phone   String   @unique
-  doc     String?  @unique
-  actived Boolean  @default(true)
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String   @unique
+  doc       String?  @unique
+  actived   Boolean  @default(true)
+  createdBy Int
+  updatedBy Int?
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @updatedAt
+
+  createdUser User @relation(fields: [createdBy], references: [id])
+
+  @@map(name: "clients")
 }

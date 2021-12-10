@@ -49,7 +49,8 @@ const generateClients = (max = 10): Partial<Client>[] => {
         name: company.companyName(),
         doc: cnpj.generate(),
         actived: true,
-        phone: phone.phoneNumber('(85) ####-####')
+        phone: phone.phoneNumber('(85) ####-####'),
+        createdBy: 1
       })
     }
     return result
