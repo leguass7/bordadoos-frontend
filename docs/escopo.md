@@ -2,7 +2,7 @@
 
 Esse é um detalhamento inicial podendo sofrer alterações.
 
-Tecnologias a serem utilizadas no projeto: 
+Tecnologias a serem utilizadas no projeto:
 
  - [Nodejs](https://nodejs.org/)
  - [NextJs](https://nextjs.org/)
@@ -17,31 +17,33 @@ Tecnologias a serem utilizadas no projeto:
 Deve haver um cadastro de usuários habilitados para fazer login de operação do sistema, com campos `id`, `name`, `email`, `password`, `actived`
 
 - [ ] Deve haver uma página para listar usuários, com possibilidade de adicionar, alterar e excluir.
-  - [ ] *backend* - CRUD users
+  - [ ] <s>*backend* - CRUD users</s>
   - [ ] Alterar Usuário
-  - [ ] Cadastrar usuário
-  - [ ] Excluir/Desativar usuário
+  - [ ] <s>Cadastrar usuário</s>
+  - [ ] Excluir/Desativar usuário *(Switch)*
   - [ ] Listar Usuários
 
---- 
+---
 
 ## Clientes
 Lista de clientes utilizando FlatList
 
 O cadastro do cliente deve conter no mínimo os campos `id`, `name`, `phone`, `actived`
-- [ ] Deve haver uma página para listar clientes, com possibilidade de adicionar, alterar e excluir.
-  - [ ] *backend* - CRUD clients
-  - [ ] Alterar Cliente
-  - [ ] Cadastrar cliente
-  - [ ] Excluir/Desativar cliente
-  - [ ] Listar clientes
+- [x] Deve haver uma página para listar clientes, com possibilidade de adicionar, alterar e excluir.
+  - [x] *backend* - CRUD clients
+  - [x] Alterar Cliente
+  - [x] Cadastrar cliente
+  - [x] Excluir/Desativar cliente
+  - [x] Listar clientes
+
+  *obs: fazer tal coisa depois*
 
 ---
 
 ## Tipos de bordados/posição
 
 Deve haver uma página que permita configurações de *tipo* e *posicionamento* de bordados, como estrutura de *categoria* e *subcategoria*, seguindo o **exemplo** abaixo:
- 
+
  - **Camisa**
    - Peito direito
    - Peito esquerdo
@@ -58,7 +60,7 @@ Deve haver uma página que permita configurações de *tipo* e *posicionamento* 
 
 ### Tipo de bordado
 
-- [ ] Deve ser possível cadastrar o tipo de bordado com campos `id`, `label`, `description`, `actived` e `image`. 
+- [ ] Deve ser possível cadastrar o tipo de bordado com campos `id`, `label`, `description`, `actived` e `image`.
   - [ ] *backend* - CRUD embType
   - [ ] Ativar ou Desativar **tipo de bordado** para não aparecer na inclusão do pedido.
   - [ ] Alterar tipo de borado
@@ -67,7 +69,7 @@ Deve haver uma página que permita configurações de *tipo* e *posicionamento* 
 
 ### Posicionamento do bordado
 
-- [ ] Deve ser possível cadastrar a **posição do bordado** com campos `id`, `embTypeId`, `label`, `description`, `actived` e `params`. 
+- [ ] Deve ser possível cadastrar a **posição do bordado** com campos `id`, `embTypeId`, `label`, `description`, `actived` e `params`.
   Para cadastrar um posicionamento é necessário informar o **tipo de bordado**, **rótulo**, não sendo obrigatório **descrição** ou **parâmetros de posição**
   - [ ] *backend* - CRUD embPosition
   - [ ] Ativar ou Desativar **posição de bordado** para não aparecer na inclusão do pedido.
@@ -79,7 +81,7 @@ Deve haver uma página que permita configurações de *tipo* e *posicionamento* 
 ## Pedidos (O.S.)
 
 - [ ] Tela para inclusão de pedido
-  - [ ] Para incluir um pedido é preciso selecionar um **cliente**, bastando selecionar numa lista ou pesquisando seu *nome* ou *telefone* num campo de `autocomplete` 
+  - [ ] Para incluir um pedido é preciso selecionar um **cliente**, bastando selecionar numa lista ou pesquisando seu *nome* ou *telefone* num campo de `autocomplete`
   - [ ] Deve haver um botão para inclusão rápida de cliente caso não esteja previamente cadastrado
   - [ ] O pedido precisa informar o **tipo** e **posicionamento** do bordado
   - [ ] Deve haver um campo numérico *não obrigatório* para informar a quantidade de peças
@@ -96,21 +98,22 @@ Deve haver uma página que permita configurações de *tipo* e *posicionamento* 
 
 ## Comportamento do Sistema
 
-- [ ] A primeira tela é de login no sistema. Não há possibilidade de navegar ou ver informações sem estar logado.
-- [ ] Depois do login, tela que aparece é a de inclusão de **pedidos**.
-- [ ] Deve haver um **menu de navegação** para as funcionalidades citadas acima
+- [x] A primeira tela é de login no sistema. Não há possibilidade de navegar ou ver informações sem estar logado.
+- [x] Depois do login, tela que aparece é a de inclusão de **pedidos**.
+- [x] Deve haver um **menu de navegação** para as funcionalidades citadas acima
 - [ ] No menu de navegação deve ficar visível o **nome do usuário** logado com possibilidade de **logout**
 
 Informações
-- O sistema deve ser online, funcionando no domínio https://sistema.jrbordados.com.br
-- O sistema deve ser otimizado para utilização em dispositivos móveis.
+- [x] O sistema deve ser online, funcionando no domínio https://sistema.jrbordados.com.br
+- [x] O sistema deve ser otimizado para utilização em dispositivos móveis (PWA).
 
 > Não é necessário personalização de Tema, Layout, Design ou Cores, a aparência e estilização serão tratados posteriormente.
+
 ---
 
 # Cronograma de execução
 
-O apontamento *exato* de horas será registrado no [Clockify](https://clockify.me/) 
+O apontamento *exato* de horas será registrado no [Clockify](https://clockify.me/)
 
 Deve ser aplicado ao projeto a estrutura de *Integração Contínua/Entrega Contínua* (CI/CD), ou seja, a cada funcionalidade finalizada, a entrega deve ser realizada imediatamente, e informado ao cliente para possíveis anotações, alterações e correções na experiência do usuário e interface do usuário.
 
@@ -121,13 +124,16 @@ Deve ser aplicado ao projeto a estrutura de *Integração Contínua/Entrega Cont
 | configuração de CI/CD | ~1h | -- |
 | Recursos básicos da API banco de dados | ~5h | -- |
 | login/logout | ~2h | -- |
+| estrutura de paginação | -- | 9h |
 | cadastro de usuários | ~1h 30m | -- |
 | cadastro de clientes | ~1h 30m | -- |
+| lista de items do cliente | -- | 1h |
+| incluir/editar formulario | -- | 1h |
 | tipo bordados + posição | ~2h | -- |
 | inclusão de pedido | ~4h | -- |
 | listagem de pedidos | ~2h | -- |
 | - | - | - |
-| **Total** | **~21h** | -- |
+| **Total** | **~21h** | **~11h** |
 
 ---
 
