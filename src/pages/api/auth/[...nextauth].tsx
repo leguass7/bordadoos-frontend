@@ -25,7 +25,8 @@ const options: NextAuthOptions = {
     }),
     Providers.GitHub({
       clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      scope: 'read:user user:email'
     })
     // https://github.com/nextauthjs/next-auth/blob/main/src/providers/instagram.js
     // Providers.Instagram({

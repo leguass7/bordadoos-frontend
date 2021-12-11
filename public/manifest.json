@@ -13,13 +13,18 @@
       "sizes": "64x64"
     },
     {
-      "src": "favicon.png",
+      "src": "logo92.png",
+      "type": "image/png",
+      "sizes": "92x92"
+    },
+    {
+      "src": "logo250.png",
       "type": "image/png",
       "sizes": "250x250"
     }
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#b07b80",
-  "background_color": "#F7ABAF"
+  "theme_color": "#000000",
+  "background_color": "#F1F1F1"
 }
