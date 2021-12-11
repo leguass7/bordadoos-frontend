@@ -13,12 +13,10 @@ export interface IResponsePaginateClientDto extends IResponseApi {
   data: Client[]
 }
 
-export interface ICreateClientDto {
-  id?: number
+export interface ICreateClientDto extends Partial<Client> {
   name: string
   phone: string
-  doc?: string
-  actived?: boolean
+  createdBy: number
 }
 
 export interface IClientFilter {

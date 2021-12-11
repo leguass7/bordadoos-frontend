@@ -8,6 +8,7 @@ import { ButtonContainer } from './styles'
 const mockItems: ItemMenuProps[] = [
   { path: '/admin', label: 'Novo pedido', description: 'Incluir novo pedido' },
   { path: '/admin/purchases', label: 'Pedidos', description: 'Lista de pedidos cadastrados' },
+  { path: '/admin/users', label: 'Usuários', description: 'Lista de usuários cadastrados' },
   { path: '/admin/clients', label: 'Clientes', description: 'Lista de clientes cadastrados' },
   { path: '/admin/services', label: 'Tipos de bordados', description: 'Tipos de bordados cadastrados' }
 ]

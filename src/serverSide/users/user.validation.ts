@@ -15,9 +15,9 @@ async function createValidation(req: IRequestCreateUserDto, res: NextApiResponse
 
 async function getOneValidation(req: IRequestUserDto, res: NextApiResponse, next: NextHandler) {
   const { query } = req
-  query.userId = parseInt(`${query?.userId || 0}`) || 0
+  query.id = query.id ? parseInt(`${query?.id || 0}`) || 0 : 0
 
-  if (!query.userId) throw ErrorApi({ status: 400, message: 'invalid userId' })
+  if (!query.id) throw ErrorApi({ status: 400, message: 'invalid userId' })
 
   next()
 }
@@ -25,7 +25,7 @@ async function getOneValidation(req: IRequestUserDto, res: NextApiResponse, next
 export function userValidation(req: any, res: NextApiResponse, next: NextHandler) {
   const { method } = req
   if (method === 'POST') return createValidation(req, res, next)
-  if (method === 'GET') return getOneValidation(req, res, next)
+  if (method === 'GET' || method === 'PUT' || method === 'DELETE') return getOneValidation(req, res, next)
 
   next()
 }
