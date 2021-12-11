@@ -23,7 +23,7 @@ function update(userService: IUserService) {
     const { query, body } = req
     const { userId } = req.auth
 
-    const id = query?.id ? parseInt(query?.id) || 0 : 0
+    const id = query?.userId ? parseInt(query?.userId) || 0 : 0
     if (!userId) throw ErrorApi({ status: 401, message: 'User not logged' })
 
     await userService.update(id, body)
@@ -33,8 +33,8 @@ function update(userService: IUserService) {
 
 function findOne(userService: IUserService) {
   return async (req: IRequestUserDto, res: NextApiResponse<IResponseUserDto>) => {
-    const { id } = req.query
-    const user = await userService.findOne(id)
+    const { userId } = req.query
+    const user = await userService.findOne(userId)
     return res.status(200).json({ success: true, user })
   }
 }
@@ -53,7 +53,7 @@ function remove(userService: IUserService) {
   return async (req: IRequestUserDto, res: NextApiResponse<IResponseUserDto>) => {
     const { query } = req
 
-    const userId = query?.id ? parseInt(`${query.id || 0}`) || 0 : 0
+    const userId = query?.userId ? parseInt(`${query.userId || 0}`) || 0 : 0
     const success = await userService.deleteUser(userId)
 
     return res.status(202).json({ success, userId })

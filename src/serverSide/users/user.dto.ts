@@ -32,9 +32,9 @@ export interface IRequestCreateUserDto extends AuthorizedApiRequest {
 
 export interface IRequestUpdateUserDto extends AuthorizedApiRequest {
   body: Partial<ICreateUserDto>
-  query: { id: string }
+  query: { userId: string }
 }
 
 export interface IRequestUserDto extends Omit<AuthorizedApiRequest, 'query'> {
-  query: { id: number }
+  query: { userId: number }
 }
