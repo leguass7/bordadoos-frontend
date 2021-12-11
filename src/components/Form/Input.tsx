@@ -6,7 +6,7 @@ interface Props extends InputProps {
   label?: string
 }
 
-export const Input: React.FC<Props> = ({ name, type = 'text', id, ...rest }) => {
+export const Input: React.FC<Props> = ({ name, type = 'text', id, label, ...rest }) => {
   const ref = useRef<HTMLInputElement>(null)
   const { defaultValue, fieldName, registerField } = useField(name)
 
@@ -22,6 +22,7 @@ export const Input: React.FC<Props> = ({ name, type = 'text', id, ...rest }) => 
 
   return (
     <>
+      {label ? <label htmlFor={id}>{label}</label> : null}
       <MuiInput type={type} inputProps={{ id }} name={name} defaultValue={defaultValue} inputRef={ref} {...rest} />
     </>
   )
