@@ -12,21 +12,15 @@ import { Input } from '../Form/Input'
 
 interface Props {
   userId?: number
-  initialActived?: boolean
   onCancel?: () => void
   onSuccess?: () => void
 }
 
-export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initialActived = false }) => {
-  const [actived, setActived] = useState(initialActived)
+export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess }) => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<Partial<User>>({})
 
   const isMounted = useIsMounted()
-
-  const handleToggleActived = useCallback(() => {
-    setActived(old => !old)
-  }, [])
 
   const fetchData = useCallback(async () => {
     if (userId) {
@@ -48,12 +42,12 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initial
   const handleSubmit = useCallback(
     async (values: Partial<User>) => {
       if (userId) {
-        api.put(`users/${userId}`, { ...values, actived }).then(() => {
+        api.put(`users/${userId}`, values).then(() => {
           if (onSuccess) onSuccess()
         })
       }
     },
-    [userId, actived, onSuccess]
+    [userId, onSuccess]
   )
 
   return (
@@ -65,10 +59,6 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initial
           </FieldContainer>
           <FieldContainer>
             <Input name="cellPhone" label="Telefone do usuário: " autoComplete="off" />
-          </FieldContainer>
-          <FieldContainer>
-            <label htmlFor="actived">Usuário ativo: </label>
-            <Switch name="actived" checked={actived} color="info" onChange={handleToggleActived} />
           </FieldContainer>
           <FieldContainer>
             <ButtonGroup>
