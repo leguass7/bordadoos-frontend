@@ -9,6 +9,12 @@ import { getUserSchema, userValidation } from '~/serverSide/users/user.validatio
 
 const controller = factoryUserController(UserService)
 
-const handler = nc(ncConfig).use(authProtect).use(getUserSchema).get(userValidation, controller.findOne)
+const handler = nc(ncConfig)
+  .use(authProtect)
+  .use(getUserSchema)
+  .use(userValidation)
+  .get(controller.findOne)
+  .delete(controller.remove)
+  .put(controller.update)
 
 export default handler
