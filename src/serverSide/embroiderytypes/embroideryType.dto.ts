@@ -15,6 +15,7 @@ export interface IEmbTypeDTO extends Omit<Partial<Embroiderytype>, 'id'> {
   label: string
   description: string
   createdBy: number
+  updatedBy: number
 }
 
 // Requests
@@ -28,6 +29,11 @@ export interface IRequestCreateEmbtypeDto extends AuthorizedApiRequest {
 
 export interface IRequestEmbroideryType extends Omit<AuthorizedApiRequest, 'query'> {
   query: { embTypeId?: number } & Omit<Partial<Embroiderytype>, 'id'>
+}
+
+export interface IRequestUpdateEmbTypeDto extends Omit<AuthorizedApiRequest, 'query'> {
+  body: Partial<IEmbTypeDTO>
+  query: { embTypeId: number }
 }
 
 // Responses

@@ -23,8 +23,11 @@ async function createValidation(req: IRequestCreateEmbtypeDto, res: NextApiRespo
 
 async function getOneValidation(req: IRequestEmbroideryType, res: NextApiResponse, next: NextHandler) {
   const { query } = req
+  const { userId } = req.auth
+
   query.embTypeId = query.embTypeId ? parseInt(`${query?.embTypeId || 0}`) || 0 : 0
 
+  if (!userId) throw ErrorApi({ status: 401, message: 'User not logged' })
   if (!query.embTypeId) throw ErrorApi({ status: 400, message: 'invalid id' })
 
   next()
@@ -37,9 +40,3 @@ export function embtypeValidation(req: any, res: NextApiResponse, next: NextHand
 
   next()
 }
-
-export const getEmbroiderytypeSchema = celebrate({
-  [Segments.QUERY]: {
-    embTypeId: Joi.string().required().regex(/\d/)
-  }
-})

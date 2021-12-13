@@ -6,6 +6,7 @@ import { PaginationQueryDto } from '../pagination/pagination.dto'
 import type {
   IRequestCreateEmbtypeDto,
   IRequestEmbroideryType,
+  IRequestUpdateEmbTypeDto,
   IResponseEmbroideryDTO,
   IResponsePaginateEmbroiderytypeDto
 } from './embroideryType.dto'
@@ -23,7 +24,7 @@ function paginate(embroideryTypeService: IEmbroideryTypeService) {
 
 function findOne(embroideryTypeService: IEmbroideryTypeService) {
   return async (req: IRequestEmbroideryType, res: NextApiResponse<IResponseEmbroideryDTO>) => {
-    const data = await embroideryTypeService.findOne(req.query)
+    const data = await embroideryTypeService.findOne({ id: req.query.embTypeId })
     return res.status(200).json({ success: true, data })
   }
 }
@@ -33,11 +34,27 @@ function create(embroideryTypeService: IEmbroideryTypeService) {
     const { userId } = req.auth
     const { description, label } = req.body
 
-    const hasEmb = await embroideryTypeService.findOne({ description, label })
+    const hasEmb = await embroideryTypeService.searchOne({ description, label })
     if (hasEmb) throw ErrorApi({ status: 400, message: 'embroidery type already exists' })
 
-    const data = await embroideryTypeService.create({ ...req.body, createdBy: userId })
+    const data = await embroideryTypeService.create({ ...req.body, createdBy: userId, updatedBy: userId })
     return res.status(201).json({ success: true, data })
+  }
+}
+
+function update(embroideryTypeService: IEmbroideryTypeService) {
+  return async (req: IRequestUpdateEmbTypeDto, res: NextApiResponse) => {
+    const { query, body, auth } = req
+
+    console.log('query', req.query)
+    console.log('body', req.body)
+    console.log('auth', req.auth)
+
+    const hasEmb = await embroideryTypeService.findOne({ id: query.embTypeId })
+    if (!hasEmb) throw ErrorApi({ status: 400, message: "embroidery type doesn't exists" })
+
+    await embroideryTypeService.update(query.embTypeId, { ...body, updatedBy: auth.userId })
+    return res.status(201).json({ success: true })
   }
 }
 
@@ -45,6 +62,7 @@ export function factoryEmbroideryTypeController(embroideryTypeService: IEmbroide
   return {
     paginate: paginate(embroideryTypeService),
     create: create(embroideryTypeService),
-    findOne: findOne(embroideryTypeService)
+    findOne: findOne(embroideryTypeService),
+    update: update(embroideryTypeService)
   }
 }

@@ -17,6 +17,7 @@ export interface ICreateClientDto extends Partial<Client> {
   name: string
   phone: string
   createdBy: number
+  updatedBy: number
 }
 
 export interface IClientFilter {
