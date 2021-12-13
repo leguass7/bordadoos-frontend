@@ -9,24 +9,29 @@ datasource db {
 }
 
 model User {
-  id              Int              @id @default(autoincrement())
-  name            String?
-  email           String?          @unique
-  emailVerified   DateTime?
-  password        String?          @db.VarChar(64)
-  cpf             String?          @db.VarChar(15)
-  cnpj            String?          @db.VarChar(18)
-  cellPhone       String?          @db.VarChar(20)
-  level           Int? // @db.UnsignedInt
-  meta            Json?
-  image           String?          @db.Text
-  actived         Boolean?         @default(false)
-  createdAt       DateTime?        @default(now()) @db.Timestamp(0)
-  updatedAt       DateTime?        @updatedAt
-  accounts        Account[]
-  sessions        Session[]
-  clients         Client[]
-  embroiderytypes Embroiderytype[]
+  id            Int       @id @default(autoincrement())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?   @db.VarChar(64)
+  cpf           String?   @db.VarChar(15)
+  cnpj          String?   @db.VarChar(18)
+  cellPhone     String?   @db.VarChar(20)
+  level         Int? // @db.UnsignedInt
+  meta          Json?
+  image         String?   @db.Text
+  actived       Boolean?  @default(false)
+  createdAt     DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt     DateTime? @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+
+  createdEmbTypes Embroiderytype[] @relation(name: "embCreatedUser")
+  updatedEmbTypes Embroiderytype[] @relation(name: "embUpdatedUser")
+
+  createdClients Client[] @relation(name: "clientCreatedUser")
+  updatedClients Client[] @relation(name: "clientUpdatedUser")
+
 
   @@map(name: "users")
 }
@@ -83,11 +88,12 @@ model Client {
   doc       String?  @unique
   actived   Boolean  @default(true)
   createdBy Int
-  updatedBy Int?
+  updatedBy Int
   createdAt DateTime @default(now()) @db.Timestamp(0)
   updatedAt DateTime @updatedAt
 
-  createdUser User @relation(fields: [createdBy], references: [id])
+  createdUser User @relation(name: "clientCreatedUser", fields: [createdBy], references: [id])
+  updatedUser User @relation(name: "clientUpdatedUser", fields: [updatedBy], references: [id])
 
   @@map(name: "clients")
 }
@@ -99,11 +105,13 @@ model Embroiderytype {
   actived     Boolean @default(true)
   image       String?
   createdBy   Int
+  updatedBy   Int
 
   createdAt DateTime @default(now()) @db.Timestamp(0)
   updatedAt DateTime @updatedAt
 
-  createdUser User @relation(fields: [createdBy], references: [id])
+  createdUser User @relation(name: "embCreatedUser", fields: [createdBy], references: [id])
+  updatedUser User @relation(name: "embUpdatedUser", fields: [updatedBy], references: [id])
 
   @@map(name: "embroidery_types")
 }
