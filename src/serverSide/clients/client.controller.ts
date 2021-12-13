@@ -21,7 +21,7 @@ function create(clientService: IClientService) {
     const hasClient = await clientService.findOne({ name, phone })
     if (hasClient) throw ErrorApi({ status: 400, message: 'client already exists' })
 
-    await clientService.create({ name, phone, doc, actived: true, createdBy: userId })
+    await clientService.create({ name, phone, doc, actived: true, createdBy: userId, updatedBy: userId })
     return res.status(201).json({ success: true })
   }
 }
