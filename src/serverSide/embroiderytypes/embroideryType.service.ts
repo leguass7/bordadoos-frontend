@@ -1,8 +1,9 @@
 import { Embroiderytype, Prisma as PrismaTypes } from '.prisma/client'
 
+import prisma from '../database/prisma'
 import { PaginationDto, PaginationQueryDto } from '../pagination/pagination.dto'
 import { PrismaService } from '../pagination/pagination.service'
-import type { IEmbroiderytypeFilter } from './embroideryType.dto'
+import type { IEmbroiderytypeFilter, IEmbTypeDTO } from './embroideryType.dto'
 
 async function paginate(
   pagination: PaginationQueryDto,
@@ -24,8 +25,20 @@ async function paginate(
   return embTypes
 }
 
+async function findOne(embTypeData: Partial<Embroiderytype>) {
+  const embType = await prisma.embroiderytype.findFirst({ where: embTypeData })
+  return embType
+}
+
+async function create(embTypeData: IEmbTypeDTO) {
+  const embType = await prisma.embroiderytype.create({ data: embTypeData })
+  return embType
+}
+
 export const EmbroideryTypeService = {
-  paginate
+  paginate,
+  findOne,
+  create
 }
 
 export type IEmbroideryTypeService = typeof EmbroideryTypeService

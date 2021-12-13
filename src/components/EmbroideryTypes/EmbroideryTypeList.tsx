@@ -10,10 +10,26 @@ import { Container } from '../Container'
 import { Paragraph } from '../shared/web/src/styled'
 import { EmbroideryTypeItem } from './EmbroideryTypeItem'
 
-interface Props {}
+import { Modal } from '@mui/material'
 
-export const EmbroideryTypeList: React.FC<Props> = () => {
-  const { pagination, data, fetchMoreData, hasMore } = usePagination<Embroiderytype>()
+import { ModalForm } from '../ModalForm'
+import { EmbroideryTypeForm } from './EmbroideryTypeForm'
+
+interface Props {
+  toggleModal: (id?: number) => void
+  modal: { show: boolean; id: number }
+}
+
+export const EmbroideryTypeList: React.FC<Props> = ({ toggleModal, modal }) => {
+  const { pagination, data, fetchMoreData, hasMore, refreshData } = usePagination<Embroiderytype>()
+
+  const handleEdit = useCallback(
+    (id = 0) => {
+      if (toggleModal) toggleModal(id)
+      refreshData()
+    },
+    [toggleModal, refreshData]
+  )
 
   const renderMessage = useCallback((text: string) => {
     return (
@@ -38,9 +54,16 @@ export const EmbroideryTypeList: React.FC<Props> = () => {
         endMessage={renderMessage('FIM')}
       >
         {data?.map?.(item => {
-          return <EmbroideryTypeItem key={`${item.id}`} {...item} />
+          return <EmbroideryTypeItem key={`${item.id}`} {...item} showModal={modal.show} toggleModal={handleEdit} />
         })}
       </InfiniteScroll>
+      <Modal open={modal.show} onClose={toggleModal}>
+        <div>
+          <ModalForm title={'Adicionar cliente'}>
+            <EmbroideryTypeForm embTypeId={modal.id} onCancel={toggleModal} onSuccess={handleEdit} />
+          </ModalForm>
+        </div>
+      </Modal>
     </div>
   )
 }

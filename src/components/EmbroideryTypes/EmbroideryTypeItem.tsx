@@ -1,44 +1,25 @@
 import { Embroiderytype } from '.prisma/client'
 
 import { Edit } from '@mui/icons-material'
-import { IconButton, Modal, Switch, Typography } from '@mui/material'
+import { IconButton, Switch, Typography } from '@mui/material'
 import { memo, useCallback, useState } from 'react'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { api } from '~/services/api'
 
-import {
-  FlatItem,
-  FlatDescriptionContainer,
-  FlatDescriptionLine,
-  FlatTitle,
-  FlatText,
-  FlatIconContainer
-} from '../FlatItem'
-import { ModalForm } from '../ModalForm'
-import { usePagination } from '../Providers/PaginationProvider'
+import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, FlatText } from '../FlatItem'
 
 import styled from 'styled-components'
 
-import { EmbroideryTypeForm } from './EmbroideryTypeForm'
+interface Props extends Embroiderytype {
+  showModal: boolean
+  toggleModal: (id?: number) => void
+}
 
-interface Props extends Embroiderytype {}
-
-export const EmbroideryTypeItem: React.FC<Props> = ({ id, label, description, actived }) => {
-  const [openModal, setOpenModal] = useState(false)
+export const EmbroideryTypeItem: React.FC<Props> = ({ id, label, description, actived, showModal, toggleModal }) => {
   const [loading, setLoading] = useState(false)
   const [itemActived, setItemActived] = useState(actived)
-  const { refreshData } = usePagination()
-
   const isMounted = useIsMounted()
-
-  const handleClose = useCallback(() => setOpenModal(false), [])
-  const handleEditOpen = () => setOpenModal(true)
-
-  const handleSuccess = useCallback(() => {
-    handleClose()
-    refreshData()
-  }, [handleClose, refreshData])
 
   const toggleActived = useCallback(
     async e => {
@@ -47,12 +28,12 @@ export const EmbroideryTypeItem: React.FC<Props> = ({ id, label, description, ac
 
       setLoading(true)
 
-      // await api.put(`/embroidery/types/${id}`, { actived: newActived })
+      await api.put(`/embroidery/types/${id}`, { actived: newActived })
       if (isMounted.current) {
         setLoading(false)
       }
     },
-    [isMounted]
+    [isMounted, id]
   )
 
   return (
@@ -66,7 +47,7 @@ export const EmbroideryTypeItem: React.FC<Props> = ({ id, label, description, ac
             <FlatText>{description}</FlatText>
           </FlatDescriptionLine>
         </FlatDescriptionContainer>
-        <IconButton color="primary" onClick={handleEditOpen} disabled={!!openModal}>
+        <IconButton color="primary" onClick={() => toggleModal(id)} disabled={!!showModal}>
           <Edit />
         </IconButton>
         <SwitchContainer>
@@ -76,13 +57,6 @@ export const EmbroideryTypeItem: React.FC<Props> = ({ id, label, description, ac
           </Typography>
         </SwitchContainer>
       </FlatItem>
-      <Modal open={!!openModal} onClose={handleClose}>
-        <div>
-          <ModalForm title={'Editar tipo de borda'}>
-            <EmbroideryTypeForm embTypeId={id} onSuccess={handleSuccess} onCancel={handleClose} />
-          </ModalForm>
-        </div>
-      </Modal>
     </>
   )
 }

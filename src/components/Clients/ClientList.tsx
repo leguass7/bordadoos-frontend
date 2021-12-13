@@ -61,7 +61,7 @@ export const ClientList: React.FC<Props> = ({ toggleModal, modal }) => {
       </div>
       <Modal open={modal.show} onClose={toggleModal}>
         <div>
-          <ModalForm title={'Adicionar cliente'}>
+          <ModalForm title={`${modal.id ? 'Alterar' : 'Adicionar'} cliente`}>
             <ClientForm clientId={modal.id} onCancel={toggleModal} onSuccess={handleEdit} />
           </ModalForm>
         </div>
