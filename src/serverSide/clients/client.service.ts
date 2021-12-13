@@ -15,9 +15,16 @@ async function update(clientId: number, data: Partial<Client>): Promise<number> 
   return client && client.id
 }
 
-async function findOne({ name, phone, id }: Partial<Client>): Promise<Client> {
+async function searchOne({ name, phone, id }: Partial<Client>): Promise<Client> {
   const client = await prisma.client.findFirst({
     where: { OR: [{ name }, { phone }, { id }] }
+  })
+  return client
+}
+
+async function findOne({ name, phone, id }: Partial<Client>): Promise<Client> {
+  const client = await prisma.client.findFirst({
+    where: { name, phone, id }
   })
   return client
 }
@@ -57,6 +64,7 @@ export const ClientService = {
   create,
   update,
   findOne,
+  searchOne,
   paginate,
   deleteClient
 }
