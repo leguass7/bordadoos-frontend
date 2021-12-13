@@ -26,7 +26,7 @@ model User {
   accounts        Account[]
   sessions        Session[]
   clients         Client[]
-  embroiderytypes EmbroideryType[]
+  embroiderytypes Embroiderytype[]
 
   @@map(name: "users")
 }
@@ -92,7 +92,7 @@ model Client {
   @@map(name: "clients")
 }
 
-model EmbroideryType {
+model Embroiderytype {
   id          Int     @id @default(autoincrement())
   label       String
   description String
@@ -105,5 +105,5 @@ model EmbroideryType {
 
   createdUser User @relation(fields: [createdBy], references: [id])
 
-  @@map("embroiderytypes")
+  @@map(name: "embroidery_types")
 }
