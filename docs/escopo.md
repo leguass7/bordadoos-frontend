@@ -65,7 +65,8 @@ Deve haver uma página que permita configurações de _tipo_ e _posicionamento_ 
 - [ ] Deve ser possível cadastrar o tipo de bordado com campos `id`, `label`, `description`, `actived` e `image`.
   - [ ] _backend_ - CRUD embType
   - [ ] Ativar ou Desativar **tipo de bordado** para não aparecer na inclusão do pedido.
-  - [ ] Alterar tipo de borado
+  - [x] listar tipos de bordados
+  - [ ] Alterar tipo de bordado
   - [ ] Incluir tipo de bordado
   - [ ] Deve ser possível determinar uma imagem ilustrativa para o tipo de bordado
 
@@ -120,23 +121,24 @@ O apontamento _exato_ de horas será registrado no [Clockify](https://clockify.m
 
 Deve ser aplicado ao projeto a estrutura de _Integração Contínua/Entrega Contínua_ (CI/CD), ou seja, a cada funcionalidade finalizada, a entrega deve ser realizada imediatamente, e informado ao cliente para possíveis anotações, alterações e correções na experiência do usuário e interface do usuário.
 
-| Tarefa                                 | Previsto | Trabalhado |
-| :------------------------------------- | :------: | :--------: |
-|                                        |          |            |
-| config de ambiente desenvolvimento     |   ~2h    |     --     |
-| configuração de CI/CD                  |   ~1h    |     --     |
-| Recursos básicos da API banco de dados |   ~5h    |     --     |
-| login/logout                           |   ~2h    |     --     |
-| estrutura de paginação                 |    --    |     9h     |
-| cadastro de clientes                   | ~1h 30m  |     --     |
-| lista de items do cliente              |    --    |     1h     |
-| incluir/editar formulario do cliente   |    --    |     1h     |
-| tipo bordados + posição                |   ~2h    |     --     |
-| inclusão de pedido                     |   ~4h    |     --     |
-| listagem de pedidos                    |   ~2h    |     --     |
-| listagem e exclusão de usuários        |   ~2h    |     2h     |
-| edição de usuários                     |   ~1h    |     1h     |
-| -                                      |    -     |     -      |
-| **Total**                              | **~21h** |  **~14h**  |
+| Tarefa                                 | Previsto | Trabalhado  |
+| :------------------------------------- | :------: | :---------: |
+|                                        |          |             |
+| config de ambiente desenvolvimento     |   ~2h    |     --      |
+| configuração de CI/CD                  |   ~1h    |     --      |
+| Recursos básicos da API banco de dados |   ~5h    |     --      |
+| login/logout                           |   ~2h    |     --      |
+| estrutura de paginação                 |    --    |     9h      |
+| cadastro de clientes                   | ~1h 30m  |     --      |
+| lista de items do cliente              |    --    |     1h      |
+| incluir/editar formulario do cliente   |    --    |     1h      |
+| tipo bordados + posição                |   ~2h    |     --      |
+| inclusão de pedido                     |   ~4h    |     --      |
+| listagem de pedidos                    |   ~2h    |     --      |
+| listagem e exclusão de usuários        |   ~2h    |     2h      |
+| edição de usuários                     |   ~1h    |     1h      |
+| listagem de tipos de bordados          |   ~2h    |    1h46m    |
+| -                                      |    -     |      -      |
+| **Total**                              | **~21h** | **~15h46m** |
 
 ---
