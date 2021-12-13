@@ -13,7 +13,7 @@ import { Input } from '../Form/Input'
 interface Props {
   clientId?: number
   onCancel?: () => void
-  onSuccess?: () => void
+  onSuccess?: (clientId?: number) => void
 }
 
 export const ClientForm: React.FC<Props> = ({ onCancel, onSuccess, clientId }) => {
@@ -44,7 +44,7 @@ export const ClientForm: React.FC<Props> = ({ onCancel, onSuccess, clientId }) =
       const { data: response } = await api[clientId ? 'put' : 'post'](url, values)
       if (response && response.success) {
         setData({})
-        if (onSuccess) onSuccess()
+        if (onSuccess) onSuccess(clientId)
       }
     },
     [clientId, onSuccess]

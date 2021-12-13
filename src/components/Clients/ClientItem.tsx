@@ -11,15 +11,13 @@ import { ModalForm } from '../ModalForm'
 import { usePagination } from '../Providers/PaginationProvider'
 import { ClientForm } from './ClientForm'
 
-interface Props extends Client {}
+interface Props extends Client {
+  showModal: boolean
+  toggleModal: (id?: number) => void
+}
 
-export const ClientItem: React.FC<Props> = ({ id, phone, name }) => {
-  const [openModal, setOpenModal] = useState(false)
+export const ClientItem: React.FC<Props> = ({ id, phone, name, showModal, toggleModal }) => {
   const { refreshData } = usePagination()
-
-  const handleCancel = () => setOpenModal(false)
-
-  const handleEditOpen = () => setOpenModal(true)
 
   const handleDelete = useCallback(
     (clientId: number) => async () => {
@@ -30,31 +28,22 @@ export const ClientItem: React.FC<Props> = ({ id, phone, name }) => {
   )
 
   return (
-    <>
-      <FlatItem>
-        <FlatDescriptionContainer style={{ padding: 10 }} grow={1}>
-          <FlatDescriptionLine>
-            <FlatTitle>{name}</FlatTitle>
-          </FlatDescriptionLine>
-          <FlatDescriptionLine>
-            <FlatText>{phone}</FlatText>
-          </FlatDescriptionLine>
-        </FlatDescriptionContainer>
-        <IconButton color="primary" onClick={handleEditOpen} disabled={!!openModal}>
-          <Edit />
-        </IconButton>
-        <IconButton color="error" onClick={handleDelete(id)}>
-          <Delete />
-        </IconButton>
-      </FlatItem>
-      <Modal open={!!openModal} onClose={handleCancel}>
-        <div>
-          <ModalForm title={'Editar cliente'}>
-            <ClientForm clientId={id} onCancel={handleCancel} />
-          </ModalForm>
-        </div>
-      </Modal>
-    </>
+    <FlatItem>
+      <FlatDescriptionContainer style={{ padding: 10 }} grow={1}>
+        <FlatDescriptionLine>
+          <FlatTitle>{name}</FlatTitle>
+        </FlatDescriptionLine>
+        <FlatDescriptionLine>
+          <FlatText>{phone}</FlatText>
+        </FlatDescriptionLine>
+      </FlatDescriptionContainer>
+      <IconButton color="primary" onClick={() => toggleModal(id)} disabled={showModal}>
+        <Edit />
+      </IconButton>
+      <IconButton color="error" onClick={handleDelete(id)}>
+        <Delete />
+      </IconButton>
+    </FlatItem>
   )
 }
 
