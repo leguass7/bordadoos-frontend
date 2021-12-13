@@ -27,8 +27,8 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess }) => {
       setLoading(true)
       const { data: response } = await api.get(`/users/${userId}`)
       if (isMounted.current) {
+        setLoading(false)
         if (response && response.success) {
-          setLoading(false)
           setData(response.user)
         }
       }
