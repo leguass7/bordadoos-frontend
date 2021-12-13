@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Switch } from '@mui/material'
-import { User } from '@prisma/client'
+import { Embroiderytype, User } from '@prisma/client'
 import { Form } from '@unform/web'
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
@@ -11,29 +11,30 @@ import { CircleLoading } from '../CircleLoading'
 import { Input } from '../Form/Input'
 
 interface Props {
-  userId?: number
+  embTypeId?: number
   onCancel?: () => void
   onSuccess?: () => void
 }
 
-export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess }) => {
+export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuccess }) => {
   const [loading, setLoading] = useState(false)
-  const [data, setData] = useState<Partial<User>>({})
+  const [data, setData] = useState<Partial<Embroiderytype>>({})
 
   const isMounted = useIsMounted()
 
   const fetchData = useCallback(async () => {
-    if (userId) {
+    if (embTypeId) {
       setLoading(true)
-      const { data: response } = await api.get(`/users/${userId}`)
+      // const { data: response } = await api.get(`/embroidery/types/${embTypeId}`)
+      const response = { success: true }
       if (isMounted.current) {
         setLoading(false)
         if (response && response.success) {
-          setData(response.user)
+          // setData(response.data)
         }
       }
     }
-  }, [isMounted, userId])
+  }, [isMounted, embTypeId])
 
   useEffect(() => {
     fetchData()
@@ -41,13 +42,13 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess }) => {
 
   const handleSubmit = useCallback(
     async (values: Partial<User>) => {
-      if (userId) {
-        api.put(`users/${userId}`, values).then(() => {
+      if (embTypeId) {
+        api.put(`users/${embTypeId}`, values).then(() => {
           if (onSuccess) onSuccess()
         })
       }
     },
-    [userId, onSuccess]
+    [embTypeId, onSuccess]
   )
 
   return (
@@ -55,10 +56,10 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess }) => {
       <Form onSubmit={handleSubmit} initialData={data} key={data.id}>
         <FormContainer>
           <FieldContainer>
-            <Input name="name" label="Nome do usuário: " autoComplete="off" />
+            <Input name="label" label="Tipo de bordado: " autoComplete="off" />
           </FieldContainer>
           <FieldContainer>
-            <Input name="cellPhone" label="Telefone do usuário: " autoComplete="off" />
+            <Input name="description" label="Descrição do tipo de bordado: " autoComplete="off" />
           </FieldContainer>
           <FieldContainer>
             <ButtonGroup>
