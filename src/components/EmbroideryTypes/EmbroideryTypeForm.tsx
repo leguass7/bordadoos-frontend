@@ -23,18 +23,17 @@ export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuc
   const isMounted = useIsMounted()
 
   const fetchData = useCallback(async () => {
-    if (embTypeId) {
+    if (embTypeId && embTypeId !== data.id) {
       setLoading(true)
-      // const { data: response } = await api.get(`/embroidery/types/${embTypeId}`)
-      const response = { success: true }
+      const { data: response } = await api.get(`/embroidery/types/${embTypeId}`)
       if (isMounted.current) {
         setLoading(false)
         if (response && response.success) {
-          // setData(response.data)
+          setData(response.data)
         }
       }
     }
-  }, [isMounted, embTypeId])
+  }, [isMounted, embTypeId, data.id])
 
   useEffect(() => {
     fetchData()
@@ -42,10 +41,11 @@ export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuc
 
   const handleSubmit = useCallback(
     async (values: Partial<User>) => {
-      if (embTypeId) {
-        api.put(`users/${embTypeId}`, values).then(() => {
-          if (onSuccess) onSuccess()
-        })
+      const url = embTypeId ? `/embroidery/types/${embTypeId}` : '/embroidery/types'
+      const { data: response } = await api[embTypeId ? 'put' : 'post'](url, values)
+      if (response && response.success) {
+        setData({})
+        if (onSuccess) onSuccess()
       }
     },
     [embTypeId, onSuccess]

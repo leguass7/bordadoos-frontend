@@ -1,15 +1,13 @@
 import { Client } from '.prisma/client'
 
 import { Delete, Edit } from '@mui/icons-material'
-import { IconButton, Modal } from '@mui/material'
-import { memo, useCallback, useState } from 'react'
+import { IconButton } from '@mui/material'
+import { memo, useCallback } from 'react'
 
 import { api } from '~/services/api'
 
 import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, FlatText } from '../FlatItem'
-import { ModalForm } from '../ModalForm'
 import { usePagination } from '../Providers/PaginationProvider'
-import { ClientForm } from './ClientForm'
 
 interface Props extends Client {
   showModal: boolean
