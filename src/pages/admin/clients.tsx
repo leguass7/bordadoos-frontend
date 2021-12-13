@@ -12,17 +12,17 @@ import { PageTitle } from '~/components/PageTitle'
 import { PaginationProvider } from '~/components/Providers/PaginationProvider'
 
 const PageAdminClients: NextPage = () => {
-  const [openAddModal, setAddModal] = useState(false)
-  const handleAddClose = () => setAddModal(false)
-  const handleAddOpen = () => setAddModal(true)
+  const [modal, setModal] = useState({ show: false, id: 0 })
+
+  const handleToggleModal = (id = 0) => setModal(old => ({ id, show: !old.show }))
 
   return (
     <LayoutAdmin>
-      <PaginationProvider url="/clients" initialFilter={{}}>
+      <PaginationProvider url="/clients" initialFilter={{ actived: true }}>
         <Container>
           <PageTitle spotlight="Clientes" title="cadastrados" description={'Lista de clientes cadastrados no sistema.'}>
             <Toolbar>
-              <IconButton onClick={handleAddOpen}>
+              <IconButton onClick={() => handleToggleModal()}>
                 <Add />
               </IconButton>
             </Toolbar>
@@ -32,16 +32,9 @@ const PageAdminClients: NextPage = () => {
           <ClientSearch />
         </Container>
         <Container>
-          <ClientList />
+          <ClientList modal={modal} toggleModal={handleToggleModal} />
         </Container>
       </PaginationProvider>
-      <Modal open={openAddModal} onClose={handleAddClose}>
-        <div>
-          <ModalForm title={'Incluir cliente'}>
-            <ClientForm onCancel={handleAddClose} />
-          </ModalForm>
-        </div>
-      </Modal>
     </LayoutAdmin>
   )
 }
