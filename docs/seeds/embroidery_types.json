@@ -1,0 +1,21 @@
+[{
+  "id": 1,
+  "label": "Camisa",
+  "actived": true,
+  "createdBy": 1
+}, {
+  "id": 2,
+  "label": "Manga",
+  "actived": true,
+  "createdBy": 1
+}, {
+  "id": 3,
+  "label": "Bolso",
+  "actived": true,
+  "createdBy": 1
+}, {
+  "id": 4,
+  "label": "Boné",
+  "actived": true,
+  "createdBy": 1
+}]

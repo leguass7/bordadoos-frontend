@@ -1,0 +1,55 @@
+[{
+  "id": 11,
+  "embType": 1,
+  "label": "Peito direito",
+  "actived": true,
+  "createdBy": 1
+}, {
+  "id": 12,
+  "embType": 1,
+  "label": "Peito esquerdo",
+  "actived": true,
+  "createdBy": 1
+}, {
+  "id": 13,
+  "embType": 1,
+  "label": "Costa",
+  "actived": true,
+  "createdBy": 1
+}, {
+  "id": 21,
+  "embType": 2,
+  "label": "Central",
+  "actived": true,
+  "createdBy": 1
+}, {
+  "id": 31,
+  "embType": 3,
+  "label": "Central",
+  "actived": true,
+  "createdBy": 1
+}, {
+  "id": 41,
+  "embType": 4,
+  "label": "Frente",
+  "actived": true,
+  "createdBy": 1
+}, {
+  "id": 42,
+  "embType": 4,
+  "label": "Costa",
+  "actived": true,
+  "createdBy": 1
+}, {
+  "id": 43,
+  "embType": 4,
+  "label": "Direito",
+  "actived": true,
+  "createdBy": 1
+}, {
+  "id": 44,
+  "embType": 4,
+  "label": "Esquesdo",
+  "actived": true,
+  "createdBy": 1
+}]

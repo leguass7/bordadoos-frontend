@@ -26,9 +26,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
-  createdEmbTypes Embroiderytype[] @relation(name: "embCreatedUser")
-  updatedEmbTypes Embroiderytype[] @relation(name: "embUpdatedUser")
-
   createdClients Client[] @relation(name: "clientCreatedUser")
   updatedClients Client[] @relation(name: "clientUpdatedUser")
 
@@ -63,8 +60,8 @@ model Session {
   expires      DateTime
   sessionToken String   @unique
   accessToken  String   @unique
-  createdAt    DateTime @default(now()) @db.Timestamp(0)
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime? @updatedAt
   user         User     @relation(fields: [userId], references: [id])
 
   @@map(name: "sessions")
@@ -75,8 +72,8 @@ model VerificationRequest {
   identifier String
   token      String   @unique
   expires    DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
+  createdAt  DateTime?  @default(now())
+  updatedAt  DateTime? @updatedAt
 
   @@map(name: "verification_requests")
 }
@@ -88,30 +85,45 @@ model Client {
   doc       String?  @unique
   actived   Boolean  @default(true)
   createdBy Int
-  updatedBy Int
-  createdAt DateTime @default(now()) @db.Timestamp(0)
-  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  createdAt DateTime?  @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @updatedAt
 
-  createdUser User @relation(name: "clientCreatedUser", fields: [createdBy], references: [id])
-  updatedUser User @relation(name: "clientUpdatedUser", fields: [updatedBy], references: [id])
+  createdUser User   @relation(name: "clientCreatedUser", fields: [createdBy], references: [id])
+  updatedUser User?  @relation(name: "clientUpdatedUser", fields: [updatedBy], references: [id])
 
   @@map(name: "clients")
 }
 
-model Embroiderytype {
+model EmbroideryType {
   id          Int     @id @default(autoincrement())
   label       String
-  description String
-  actived     Boolean @default(true)
+  description String?
+  actived     Boolean? @default(true)
   image       String?
   createdBy   Int
-  updatedBy   Int
+  updatedBy   Int?
+  createdAt   DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime? @updatedAt
 
-  createdAt DateTime @default(now()) @db.Timestamp(0)
-  updatedAt DateTime @updatedAt
-
-  createdUser User @relation(name: "embCreatedUser", fields: [createdBy], references: [id])
-  updatedUser User @relation(name: "embUpdatedUser", fields: [updatedBy], references: [id])
+  positions   EmbroideryPosition[]
 
   @@map(name: "embroidery_types")
+}
+
+model EmbroideryPosition {
+  id          Int      @id @default(autoincrement())
+  embType     Int
+  label       String
+  description String?
+  actived     Boolean? @default(true)
+  image       String?
+  createdBy   Int
+  updatedBy   Int?
+  createdAt   DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime? @updatedAt
+
+  embroidery  EmbroideryType @relation(fields: [embType], references: [id])
+
+  @@map(name: "embroidery_positions")
 }
