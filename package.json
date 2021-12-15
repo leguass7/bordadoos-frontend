@@ -27,7 +27,7 @@
     "@unform/core": "^2.1.6",
     "@unform/web": "^2.1.6",
     "axios": "^0.24.0",
-    "camelcase-keys": "^7.0.1",
+    "camelcase": "^6.2.1",
     "celebrate": "^15.0.0",
     "chroma-js": "^2.1.2",
     "cpf-cnpj-validator": "^1.0.3",

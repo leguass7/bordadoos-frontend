@@ -1,6 +1,6 @@
 import { Prisma } from '.prisma/client'
 
-import cammelcase from 'camelcase-keys'
+import camelcase from 'camelcase'
 
 import prisma from '../database/prisma'
 import { PaginationDto, PaginationQueryDto } from './pagination.dto'
@@ -24,10 +24,7 @@ async function paginate<T = unknown>({
   include,
   where
 }: Props): Promise<PaginationDto<T>> {
-  const aux: any = {}
-  aux[model] = model
-
-  const prismaModel = prisma[Object.keys(cammelcase(aux))[0]]
+  const prismaModel = prisma[camelcase(model)]
   const totalCount = await prismaModel.count({ where: { ...where } })
 
   if (!totalCount) return { total: 0, pages: 0, page, data: [] }
