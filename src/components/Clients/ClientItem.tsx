@@ -1,28 +1,39 @@
 import { Client } from '.prisma/client'
 
-import { Delete, Edit } from '@mui/icons-material'
-import { IconButton } from '@mui/material'
-import { memo, useCallback } from 'react'
+import styled from 'styled-components'
+import Edit from '@mui/icons-material/Edit'
+import { IconButton, Switch, Typography } from '@mui/material'
+import { memo, useCallback, useState } from 'react'
 
 import { api } from '~/services/api'
 
 import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, FlatText } from '../FlatItem'
-import { usePagination } from '../Providers/PaginationProvider'
+
+import { useIsMounted } from '~/hooks/useIsMounted'
 
 interface Props extends Client {
   showModal: boolean
   toggleModal: (id?: number) => void
 }
 
-export const ClientItem: React.FC<Props> = ({ id, phone, name, showModal, toggleModal }) => {
-  const { refreshData } = usePagination()
+export const ClientItem: React.FC<Props> = ({ id, phone, name, showModal, toggleModal, actived }) => {
+  const [itemActived, setItemActived] = useState(actived)
+  const [loading, setLoading] = useState(false)
+  const isMounted = useIsMounted()
 
-  const handleDelete = useCallback(
-    (clientId: number) => async () => {
-      await api.delete(`/clients/${clientId}`)
-      refreshData()
+  const toggleActived = useCallback(
+    async e => {
+      const newActived = e.target.checked
+      setItemActived(newActived)
+
+      setLoading(true)
+
+      await api.put(`/clients/${id}`, { actived: newActived })
+      if (isMounted.current) {
+        setLoading(false)
+      }
     },
-    [refreshData]
+    [id, isMounted]
   )
 
   return (
@@ -38,11 +49,23 @@ export const ClientItem: React.FC<Props> = ({ id, phone, name, showModal, toggle
       <IconButton color="primary" onClick={() => toggleModal(id)} disabled={showModal}>
         <Edit />
       </IconButton>
-      <IconButton color="error" onClick={handleDelete(id)}>
-        <Delete />
-      </IconButton>
+      <SwitchContainer>
+        <Switch name="actived" checked={itemActived} color="info" onChange={toggleActived} disabled={loading} />
+        <Typography variant="caption" color="GrayText" htmlFor="actived" component="label">
+          ativo
+        </Typography>
+      </SwitchContainer>
     </FlatItem>
   )
 }
 
 export const ClientItemMemo = memo(ClientItem) as typeof ClientItem
+
+const SwitchContainer = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 4;
+  height: 100%;
+`
