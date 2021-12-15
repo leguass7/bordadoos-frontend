@@ -1,4 +1,4 @@
-import { Embroiderytype } from '.prisma/client'
+import { EmbroideryType } from '.prisma/client'
 
 import { usePagination } from '../Providers/PaginationProvider'
 
@@ -21,7 +21,7 @@ interface Props {
 }
 
 export const EmbroideryTypeList: React.FC<Props> = ({ toggleModal, modal }) => {
-  const { pagination, data, fetchMoreData, hasMore, refreshData } = usePagination<Embroiderytype>()
+  const { pagination, data, fetchMoreData, hasMore, refreshData } = usePagination<EmbroideryType>()
 
   const handleEdit = useCallback(
     (id = 0) => {

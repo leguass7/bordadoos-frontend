@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Switch } from '@mui/material'
-import { Embroiderytype, User } from '@prisma/client'
+import { EmbroideryType, User } from '@prisma/client'
 import { Form } from '@unform/web'
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
@@ -18,7 +18,7 @@ interface Props {
 
 export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuccess }) => {
   const [loading, setLoading] = useState(false)
-  const [data, setData] = useState<Partial<Embroiderytype>>({})
+  const [data, setData] = useState<Partial<EmbroideryType>>({})
 
   const isMounted = useIsMounted()
 
