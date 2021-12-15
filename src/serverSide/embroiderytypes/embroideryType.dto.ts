@@ -1,17 +1,16 @@
-import { Embroiderytype } from '@prisma/client'
-import { NextApiRequest } from 'next'
+import { EmbroideryType } from '@prisma/client'
 
 import { IResponseApi } from '../api.interface'
 import { AuthorizedApiRequest } from '../auth/auth-protect.middleware'
 import { PaginationQueryDto } from '../pagination/pagination.dto'
 
-export interface IEmbroiderytypeFilter {
+export interface IEmbroideryTypeFilter {
   search?: string
   actived?: boolean
 }
 
-export type IPaginateEmbroiderytypeDTO = PaginationQueryDto & IEmbroiderytypeFilter
-export interface IEmbTypeDTO extends Omit<Partial<Embroiderytype>, 'id'> {
+export type IPaginateEmbroideryTypeDTO = PaginationQueryDto & IEmbroideryTypeFilter
+export interface IEmbTypeDTO extends Omit<Partial<EmbroideryType>, 'id'> {
   label: string
   description: string
   createdBy: number
@@ -19,8 +18,8 @@ export interface IEmbTypeDTO extends Omit<Partial<Embroiderytype>, 'id'> {
 }
 
 // Requests
-export interface IRequestPaginateEmbroiderytypeDto extends Omit<AuthorizedApiRequest, 'query'> {
-  query: IPaginateEmbroiderytypeDTO
+export interface IRequestPaginateEmbroideryTypeDto extends Omit<AuthorizedApiRequest, 'query'> {
+  query: IPaginateEmbroideryTypeDTO
 }
 
 export interface IRequestCreateEmbtypeDto extends AuthorizedApiRequest {
@@ -28,7 +27,7 @@ export interface IRequestCreateEmbtypeDto extends AuthorizedApiRequest {
 }
 
 export interface IRequestEmbroideryType extends Omit<AuthorizedApiRequest, 'query'> {
-  query: { embTypeId?: number } & Omit<Partial<Embroiderytype>, 'id'>
+  query: { embTypeId?: number } & Omit<Partial<EmbroideryType>, 'id'>
 }
 
 export interface IRequestUpdateEmbTypeDto extends Omit<AuthorizedApiRequest, 'query'> {
@@ -37,10 +36,10 @@ export interface IRequestUpdateEmbTypeDto extends Omit<AuthorizedApiRequest, 'qu
 }
 
 // Responses
-export interface IResponsePaginateEmbroiderytypeDto extends IResponseApi {
-  data: Embroiderytype[]
+export interface IResponsePaginateEmbroideryTypeDto extends IResponseApi {
+  data: EmbroideryType[]
 }
 
 export interface IResponseEmbroideryDTO extends IResponseApi {
-  data: Embroiderytype
+  data: EmbroideryType
 }

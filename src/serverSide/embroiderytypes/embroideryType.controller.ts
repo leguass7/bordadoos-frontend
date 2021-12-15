@@ -1,4 +1,4 @@
-import { Embroiderytype } from '@prisma/client'
+import { EmbroideryType } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import ErrorApi from '../ErrorApi'
@@ -8,12 +8,12 @@ import type {
   IRequestEmbroideryType,
   IRequestUpdateEmbTypeDto,
   IResponseEmbroideryDTO,
-  IResponsePaginateEmbroiderytypeDto
+  IResponsePaginateEmbroideryTypeDto
 } from './embroideryType.dto'
 import type { IEmbroideryTypeService } from './embroideryType.service'
 
 function paginate(embroideryTypeService: IEmbroideryTypeService) {
-  return async (req: NextApiRequest, res: NextApiResponse<IResponsePaginateEmbroiderytypeDto>) => {
+  return async (req: NextApiRequest, res: NextApiResponse<IResponsePaginateEmbroideryTypeDto>) => {
     const { page, size, orderBy, order, ...filter } = req.query as PaginationQueryDto
     const paginateData = { page, size, orderBy, order }
 
