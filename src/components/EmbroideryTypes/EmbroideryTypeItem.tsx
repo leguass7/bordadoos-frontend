@@ -1,4 +1,4 @@
-import { Embroiderytype } from '.prisma/client'
+import { EmbroideryType } from '.prisma/client'
 
 import { Edit } from '@mui/icons-material'
 import { IconButton, Switch, Typography } from '@mui/material'
@@ -11,7 +11,7 @@ import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, Fla
 
 import styled from 'styled-components'
 
-interface Props extends Embroiderytype {
+interface Props extends EmbroideryType {
   showModal: boolean
   toggleModal: (id?: number) => void
 }
