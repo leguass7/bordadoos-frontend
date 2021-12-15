@@ -1,8 +1,7 @@
 import { Add } from '@mui/icons-material'
-import { IconButton, Toolbar } from '@mui/material'
+import { IconButton, Toolbar, Container } from '@mui/material'
 import { useState } from 'react'
 
-import { Container } from '~/components/Container'
 import { EmbroideryTypeList } from '~/components/EmbroideryTypes/EmbroideryTypeList'
 import { EmbroideryTypeSearch } from '~/components/EmbroideryTypes/EmbroideryTypesSearch'
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'

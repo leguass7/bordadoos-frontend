@@ -1,4 +1,5 @@
-import { Container } from '~/components/Container'
+import { Container } from '@mui/material'
+
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
 import { PageTitle } from '~/components/PageTitle'
 import { PaginationProvider } from '~/components/Providers/PaginationProvider'
