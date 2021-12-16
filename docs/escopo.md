@@ -62,11 +62,11 @@ Deve haver uma página que permita configurações de _tipo_ e _posicionamento_ 
 
 ### Tipo de bordado
 
-- [ ] Deve ser possível cadastrar o tipo de bordado com campos `id`, `label`, `description`, `actived` e `image`.
-  - [ ] _backend_ - CRUD embType
-  - [ ] Ativar ou Desativar **tipo de bordado** para não aparecer na inclusão do pedido.
+- [x] Deve ser possível cadastrar o tipo de bordado com campos `id`, `label`, `description`, `actived` e `image`.
+  - [x] _backend_ - CRUD embType
+  - [x] Ativar ou Desativar **tipo de bordado** para não aparecer na inclusão do pedido.
   - [x] listar tipos de bordados
-  - [ ] Alterar tipo de bordado
+  - [x] Alterar tipo de bordado
   - [x] Incluir tipo de bordado
   - [ ] Deve ser possível determinar uma imagem ilustrativa para o tipo de bordado
 
