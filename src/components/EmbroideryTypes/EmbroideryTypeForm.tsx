@@ -1,5 +1,5 @@
-import { Button, ButtonGroup, Switch } from '@mui/material'
-import { EmbroideryType, User } from '@prisma/client'
+import { Button, ButtonGroup } from '@mui/material'
+import { EmbroideryType } from '@prisma/client'
 import { Form } from '@unform/web'
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
@@ -40,7 +40,7 @@ export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuc
   }, [fetchData])
 
   const handleSubmit = useCallback(
-    async (values: Partial<User>) => {
+    async (values: Partial<EmbroideryType>) => {
       const url = embTypeId ? `/embroidery/types/${embTypeId}` : '/embroidery/types'
       const { data: response } = await api[embTypeId ? 'put' : 'post'](url, values)
       if (response && response.success) {

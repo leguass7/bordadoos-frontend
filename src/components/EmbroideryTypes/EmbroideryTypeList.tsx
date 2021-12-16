@@ -7,7 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { CircleLoading } from '../CircleLoading'
 import { Container } from '../Container'
-import { EmbroideryTypeItemTestMemo } from './EmbroideryTypeItem'
+import { EmbroideryTypeItemMemo } from './EmbroideryTypeItem'
 
 import { Modal } from '@mui/material'
 
@@ -54,12 +54,7 @@ export const EmbroideryTypeList: React.FC<Props> = ({ toggleModal, modal }) => {
         <div style={{ display: 'flex', flexFlow: 'row wrap', margin: '0 auto', width: '100%' }}>
           {data?.map?.(item => {
             return (
-              <EmbroideryTypeItemTestMemo
-                key={`${item.id}`}
-                {...item}
-                showModal={modal.show}
-                toggleModal={handleEdit}
-              />
+              <EmbroideryTypeItemMemo key={`${item.id}`} {...item} showModal={modal.show} toggleModal={handleEdit} />
             )
           })}
         </div>

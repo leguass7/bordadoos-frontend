@@ -69,7 +69,7 @@ export const EmbroideryTypeItem: React.FC<Props> = ({
   )
 }
 
-export const EmbroideryTypeItemTestMemo = memo(EmbroideryTypeItem)
+export const EmbroideryTypeItemMemo = memo(EmbroideryTypeItem)
 
 const SwitchContainer = styled.div`
   display: flex;
