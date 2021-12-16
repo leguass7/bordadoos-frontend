@@ -72,13 +72,13 @@ Deve haver uma página que permita configurações de _tipo_ e _posicionamento_ 
 
 ### Posicionamento do bordado
 
-- [ ] Deve ser possível cadastrar a **posição do bordado** com campos `id`, `embTypeId`, `label`, `description`, `actived` e `params`.
+- [x] Deve ser possível cadastrar a **posição do bordado** com campos `id`, `embTypeId`, `label`, `description`, `actived` e `params`.
       Para cadastrar um posicionamento é necessário informar o **tipo de bordado**, **rótulo**, não sendo obrigatório **descrição** ou **parâmetros de posição**
-  - [ ] _backend_ - CRUD embPosition
-  - [ ] Ativar ou Desativar **posição de bordado** para não aparecer na inclusão do pedido.
+  - [x] _backend_ - CRUD embPosition
+  - [x] Ativar ou Desativar **posição de bordado** para não aparecer na inclusão do pedido.
   - [x] listar posições do bordado
-  - [ ] Alterar informações de posição de bordado
-  - [ ] Incluir informações de posição de bordado
+  - [x] Alterar informações de posição de bordado
+  - [x] Incluir informações de posição de bordado
 
 ---
 
@@ -142,7 +142,8 @@ Deve ser aplicado ao projeto a estrutura de _Integração Contínua/Entrega Cont
 | incluir formulário de tipos de bordados   |   ~2h    |    1h40m    |
 | edição do formulário de tipos de bordados |   ~2h    |    1h20m    |
 | listagem das posições de bordados         |   ~2h    |     40m     |
+| incluir/editar posições dos bordados      |   ~2h    |    1h40m    |
 | -                                         |    -     |      -      |
-| **Total**                                 | **~21h** | **~19h26m** |
+| **Total**                                 | **~21h** | **~21h06m** |
 
 ---
