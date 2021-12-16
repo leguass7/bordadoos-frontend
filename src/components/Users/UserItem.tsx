@@ -7,7 +7,7 @@ import { memo, useCallback, useState } from 'react'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { api } from '~/services/api'
 
-import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, FlatText } from '../FlatItem'
+import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, FlatText } from '../ListItems/FlatItem'
 import { ModalForm } from '../ModalForm'
 import { usePagination } from '../Providers/PaginationProvider'
 import { UserForm } from './UserForm'
