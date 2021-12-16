@@ -12,7 +12,6 @@ export interface IEmbroideryTypeFilter {
 export type IPaginateEmbroideryTypeDTO = PaginationQueryDto & IEmbroideryTypeFilter
 export interface IEmbTypeDTO extends Omit<Partial<EmbroideryType>, 'id'> {
   label: string
-  description: string
   createdBy: number
   updatedBy: number
 }
