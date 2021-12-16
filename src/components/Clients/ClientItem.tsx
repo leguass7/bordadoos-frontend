@@ -7,7 +7,7 @@ import { memo, useCallback, useState } from 'react'
 
 import { api } from '~/services/api'
 
-import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, FlatText } from '../FlatItem'
+import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, FlatText } from '../ListItems/FlatItem'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
 

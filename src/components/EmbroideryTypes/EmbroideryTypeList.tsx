@@ -7,8 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { CircleLoading } from '../CircleLoading'
 import { Container } from '../Container'
-import { Paragraph } from '../shared/web/src/styled'
-import { EmbroideryTypeItem } from './EmbroideryTypeItem'
+import { EmbroideryTypeItemTestMemo } from './EmbroideryTypeItem'
 
 import { Modal } from '@mui/material'
 
@@ -31,13 +30,13 @@ export const EmbroideryTypeList: React.FC<Props> = ({ toggleModal, modal }) => {
     [toggleModal, refreshData]
   )
 
-  const renderMessage = useCallback((text: string) => {
-    return (
-      <Paragraph align="center" themeColor="textDark">
-        {text}
-      </Paragraph>
-    )
-  }, [])
+  // const renderMessage = useCallback((text: string) => {
+  //   return (
+  //     <Paragraph align="center" themeColor="textDark">
+  //       {text}
+  //     </Paragraph>
+  //   )
+  // }, [])
 
   return (
     <div>
@@ -51,11 +50,19 @@ export const EmbroideryTypeList: React.FC<Props> = ({ toggleModal, modal }) => {
             {pagination.page > 1 ? <CircleLoading size={20} relative backgroundColor="#0000" /> : null}
           </Container>
         }
-        endMessage={renderMessage('FIM')}
       >
-        {data?.map?.(item => {
-          return <EmbroideryTypeItem key={`${item.id}`} {...item} showModal={modal.show} toggleModal={handleEdit} />
-        })}
+        <div style={{ display: 'flex', flexFlow: 'row wrap', margin: '0 auto', width: '100%' }}>
+          {data?.map?.(item => {
+            return (
+              <EmbroideryTypeItemTestMemo
+                key={`${item.id}`}
+                {...item}
+                showModal={modal.show}
+                toggleModal={handleEdit}
+              />
+            )
+          })}
+        </div>
       </InfiniteScroll>
       <Modal open={modal.show} onClose={toggleModal}>
         <div>

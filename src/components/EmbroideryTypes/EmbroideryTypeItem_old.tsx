@@ -1,36 +1,25 @@
-import { User } from '.prisma/client'
+import { EmbroideryType } from '.prisma/client'
 
 import { Edit } from '@mui/icons-material'
-import { IconButton, Modal, Switch, Typography } from '@mui/material'
+import { IconButton, Switch, Typography } from '@mui/material'
 import { memo, useCallback, useState } from 'react'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { api } from '~/services/api'
 
 import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, FlatText } from '../ListItems/FlatItem'
-import { ModalForm } from '../ModalForm'
-import { usePagination } from '../Providers/PaginationProvider'
-import { UserForm } from './UserForm'
 
 import styled from 'styled-components'
 
-interface Props extends User {}
+interface Props extends EmbroideryType {
+  showModal: boolean
+  toggleModal: (id?: number) => void
+}
 
-export const ClientItem: React.FC<Props> = ({ id, name, email, cellPhone, actived }) => {
-  const [openModal, setOpenModal] = useState(false)
+export const EmbroideryTypeItem: React.FC<Props> = ({ id, label, description, actived, showModal, toggleModal }) => {
   const [loading, setLoading] = useState(false)
   const [itemActived, setItemActived] = useState(actived)
-  const { refreshData } = usePagination()
-
   const isMounted = useIsMounted()
-
-  const handleClose = useCallback(() => setOpenModal(false), [])
-  const handleEditOpen = () => setOpenModal(true)
-
-  const handleSuccess = useCallback(() => {
-    handleClose()
-    refreshData()
-  }, [handleClose, refreshData])
 
   const toggleActived = useCallback(
     async e => {
@@ -39,12 +28,12 @@ export const ClientItem: React.FC<Props> = ({ id, name, email, cellPhone, active
 
       setLoading(true)
 
-      await api.put(`/users/${id}`, { actived: newActived })
+      await api.put(`/embroidery/types/${id}`, { actived: newActived })
       if (isMounted.current) {
         setLoading(false)
       }
     },
-    [id, isMounted]
+    [isMounted, id]
   )
 
   return (
@@ -52,16 +41,13 @@ export const ClientItem: React.FC<Props> = ({ id, name, email, cellPhone, active
       <FlatItem>
         <FlatDescriptionContainer style={{ padding: 10 }} grow={1}>
           <FlatDescriptionLine>
-            <FlatTitle>{name}</FlatTitle>
+            <FlatTitle>{label}</FlatTitle>
           </FlatDescriptionLine>
           <FlatDescriptionLine>
-            <FlatText>{email}</FlatText>
-          </FlatDescriptionLine>
-          <FlatDescriptionLine>
-            <FlatText>{cellPhone}</FlatText>
+            <FlatText>{description}</FlatText>
           </FlatDescriptionLine>
         </FlatDescriptionContainer>
-        <IconButton color="primary" onClick={handleEditOpen} disabled={!!openModal}>
+        <IconButton color="primary" onClick={() => toggleModal(id)} disabled={!!showModal}>
           <Edit />
         </IconButton>
         <SwitchContainer>
@@ -71,18 +57,11 @@ export const ClientItem: React.FC<Props> = ({ id, name, email, cellPhone, active
           </Typography>
         </SwitchContainer>
       </FlatItem>
-      <Modal open={!!openModal} onClose={handleClose}>
-        <div>
-          <ModalForm title={'Editar usuário'}>
-            <UserForm userId={id} onSuccess={handleSuccess} onCancel={handleClose} />
-          </ModalForm>
-        </div>
-      </Modal>
     </>
   )
 }
 
-export const UserItemMemo = memo(ClientItem) as typeof ClientItem
+export const EmbroideryTypeItemMemo = memo(EmbroideryTypeItem) as typeof EmbroideryTypeItem
 
 const SwitchContainer = styled.div`
   display: flex;
