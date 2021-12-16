@@ -10,8 +10,10 @@ const mockItems: ItemMenuProps[] = [
   { path: '/admin/purchases', label: 'Pedidos', description: 'Lista de pedidos cadastrados' },
   { path: '/admin/users', label: 'Usuários', description: 'Lista de usuários cadastrados' },
   { path: '/admin/clients', label: 'Clientes', description: 'Lista de clientes cadastrados' },
-  { path: '/admin/services', label: 'Tipos de bordados', description: 'Tipos de bordados cadastrados' }
+  { path: '/admin/services', label: 'Tipos de bordados', description: 'Tipos de bordados cadastrados' },
+  { path: '/admin/position', label: 'Posições dos bordados', description: 'Posições dos bordados cadastrados' }
 ]
+
 interface Props {
   anchor?: DrawerProps['anchor']
 }
