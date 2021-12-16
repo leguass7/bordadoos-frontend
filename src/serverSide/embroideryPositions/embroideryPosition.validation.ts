@@ -11,11 +11,10 @@ async function createValidation(req: IRequestCreateEmbPos, res: NextApiResponse,
   let result = {}
 
   if (!label) throw ErrorApi({ status: 400, message: 'embroidery type must have a label' })
-  if (!description) throw ErrorApi({ status: 400, message: 'embroidery type must have a description' })
   if (!embType) throw ErrorApi({ status: 401, message: 'embroidery position must have an embroidery type' })
   if (!userId) throw ErrorApi({ status: 401, message: 'User not logged' })
 
-  result = { label, description, actived, image, embType }
+  result = { label, actived, image, embType, description }
   req.body = result as IEmbPosDTO
 
   next()

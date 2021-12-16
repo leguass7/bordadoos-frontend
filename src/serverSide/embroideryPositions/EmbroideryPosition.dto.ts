@@ -12,7 +12,6 @@ export interface IEmbPosFilter {
 export type IPaginateEmbPosDTO = PaginationQueryDto & IEmbPosFilter
 export interface IEmbPosDTO extends Omit<Partial<EmbroideryPosition>, 'id'> {
   label: string
-  description: string
   createdBy: number
   updatedBy: number
   embType: number
