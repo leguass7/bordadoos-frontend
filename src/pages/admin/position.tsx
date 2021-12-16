@@ -1,19 +1,42 @@
-import { Container } from '@mui/material'
+import { Add } from '@mui/icons-material'
+import { Container, IconButton, Toolbar } from '@mui/material'
 import type { NextPage } from 'next'
+import { useState } from 'react'
 
+import { EmbroideryPositionList } from '~/components/EmbroideryPositions/EmbroideryPositionList'
+import { EmbroideryPositionSearch } from '~/components/EmbroideryPositions/EmbroideryPositionSearch'
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
 import { PageTitle } from '~/components/PageTitle'
+import { PaginationProvider } from '~/components/Providers/PaginationProvider'
 
 const PageAdminPosition: NextPage = () => {
+  const [modal, setModal] = useState({ show: false, id: 0 })
+
+  const handleToggleModal = (id = 0) => setModal(old => ({ id, show: !old.show }))
+
   return (
     <LayoutAdmin>
-      <Container>
-        <PageTitle
-          spotlight="Posições"
-          title="dos bordados"
-          description={'Posições onde ficarão os tipos de bordados'}
-        />
-      </Container>
+      <PaginationProvider url="/embroidery/positions">
+        <Container>
+          <PageTitle
+            spotlight="Posições"
+            title="dos bordados"
+            description={'Posições onde ficarão os tipos de bordados'}
+          >
+            <Toolbar>
+              <IconButton onClick={() => handleToggleModal()}>
+                <Add />
+              </IconButton>
+            </Toolbar>
+          </PageTitle>
+        </Container>
+        <Container>
+          <EmbroideryPositionSearch />
+        </Container>
+        <Container>
+          <EmbroideryPositionList modal={modal} toggleModal={handleToggleModal} />
+        </Container>
+      </PaginationProvider>
     </LayoutAdmin>
   )
 }

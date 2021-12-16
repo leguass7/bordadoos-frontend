@@ -1,20 +1,20 @@
 import Edit from '@mui/icons-material/Edit'
 import { CardActions, CardContent, IconButton, Switch, Typography } from '@mui/material'
-import { EmbroideryType } from '@prisma/client'
+import { EmbroideryPosition } from '@prisma/client'
 import { memo, useCallback, useState } from 'react'
-import styled, { css, keyframes } from 'styled-components'
+import styled from 'styled-components'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { api } from '~/services/api'
 
 import { CardItem } from '../ListItems/CardItem'
 
-interface Props extends EmbroideryType {
+interface Props extends EmbroideryPosition {
   showModal: boolean
   toggleModal: (id?: number) => void
 }
 
-export const EmbroideryTypeItem: React.FC<Props> = ({
+export const EmbroideryPositionItem: React.FC<Props> = ({
   id,
   label,
   description,
@@ -34,17 +34,17 @@ export const EmbroideryTypeItem: React.FC<Props> = ({
 
       setLoading(true)
 
-      await api.put(`/embroidery/types/${id}`, { actived: newActived })
+      // await api.put(`/embroidery/positions/${id}`, { actived: newActived })
       if (isMounted.current) {
         setLoading(false)
       }
     },
-    [isMounted, id]
+    [isMounted]
   )
 
   return (
     <>
-      <CardItem sx={{ width: 200 }}>
+      <CardItem spacing={4} sx={{ width: 200 }}>
         {/* <CardMedia image={image || '/logo64.png'} component="img" alt={label} height={200}  /> */}
         <ImageContainer src={image || '/logo250.png'} alt={label} />
         <CardContentTest hasContent={!!description}>
@@ -69,7 +69,7 @@ export const EmbroideryTypeItem: React.FC<Props> = ({
   )
 }
 
-export const EmbroideryTypeItemMemo = memo(EmbroideryTypeItem)
+export const EmbroideryPositionItemMemo = memo(EmbroideryPositionItem)
 
 const SwitchContainer = styled.div`
   display: flex;
@@ -84,7 +84,7 @@ const SwitchContainer = styled.div`
 const ImageContainer = styled.img`
   width: 100%;
   object-fit: contain;
-  height: 200px;
+  max-height: 200px;
   display: block;
   position: relative;
   margin: 0 auto;

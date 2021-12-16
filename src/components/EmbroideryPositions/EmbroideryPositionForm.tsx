@@ -1,5 +1,5 @@
 import { Button, ButtonGroup } from '@mui/material'
-import { EmbroideryType } from '@prisma/client'
+import { EmbroideryPosition } from '@prisma/client'
 import { Form } from '@unform/web'
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
@@ -11,21 +11,22 @@ import { CircleLoading } from '../CircleLoading'
 import { Input } from '../Form/Input'
 
 interface Props {
-  embTypeId?: number
+  embPosId?: number
   onCancel?: () => void
   onSuccess?: () => void
 }
 
-export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuccess }) => {
+export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, onSuccess }) => {
   const [loading, setLoading] = useState(false)
-  const [data, setData] = useState<Partial<EmbroideryType>>({})
+  const [data, setData] = useState<Partial<EmbroideryPosition>>({})
 
   const isMounted = useIsMounted()
 
   const fetchData = useCallback(async () => {
-    if (embTypeId && embTypeId !== data.id) {
+    if (embPosId && embPosId !== data.id) {
       setLoading(true)
-      const { data: response } = await api.get(`/embroidery/types/${embTypeId}`)
+      // const { data: response } = await api.get(`/embroidery/positions/${embPosId}`)
+      const response = { success: false, data: {} }
       if (isMounted.current) {
         setLoading(false)
         if (response && response.success) {
@@ -33,22 +34,23 @@ export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuc
         }
       }
     }
-  }, [isMounted, embTypeId, data.id])
+  }, [isMounted, embPosId, data.id])
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
   const handleSubmit = useCallback(
-    async (values: Partial<EmbroideryType>) => {
-      const url = embTypeId ? `/embroidery/types/${embTypeId}` : '/embroidery/types'
-      const { data: response } = await api[embTypeId ? 'put' : 'post'](url, values)
+    async (values: Partial<EmbroideryPosition>) => {
+      const url = embPosId ? `/embroidery/positions/${embPosId}` : '/embroidery/positions'
+      // const { data: response } = await api[embPosId ? 'put' : 'post'](url, values)
+      const response = { success: true }
       if (response && response.success) {
         setData({})
         if (onSuccess) onSuccess()
       }
     },
-    [embTypeId, onSuccess]
+    [embPosId, onSuccess]
   )
 
   return (
@@ -56,10 +58,10 @@ export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuc
       <Form onSubmit={handleSubmit} initialData={data} key={data.id}>
         <FormContainer>
           <FieldContainer>
-            <Input name="label" label="Tipo de bordado: " autoComplete="off" />
+            <Input name="label" label="Posição do bordado: " autoComplete="off" />
           </FieldContainer>
           <FieldContainer>
-            <Input name="description" label="Descrição do tipo de bordado: " autoComplete="off" />
+            <Input name="description" label="Descrição da posição do bordado: " autoComplete="off" />
           </FieldContainer>
           <FieldContainer>
             <ButtonGroup>

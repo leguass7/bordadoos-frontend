@@ -1,4 +1,4 @@
-import { EmbroideryType } from '.prisma/client'
+import { EmbroideryPosition } from '.prisma/client'
 
 import { usePagination } from '../Providers/PaginationProvider'
 
@@ -7,20 +7,20 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { CircleLoading } from '../CircleLoading'
 import { Container } from '../Container'
-import { EmbroideryTypeItemMemo } from './EmbroideryTypeItem'
+import { EmbroideryPositionItemMemo } from './EmbroideryPositionItem'
 
 import { Modal } from '@mui/material'
 
 import { ModalForm } from '../ModalForm'
-import { EmbroideryTypeForm } from './EmbroideryTypeForm'
+import { EmbroideryPositionForm } from './EmbroideryPositionForm'
 
 interface Props {
   toggleModal: (id?: number) => void
   modal: { show: boolean; id: number }
 }
 
-export const EmbroideryTypeList: React.FC<Props> = ({ toggleModal, modal }) => {
-  const { pagination, data, fetchMoreData, hasMore, refreshData } = usePagination<EmbroideryType>()
+export const EmbroideryPositionList: React.FC<Props> = ({ toggleModal, modal }) => {
+  const { pagination, data, fetchMoreData, hasMore, refreshData } = usePagination<EmbroideryPosition>()
 
   const handleEdit = useCallback(
     (id = 0) => {
@@ -54,7 +54,12 @@ export const EmbroideryTypeList: React.FC<Props> = ({ toggleModal, modal }) => {
         <div style={{ display: 'flex', flexFlow: 'row wrap', margin: '0 auto', width: '100%' }}>
           {data?.map?.(item => {
             return (
-              <EmbroideryTypeItemMemo key={`${item.id}`} {...item} showModal={modal.show} toggleModal={handleEdit} />
+              <EmbroideryPositionItemMemo
+                key={`${item.id}`}
+                {...item}
+                showModal={modal.show}
+                toggleModal={handleEdit}
+              />
             )
           })}
         </div>
@@ -62,7 +67,7 @@ export const EmbroideryTypeList: React.FC<Props> = ({ toggleModal, modal }) => {
       <Modal open={modal.show} onClose={toggleModal}>
         <div>
           <ModalForm title={`${modal.id ? 'Editar' : 'Adicionar'} tipo de bordado`}>
-            <EmbroideryTypeForm embTypeId={modal.id} onCancel={toggleModal} onSuccess={handleEdit} />
+            <EmbroideryPositionForm embPosId={modal.id} onCancel={toggleModal} onSuccess={handleEdit} />
           </ModalForm>
         </div>
       </Modal>

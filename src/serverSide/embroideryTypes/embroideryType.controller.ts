@@ -1,4 +1,3 @@
-import { EmbroideryType } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import ErrorApi from '../ErrorApi'
@@ -45,10 +44,6 @@ function create(embroideryTypeService: IEmbroideryTypeService) {
 function update(embroideryTypeService: IEmbroideryTypeService) {
   return async (req: IRequestUpdateEmbTypeDto, res: NextApiResponse) => {
     const { query, body, auth } = req
-
-    console.log('query', req.query)
-    console.log('body', req.body)
-    console.log('auth', req.auth)
 
     const hasEmb = await embroideryTypeService.findOne({ id: query.embTypeId })
     if (!hasEmb) throw ErrorApi({ status: 400, message: "embroidery type doesn't exists" })
