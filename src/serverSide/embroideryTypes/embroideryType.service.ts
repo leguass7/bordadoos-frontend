@@ -30,17 +30,6 @@ async function findOne(embTypeData: Partial<EmbroideryType>) {
   return embType
 }
 
-async function searchOne(embTypeData: Partial<EmbroideryType>) {
-  const search = Object.entries(embTypeData).map<Partial<EmbroideryType>>(([key, value]) => {
-    const obj = {}
-    obj[key] = value
-    return obj
-  })
-
-  const embType = await prisma.embroideryType.findFirst({ where: { OR: search } })
-  return embType
-}
-
 async function create(embTypeData: IEmbTypeDTO) {
   const embType = await prisma.embroideryType.create({ data: embTypeData })
   return embType
@@ -54,7 +43,6 @@ async function update(embTypeId: number, data: Partial<EmbroideryType>): Promise
 export const EmbroideryTypeService = {
   paginate,
   findOne,
-  searchOne,
   create,
   update
 }

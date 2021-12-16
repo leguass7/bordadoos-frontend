@@ -31,9 +31,9 @@ function findOne(embroideryTypeService: IEmbroideryTypeService) {
 function create(embroideryTypeService: IEmbroideryTypeService) {
   return async (req: IRequestCreateEmbtypeDto, res: NextApiResponse<IResponseEmbroideryDTO>) => {
     const { userId } = req.auth
-    const { description, label } = req.body
+    const { label } = req.body
 
-    const hasEmb = await embroideryTypeService.searchOne({ description, label })
+    const hasEmb = await embroideryTypeService.findOne({ label })
     if (hasEmb) throw ErrorApi({ status: 400, message: 'embroidery type already exists' })
 
     const data = await embroideryTypeService.create({ ...req.body, createdBy: userId, updatedBy: userId })
