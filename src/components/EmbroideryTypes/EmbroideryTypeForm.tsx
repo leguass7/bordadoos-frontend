@@ -56,7 +56,7 @@ export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuc
       <Form onSubmit={handleSubmit} initialData={data} key={data.id}>
         <FormContainer>
           <FieldContainer>
-            <Input name="label" label="Tipo de bordado: " autoComplete="off" />
+            <Input name="label" label="Tipo de bordado: " required autoComplete="off" />
           </FieldContainer>
           <FieldContainer>
             <Input name="description" label="Descrição do tipo de bordado: " autoComplete="off" />
