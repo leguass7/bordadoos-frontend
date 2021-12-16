@@ -72,13 +72,13 @@ export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, on
       <Form onSubmit={handleSubmit} initialData={data} key={data.id}>
         <FormContainer>
           <FieldContainer>
-            <Input name="label" label="Posição do bordado: " autoComplete="off" />
+            <Input name="label" label="Posição do bordado: " required autoComplete="off" />
           </FieldContainer>
           <FieldContainer>
             <Input name="description" label="Descrição da posição do bordado: " autoComplete="off" />
           </FieldContainer>
           <FieldContainer>
-            <Select name="embType" label="Tipo de bordado" items={embTypeItems} />
+            <Select name="embType" label="Tipo de bordado" items={embTypeItems} required />
           </FieldContainer>
           <FieldContainer>
             <ButtonGroup>
