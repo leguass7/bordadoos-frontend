@@ -1,13 +1,20 @@
 import { User } from '.prisma/client'
 
 import { Edit } from '@mui/icons-material'
-import { IconButton, Modal, Switch, Typography } from '@mui/material'
+import { Avatar, IconButton, Modal, Switch, Typography } from '@mui/material'
 import { memo, useCallback, useState } from 'react'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { api } from '~/services/api'
 
-import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, FlatText } from '../ListItems/FlatItem'
+import {
+  FlatItem,
+  FlatDescriptionContainer,
+  FlatDescriptionLine,
+  FlatTitle,
+  FlatText,
+  FlatIconContainer
+} from '../ListItems/FlatItem'
 import { ModalForm } from '../ModalForm'
 import { usePagination } from '../Providers/PaginationProvider'
 import { UserForm } from './UserForm'
@@ -16,7 +23,7 @@ import styled from 'styled-components'
 
 interface Props extends User {}
 
-export const ClientItem: React.FC<Props> = ({ id, name, email, cellPhone, actived }) => {
+export const ClientItem: React.FC<Props> = ({ id, name, email, cellPhone, actived, image }) => {
   const [openModal, setOpenModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [itemActived, setItemActived] = useState(actived)
@@ -50,6 +57,9 @@ export const ClientItem: React.FC<Props> = ({ id, name, email, cellPhone, active
   return (
     <>
       <FlatItem>
+        <FlatIconContainer>
+          <Avatar alt={name} src={image} />
+        </FlatIconContainer>
         <FlatDescriptionContainer style={{ padding: 10 }} grow={1}>
           <FlatDescriptionLine>
             <FlatTitle>{name}</FlatTitle>
