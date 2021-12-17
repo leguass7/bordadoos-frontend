@@ -66,7 +66,7 @@ export const EmbroideryPositionList: React.FC<Props> = ({ toggleModal, modal }) 
       </InfiniteScroll>
       <Modal open={modal.show} onClose={toggleModal}>
         <div>
-          <ModalForm title={`${modal.id ? 'Editar' : 'Adicionar'} tipo de bordado`}>
+          <ModalForm title={`${modal.id ? 'Editar' : 'Adicionar'} posição do bordado`}>
             <EmbroideryPositionForm embPosId={modal.id} onCancel={toggleModal} onSuccess={handleEdit} />
           </ModalForm>
         </div>
