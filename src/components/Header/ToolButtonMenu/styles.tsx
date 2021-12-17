@@ -9,3 +9,16 @@ export const ButtonContainer = styled.div`
   color: inherit;
   overflow-x: hidden;
 `
+
+export const UserContainer = styled.button`
+  display: flex;
+  flex-flow: row nowrap;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  background: none;
+`
