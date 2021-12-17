@@ -105,7 +105,7 @@ Deve haver uma página que permita configurações de _tipo_ e _posicionamento_ 
 - [x] A primeira tela é de login no sistema. Não há possibilidade de navegar ou ver informações sem estar logado.
 - [x] Depois do login, tela que aparece é a de inclusão de **pedidos**.
 - [x] Deve haver um **menu de navegação** para as funcionalidades citadas acima
-- [ ] No menu de navegação deve ficar visível o **nome do usuário** logado com possibilidade de **logout**
+- [x] No menu de navegação deve ficar visível o **nome do usuário** logado com possibilidade de **logout**
 
 Informações
 
