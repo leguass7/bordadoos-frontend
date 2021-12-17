@@ -1,5 +1,7 @@
 import { User, Prisma as PrismaTypes } from '.prisma/client'
 
+import { removeInvalidValues } from '~/helpers/object'
+
 import prisma from '../database/prisma'
 import { PaginationDto, PaginationQueryDto } from '../pagination/pagination.dto'
 import { PrismaService } from '../pagination/pagination.service'
@@ -15,8 +17,9 @@ async function update(userId: number, data: Partial<User>): Promise<number> {
   return user && user.id
 }
 
-async function findOne(userId: number): Promise<User> {
-  const user = await prisma.user.findUnique({ where: { id: userId } })
+async function findOne(userData: Partial<User>): Promise<User> {
+  const where: PrismaTypes.UserWhereInput = removeInvalidValues({ ...userData })
+  const user = await prisma.user.findFirst({ where })
   return user
 }
 
