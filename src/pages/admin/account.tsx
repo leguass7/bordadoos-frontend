@@ -19,7 +19,7 @@ const PageAdminAccount: NextPage = () => {
           description={'Use o formulário abaixo para modificar suas informações.'}
         />
         <FormContainer>
-          <UserForm initialData={session.user} />
+          <UserForm initialData={session?.user ?? {}} />
         </FormContainer>
       </Container>
     </LayoutAdmin>
