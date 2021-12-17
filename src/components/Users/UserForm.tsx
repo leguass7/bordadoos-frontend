@@ -14,11 +14,12 @@ interface Props {
   userId?: number
   onCancel?: () => void
   onSuccess?: () => void
+  initialData?: Partial<User>
 }
 
-export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess }) => {
+export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initialData = {} }) => {
   const [loading, setLoading] = useState(false)
-  const [data, setData] = useState<Partial<User>>({})
+  const [data, setData] = useState<Partial<User>>(initialData || {})
 
   const isMounted = useIsMounted()
 
@@ -52,19 +53,24 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess }) => {
 
   return (
     <>
-      <Form onSubmit={handleSubmit} initialData={data} key={data.id}>
+      <Form onSubmit={handleSubmit} initialData={data} key={data?.id}>
         <FormContainer>
           <FieldContainer>
             <Input name="name" label="Nome do usuário: " autoComplete="off" />
+          </FieldContainer>
+          <FieldContainer>
+            <Input name="email" type="email" label="e-mail do usuário: " autoComplete="off" />
           </FieldContainer>
           <FieldContainer>
             <Input name="cellPhone" label="Telefone do usuário: " autoComplete="off" />
           </FieldContainer>
           <FieldContainer>
             <ButtonGroup>
-              <Button type="button" onClick={onCancel} color="primary" variant="outlined">
-                Cancelar
-              </Button>
+              {onCancel ? (
+                <Button type="button" onClick={onCancel} color="primary" variant="outlined">
+                  Cancelar
+                </Button>
+              ) : null}
               <Button type="submit" color="primary" variant="contained">
                 Enviar
               </Button>
