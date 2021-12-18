@@ -61,7 +61,7 @@ export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuc
           <FieldContainer>
             <Input name="description" label="Descrição do tipo de bordado: " autoComplete="off" />
           </FieldContainer>
-          <FieldContainer>
+          <ButtonContainer>
             <ButtonGroup>
               <Button type="button" onClick={onCancel} color="primary" variant="outlined">
                 Cancelar
@@ -70,7 +70,7 @@ export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuc
                 Enviar
               </Button>
             </ButtonGroup>
-          </FieldContainer>
+          </ButtonContainer>
         </FormContainer>
       </Form>
       {loading ? <CircleLoading light /> : null}
@@ -83,6 +83,13 @@ const FieldContainer = styled.div`
   width: 100%;
   max-width: 100%;
   padding: ${({ theme }) => theme.spacing.l}px 0px;
+`
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
 `
 
 const FormContainer = styled.div`
