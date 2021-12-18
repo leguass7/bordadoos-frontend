@@ -80,7 +80,7 @@ export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, on
           <FieldContainer>
             <Select name="embType" label="Tipo de bordado" items={embTypeItems} required />
           </FieldContainer>
-          <FieldContainer>
+          <ButtonContainer>
             <ButtonGroup>
               <Button type="button" onClick={onCancel} color="primary" variant="outlined">
                 Cancelar
@@ -89,7 +89,7 @@ export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, on
                 Enviar
               </Button>
             </ButtonGroup>
-          </FieldContainer>
+          </ButtonContainer>
         </FormContainer>
       </Form>
       {loading ? <CircleLoading light /> : null}
@@ -102,6 +102,13 @@ const FieldContainer = styled.div`
   width: 100%;
   max-width: 100%;
   padding: ${({ theme }) => theme.spacing.l}px 0px;
+`
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
 `
 
 const FormContainer = styled.div`

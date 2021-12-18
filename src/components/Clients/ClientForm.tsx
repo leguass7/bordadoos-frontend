@@ -63,7 +63,7 @@ export const ClientForm: React.FC<Props> = ({ onCancel, onSuccess, clientId }) =
           <FieldContainer>
             <Input fullWidth autoComplete="off" name="doc" placeholder="cpf/cnpj" />
           </FieldContainer>
-          <FieldContainer>
+          <ButtonContainer>
             <ButtonGroup>
               <Button type="button" onClick={onCancel} color="primary" variant="outlined" disabled={loading}>
                 Cancelar
@@ -72,7 +72,7 @@ export const ClientForm: React.FC<Props> = ({ onCancel, onSuccess, clientId }) =
                 Enviar
               </Button>
             </ButtonGroup>
-          </FieldContainer>
+          </ButtonContainer>
         </FormContainer>
       </Form>
       {loading ? <CircleLoading light /> : null}
@@ -85,6 +85,13 @@ const FieldContainer = styled.div`
   width: 100%;
   max-width: 100%;
   padding: ${({ theme }) => theme.spacing.l}px 0px;
+`
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
 `
 
 const FormContainer = styled.div`

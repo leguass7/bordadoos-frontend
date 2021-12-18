@@ -36,5 +36,5 @@ export interface IRequestUpdateUserDto extends AuthorizedApiRequest {
 }
 
 export interface IRequestUserDto extends Omit<AuthorizedApiRequest, 'query'> {
-  query: { userId: number }
+  query: Partial<User> & { userId: number }
 }

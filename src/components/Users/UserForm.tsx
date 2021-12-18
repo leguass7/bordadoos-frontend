@@ -14,11 +14,13 @@ interface Props {
   userId?: number
   onCancel?: () => void
   onSuccess?: () => void
+  disable?: boolean
+  initialData?: Partial<User>
 }
 
-export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess }) => {
+export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initialData = {}, disable = false }) => {
   const [loading, setLoading] = useState(false)
-  const [data, setData] = useState<Partial<User>>({})
+  const [data, setData] = useState<Partial<User>>(initialData || {})
 
   const isMounted = useIsMounted()
 
@@ -52,24 +54,37 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess }) => {
 
   return (
     <>
-      <Form onSubmit={handleSubmit} initialData={data} key={data.id}>
+      <Form onSubmit={handleSubmit} initialData={data} key={data?.id}>
         <FormContainer>
           <FieldContainer>
-            <Input name="name" label="Nome do usuário: " autoComplete="off" />
+            <Input name="name" label="Nome do usuário: " autoComplete="off" disabled={disable} />
           </FieldContainer>
           <FieldContainer>
-            <Input name="cellPhone" label="Telefone do usuário: " autoComplete="off" />
+            <Input name="email" type="email" label="e-mail do usuário: " autoComplete="off" disabled={disable} />
           </FieldContainer>
           <FieldContainer>
-            <ButtonGroup>
-              <Button type="button" onClick={onCancel} color="primary" variant="outlined">
-                Cancelar
-              </Button>
-              <Button type="submit" color="primary" variant="contained">
-                Enviar
-              </Button>
-            </ButtonGroup>
+            <Input
+              name="cellPhone"
+              label="Telefone do usuário: "
+              placeholder="(99) 9 9999-999"
+              autoComplete="off"
+              disabled={disable}
+            />
           </FieldContainer>
+          {disable ? null : (
+            <ButtonContainer>
+              <ButtonGroup>
+                {onCancel ? (
+                  <Button type="button" onClick={onCancel} color="primary" variant="outlined">
+                    Cancelar
+                  </Button>
+                ) : null}
+                <Button type="submit" color="primary" variant="contained">
+                  Enviar
+                </Button>
+              </ButtonGroup>
+            </ButtonContainer>
+          )}
         </FormContainer>
       </Form>
       {loading ? <CircleLoading light /> : null}
@@ -82,6 +97,13 @@ const FieldContainer = styled.div`
   width: 100%;
   max-width: 100%;
   padding: ${({ theme }) => theme.spacing.l}px 0px;
+`
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
 `
 
 const FormContainer = styled.div`

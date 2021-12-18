@@ -33,8 +33,8 @@ function update(userService: IUserService) {
 
 function findOne(userService: IUserService) {
   return async (req: IRequestUserDto, res: NextApiResponse<IResponseUserDto>) => {
-    const { userId } = req.query
-    const user = await userService.findOne(userId)
+    const { userId, ...query } = req.query
+    const user = await userService.findOne({ id: userId, ...query })
     return res.status(200).json({ success: true, user })
   }
 }
