@@ -1,31 +1,53 @@
-import { Container } from '@mui/material'
+import { Box, Button, ButtonGroup, Container, Typography } from '@mui/material'
+import { User } from '@prisma/client'
 import type { NextPage } from 'next'
 import { useSession } from 'next-auth/client'
-import styled from 'styled-components'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
-import { PageTitle } from '~/components/PageTitle'
 import { UserForm } from '~/components/Users/UserForm'
+import { useIsMounted } from '~/hooks/useIsMounted'
+import { api } from '~/services/api'
 
 const PageAdminAccount: NextPage = () => {
   const [session] = useSession()
+  const isMounted = useIsMounted()
+
+  const [disable, setDisable] = useState(true)
+  const [user, setUser] = useState<Partial<User>>({})
+
+  const userId = useMemo(() => parseInt(`${session.user.userId || 0}`), [session])
+
+  const fetchData = useCallback(async () => {
+    if (userId) {
+      const { data: response } = await api.get(`users/${userId}`)
+      if (isMounted.current) {
+        if (response && response.success) setUser(response.user)
+      }
+    }
+  }, [isMounted, userId])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   return (
     <LayoutAdmin>
       <Container>
-        <PageTitle
-          spotlight="Minhas"
-          title="informações"
-          description={'Use o formulário abaixo para modificar suas informações.'}
-        />
-        <FormContainer>
-          <UserForm initialData={session?.user ?? {}} />
-        </FormContainer>
+        <Box p={4} justifyContent="center" alignItems="center" display="flex" flexDirection="column">
+          <Typography variant="h5" color="grayText">
+            Minhas informações:
+          </Typography>
+          {disable ? (
+            <Button color="info" variant="outlined" onClick={() => setDisable(old => !old)}>
+              Editar dados
+            </Button>
+          ) : null}
+          <UserForm initialData={user} key={user?.id} disable={disable} onCancel={() => setDisable(old => !old)} />
+        </Box>
       </Container>
     </LayoutAdmin>
   )
 }
 
 export default PageAdminAccount
-
-const FormContainer = styled.div``
