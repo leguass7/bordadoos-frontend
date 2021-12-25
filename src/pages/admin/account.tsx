@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Container, Typography } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 import { User } from '@prisma/client'
 import type { NextPage } from 'next'
 import { useSession } from 'next-auth/client'
@@ -16,7 +16,7 @@ const PageAdminAccount: NextPage = () => {
   const [disable, setDisable] = useState(true)
   const [user, setUser] = useState<Partial<User>>({})
 
-  const userId = useMemo(() => parseInt(`${session.user.userId || 0}`), [session])
+  const userId = useMemo(() => parseInt(`${session?.user?.userId || 0}`), [session])
 
   const fetchData = useCallback(async () => {
     if (userId) {

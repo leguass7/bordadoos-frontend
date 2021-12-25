@@ -3,7 +3,7 @@ import { SwipeableDrawer, DrawerProps, Divider, IconButton, List, Typography, Av
 import { blue } from '@mui/material/colors'
 import { useSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { ItemMenu, ItemMenuProps } from './ItemMenu'
 import { ButtonContainer, UserContainer } from './styles'
@@ -26,8 +26,6 @@ export const ToolButtonMenu: React.FC<Props> = ({ anchor }) => {
   const [session] = useSession()
   const { push, pathname } = useRouter()
 
-  const user = useMemo(() => session?.user || {}, [session])
-
   const redirectAccount = () => () => {
     if (pathname !== '/admin/account') push('/admin/account')
   }
@@ -45,9 +43,9 @@ export const ToolButtonMenu: React.FC<Props> = ({ anchor }) => {
         <Menu />
       </IconButton>
       <UserContainer onClick={redirectAccount()}>
-        <Avatar sx={{ bgcolor: blue[500] }} alt={user.name} src={user.image} />
+        <Avatar sx={{ bgcolor: blue[500] }} alt={session?.user?.name} src={session?.user?.image} />
         <Typography variant="h6" color="GrayText" align="center" justifySelf="center" pl={1}>
-          {user.name}
+          {session?.user?.name ?? null}
         </Typography>
       </UserContainer>
       <SwipeableDrawer

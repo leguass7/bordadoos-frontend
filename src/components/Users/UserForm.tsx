@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Switch } from '@mui/material'
+import { Button, ButtonGroup } from '@mui/material'
 import { User } from '@prisma/client'
 import { Form } from '@unform/web'
 import { useCallback, useEffect, useState } from 'react'
