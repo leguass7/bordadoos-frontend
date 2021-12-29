@@ -4,6 +4,7 @@ import type { NextPage } from 'next'
 import { useSession } from 'next-auth/client'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { CircleLoading } from '~/components/CircleLoading'
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
 import { UserForm } from '~/components/Users/UserForm'
 import { useIsMounted } from '~/hooks/useIsMounted'
@@ -11,6 +12,8 @@ import { api } from '~/services/api'
 
 const PageAdminAccount: NextPage = () => {
   const [session] = useSession()
+
+  const [loading, setLoading] = useState(false)
   const isMounted = useIsMounted()
 
   const [disable, setDisable] = useState(true)
@@ -20,8 +23,10 @@ const PageAdminAccount: NextPage = () => {
 
   const fetchData = useCallback(async () => {
     if (userId) {
+      setLoading(true)
       const { data: response } = await api.get(`users/${userId}`)
       if (isMounted.current) {
+        setLoading(false)
         if (response && response.success) setUser(response.user)
       }
     }
@@ -48,6 +53,7 @@ const PageAdminAccount: NextPage = () => {
           </Box>
         </Box>
       </Container>
+      {loading ? <CircleLoading /> : null}
     </LayoutAdmin>
   )
 }
