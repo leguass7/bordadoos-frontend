@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-import { host } from '~/config'
+import { imageBase } from '~/config'
 
 export const api = axios.create({
-  baseURL: `${host}/api`
+  baseURL: `${imageBase}/api`
 })
