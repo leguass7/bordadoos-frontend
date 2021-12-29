@@ -51,7 +51,7 @@ export const EmbroideryTypeList: React.FC<Props> = ({ toggleModal, modal }) => {
           </Container>
         }
       >
-        <div style={{ display: 'flex', flexFlow: 'row wrap', margin: '0 auto', width: '100%' }}>
+        <div style={{ display: 'flex', flexFlow: 'row wrap', padding: 4 }}>
           {data?.map?.(item => {
             return (
               <EmbroideryTypeItemMemo key={`${item.id}`} {...item} showModal={modal.show} toggleModal={handleEdit} />

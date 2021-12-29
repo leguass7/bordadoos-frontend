@@ -1,13 +1,23 @@
 import Edit from '@mui/icons-material/Edit'
-import { CardActions, CardContent, IconButton, Switch, Typography } from '@mui/material'
+import { CardActions, IconButton, Switch, Typography, CardMedia, CardContent, Collapse } from '@mui/material'
 import { EmbroideryType } from '@prisma/client'
 import { memo, useCallback, useState } from 'react'
-import styled, { css, keyframes } from 'styled-components'
+import styled from 'styled-components'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { api } from '~/services/api'
 
-import { CardItem } from '../ListItems/CardItem'
+import { CardExpandMore, CardItem } from '../ListItems/CardItem'
+
+interface CollapsibleProps {
+  description?: string
+}
+
+const CollapsibleContent: React.FC<CollapsibleProps> = ({ description }) => (
+  <Typography variant="body2" color="text.secondary">
+    {description || 'Nenhuma descrição encontrada'}
+  </Typography>
+)
 
 interface Props extends EmbroideryType {
   showModal: boolean
@@ -24,6 +34,8 @@ export const EmbroideryTypeItem: React.FC<Props> = ({
   image
 }) => {
   const [loading, setLoading] = useState(false)
+  const [expand, setExpand] = useState(false)
+
   const [itemActived, setItemActived] = useState(actived)
   const isMounted = useIsMounted()
 
@@ -44,15 +56,11 @@ export const EmbroideryTypeItem: React.FC<Props> = ({
 
   return (
     <>
-      <CardItem sx={{ width: 200 }}>
-        {/* <CardMedia image={image || '/logo64.png'} component="img" alt={label} height={200}  /> */}
-        <ImageContainer src={image || '/logo250.png'} alt={label} />
-        <CardContentTest hasContent={!!description}>
-          <Typography variant="h6">{label}</Typography>
-          <Typography variant="body2" color="text.secondary">
-            {description}
-          </Typography>
-        </CardContentTest>
+      <CardItem expand={expand} CollapsibleContent={<CollapsibleContent description={description} />}>
+        <CardMedia image={image || '/logo250.png'} component="img" alt={label} />
+        <Typography pl={2} variant="h6">
+          {label}
+        </Typography>
         <CardActions disableSpacing>
           <IconButton color="primary" onClick={() => toggleModal(id)} disabled={!!showModal}>
             <Edit />
@@ -63,6 +71,12 @@ export const EmbroideryTypeItem: React.FC<Props> = ({
               ativo
             </Typography>
           </SwitchContainer>
+          <CardExpandMore
+            expand={expand}
+            onClick={() => setExpand(old => !old)}
+            aria-expanded={expand}
+            aria-label="saber mais"
+          />
         </CardActions>
       </CardItem>
     </>
@@ -74,23 +88,6 @@ export const EmbroideryTypeItemMemo = memo(EmbroideryTypeItem)
 const SwitchContainer = styled.div`
   display: flex;
   flex-flow: column wrap;
-  align-items: flex-end;
   justify-content: flex-end;
-  padding: 4px;
-  flex: 1;
-  height: 100%;
-`
-
-const ImageContainer = styled.img`
-  width: 100%;
-  object-fit: contain;
-  height: 200px;
-  display: block;
-  position: relative;
-  margin: 0 auto;
-`
-
-const CardContentTest = styled(CardContent)<{ hasContent?: boolean }>`
-  height: 86px;
-  overflow: hidden;
+  align-items: center;
 `
