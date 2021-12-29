@@ -38,12 +38,14 @@ const PageAdminAccount: NextPage = () => {
           <Typography variant="h5" color="grayText">
             Minhas informações:
           </Typography>
-          {disable ? (
-            <Button color="info" variant="outlined" onClick={() => setDisable(old => !old)}>
-              Editar dados
-            </Button>
-          ) : null}
           <UserForm initialData={user} key={user?.id} disable={disable} onCancel={() => setDisable(old => !old)} />
+          <Box p={4} justifyContent="center" alignItems="center" display="flex">
+            {disable ? (
+              <Button color="primary" variant="outlined" onClick={() => setDisable(old => !old)}>
+                Editar dados
+              </Button>
+            ) : null}
+          </Box>
         </Box>
       </Container>
     </LayoutAdmin>
