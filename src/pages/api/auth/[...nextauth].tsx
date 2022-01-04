@@ -13,6 +13,13 @@ const options: NextAuthOptions = {
     jwt: true,
     maxAge: 30 * 24 * 60 * 60 // 30 days
   },
+  callbacks: {
+    async session(session, token) {
+      const result: any = { ...session }
+      result.user.userId = parseInt(`${token.sub || 0}`)
+      return result
+    }
+  },
   jwt: { secret },
   adapter: Prisma.Adapter({ prisma }),
   providers: [

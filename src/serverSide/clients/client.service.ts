@@ -10,22 +10,29 @@ async function create(data: ICreateClientDto): Promise<number> {
   return client && client.id
 }
 
-async function update(clientId: number, data: Partial<ICreateClientDto>): Promise<number> {
+async function update(clientId: number, data: Partial<Client>): Promise<number> {
   const client = await prisma.client.update({ data, where: { id: clientId } })
   return client && client.id
 }
 
-async function findOne({ name, phone, id }: Partial<Client>): Promise<Client> {
+async function searchOne({ name, phone, id }: Partial<Client>): Promise<Client> {
   const client = await prisma.client.findFirst({
     where: { OR: [{ name }, { phone }, { id }] }
   })
   return client
 }
 
-async function deleteClient(clientId: number, force = false): Promise<boolean> {
+async function findOne({ name, phone, id }: Partial<Client>): Promise<Client> {
+  const client = await prisma.client.findFirst({
+    where: { name, phone, id }
+  })
+  return client
+}
+
+async function deleteClient(clientId: number, userId?: number, force = false): Promise<boolean> {
   try {
     if (force) await prisma.client.delete({ where: { id: clientId } })
-    else await prisma.client.update({ data: { actived: false }, where: { id: clientId } })
+    else await prisma.client.update({ data: { actived: false, updatedBy: userId }, where: { id: clientId } })
     return true
   } catch (err) {
     console.log(err)
@@ -57,6 +64,7 @@ export const ClientService = {
   create,
   update,
   findOne,
+  searchOne,
   paginate,
   deleteClient
 }
