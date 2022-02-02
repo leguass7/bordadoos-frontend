@@ -1,10 +1,7 @@
-type ResponseApi = {
-  success?: boolean
-  statusCode?: number
-  message?: string
-}
+import type { IResponseApi } from '#server/api.interface'
 
-export interface IResponsePaginate<T> extends ResponseApi {
+export type { IResponseApi }
+export interface IResponsePaginate<T> extends IResponseApi {
   pages: number
   page: number
   total: number

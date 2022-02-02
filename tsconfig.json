@@ -16,7 +16,8 @@
     "incremental": true,
     "baseUrl": "./",
     "paths": {
-      "~/*": ["src/*"]
+      "~/*": ["src/*"],
+      "#server/*": ["src/serverSide/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/@types/*.d.ts", "./prisma/seed"],

@@ -4,9 +4,11 @@ import { CacheProvider, EmotionCache } from '@emotion/react'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import ptBr from 'date-fns/locale/pt-BR'
+
+import { ToastContainer } from 'react-toastify'
+
 import { Provider as ProviderAuth } from 'next-auth/client'
 import type { AppProps } from 'next/app'
-import { ToastContainer } from 'react-toastify'
 
 import { AppThemeProvider } from '~/components/AppThemeProvider'
 import createEmotionCache from '~/config/createEmotionCache'
