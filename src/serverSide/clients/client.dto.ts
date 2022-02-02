@@ -13,6 +13,9 @@ export interface IResponsePaginateClientDto extends IResponseApi {
   data: Client[]
 }
 
+export interface IResponseClientsDto extends IResponseApi {
+  customers: Client[]
+}
 export interface ICreateClientDto extends Partial<Client> {
   name: string
   phone: string
@@ -42,4 +45,8 @@ export interface IRequestUpdateClientDto extends AuthorizedApiRequest {
 
 export interface IRequestClientDto extends AuthorizedApiRequest {
   query: { clientId: string }
+}
+
+export interface IRequestSearchClientDto extends AuthorizedApiRequest {
+  query: { search?: string }
 }

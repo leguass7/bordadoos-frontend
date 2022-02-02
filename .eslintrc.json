@@ -3,6 +3,7 @@
   "plugins": ["prettier", "react-hooks", "jsx-a11y", "import-helpers"],
   "rules": {
     "prettier/prettier": "error",
+    "no-console": "warn",
     "import-helpers/order-imports": [
       "warn",
       {

@@ -60,13 +60,30 @@ async function paginate(pagination: PaginationQueryDto, filter: IClientFilter = 
   return clients
 }
 
+async function search(filter: IClientFilter = {}): Promise<Client[]> {
+  const { search, actived } = filter
+  const where: Prisma.ClientWhereInput = { id: { not: 0 }, actived }
+
+  if (search)
+    where.AND = {
+      OR: [
+        { name: { contains: `${search}` } },
+        { phone: { contains: `${search}` } },
+        { doc: { contains: `${search}` } }
+      ]
+    }
+  const clients = await prisma.client.findMany({ where })
+  return clients
+}
+
 export const ClientService = {
   create,
   update,
   findOne,
   searchOne,
   paginate,
-  deleteClient
+  deleteClient,
+  search
 }
 
 export type IClientService = typeof ClientService

@@ -7,7 +7,9 @@ import type {
   IRequestClientDto,
   IResponseClientDto,
   IResponsePaginateClientDto,
-  IRequestUpdateClientDto
+  IRequestUpdateClientDto,
+  IRequestSearchClientDto,
+  IResponseClientsDto
 } from './client.dto'
 import type { IClientService } from './client.service'
 
@@ -72,12 +74,27 @@ function remove(clientService: IClientService) {
   }
 }
 
+function search(clientService: IClientService) {
+  return async (req: IRequestSearchClientDto, res: NextApiResponse<IResponseClientsDto>) => {
+    const { query, auth } = req
+    const { search } = query
+
+    console.log('search auth', auth)
+
+    if (!search) return res.status(200).json({ success: true, customers: [] })
+
+    const customers = await clientService.search({ search })
+    return res.status(201).json({ success: true, customers })
+  }
+}
+
 export function factoryClientController(clientService: IClientService) {
   return {
     create: create(clientService),
     update: update(clientService),
     findOne: findOne(clientService),
     paginate: paginate(clientService),
-    remove: remove(clientService)
+    remove: remove(clientService),
+    search: search(clientService)
   }
 }
