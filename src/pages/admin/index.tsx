@@ -1,9 +1,11 @@
 import { Container } from '@mui/material'
 import type { NextPage } from 'next'
+
 // import { useSession } from 'next-auth/client'
 
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
 import { PageTitle } from '~/components/PageTitle'
+import { PurchasePanel } from '~/components/purchase/PurchasePanel'
 
 const PageAdminIndex: NextPage = () => {
   // const [session] = useSession()
@@ -11,11 +13,12 @@ const PageAdminIndex: NextPage = () => {
   return (
     <LayoutAdmin>
       <Container>
-        <PageTitle spotlight="Novo" title="pedido" description={'Clique na categoria para alterá-la'}>
-          {/* <IconButton size="large" color="primary" onClick={() => setFormOpen(true)}>
-            <Add />
-          </IconButton> */}
-        </PageTitle>
+        <PageTitle
+          spotlight="Nova"
+          title="ordem de serviço"
+          description={'Preencha as informações para iniciar uma nova O.S.'}
+        />
+        <PurchasePanel />
       </Container>
     </LayoutAdmin>
   )
