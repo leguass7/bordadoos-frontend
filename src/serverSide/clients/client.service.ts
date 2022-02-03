@@ -8,14 +8,22 @@ import type { IClientFilter, ICreateClientDto } from './client.dto'
 
 import { isDefined } from '~/helpers/variables'
 
-async function create(data: ICreateClientDto): Promise<number> {
-  const client = await prisma.client.create({ data })
-  return client && client.id
+async function create(data: ICreateClientDto): Promise<Client> {
+  try {
+    const client = await prisma.client.create({ data })
+    return client
+  } catch {
+    return null
+  }
 }
 
-async function update(clientId: number, data: Partial<Client>): Promise<number> {
-  const client = await prisma.client.update({ data, where: { id: clientId } })
-  return client && client.id
+async function update(clientId: number, data: Partial<Client>): Promise<Client> {
+  try {
+    const client = await prisma.client.update({ data, where: { id: clientId } })
+    return client
+  } catch (error) {
+    return null
+  }
 }
 
 async function searchOne({ name, phone, id }: Partial<Client>): Promise<Client> {

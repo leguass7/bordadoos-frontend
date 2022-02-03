@@ -19,4 +19,5 @@ export type TextProps = {
   textColor?: string
   size?: number
   height?: number
+  bold?: boolean
 }

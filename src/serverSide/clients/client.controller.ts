@@ -23,8 +23,10 @@ function create(clientService: IClientService) {
     const hasClient = await clientService.findOne({ name, phone })
     if (hasClient) throw ErrorApi({ status: 400, message: 'client already exists' })
 
-    await clientService.create({ name, phone, doc, actived: true, createdBy: userId, updatedBy: userId })
-    return res.status(201).json({ success: true })
+    const client = await clientService.create({ name, phone, doc, actived: true, createdBy: userId, updatedBy: userId })
+    if (!client) throw ErrorApi({ status: 500, message: 'erro ao criar cliente' })
+
+    return res.status(201).json({ success: !!client, client, clientId: client?.id })
   }
 }
 
@@ -36,8 +38,8 @@ function update(clientService: IClientService) {
     const clientId = query?.clientId ? parseInt(query?.clientId) || 0 : 0
     if (!userId) throw ErrorApi({ status: 401, message: 'User not logged' })
 
-    await clientService.update(clientId, { ...body, updatedBy: userId })
-    return res.status(201).json({ success: true })
+    const client = await clientService.update(clientId, { ...body, updatedBy: userId })
+    return res.status(201).json({ success: !!client, client, clientId: client?.id })
   }
 }
 
@@ -78,9 +80,6 @@ function search(clientService: IClientService) {
   return async (req: IRequestSearchClientDto, res: NextApiResponse<IResponseClientsDto>) => {
     const { query, auth } = req
     const { search } = query
-
-    console.log('search auth', auth)
-
     if (!search) return res.status(200).json({ success: true, customers: [] })
 
     const customers = await clientService.search({ search })

@@ -1,19 +1,21 @@
+import { useState, useEffect, useCallback, useMemo } from 'react'
+
 import { Button, ButtonGroup, Typography } from '@mui/material'
 import { Client } from '@prisma/client'
 import { Form } from '@unform/web'
-import { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { api } from '~/services/api'
+import { getCustomer, storeCustomer } from '~/services/api'
 
 import { CircleLoading } from '../CircleLoading'
 import { Input } from '../Form/Input'
 
+export type FormCustomerSuccessHandler = (clientId?: number) => void
 interface Props {
   clientId?: number
   onCancel?: () => void
-  onSuccess?: (clientId?: number) => void
+  onSuccess?: FormCustomerSuccessHandler
 }
 
 export const ClientForm: React.FC<Props> = ({ onCancel, onSuccess, clientId }) => {
@@ -23,9 +25,9 @@ export const ClientForm: React.FC<Props> = ({ onCancel, onSuccess, clientId }) =
   const isMounted = useIsMounted()
 
   const fetchClient = useCallback(async () => {
-    if (clientId && clientId !== data.id) {
+    if (clientId && clientId !== data?.id) {
       setLoading(true)
-      const { data: response } = await api.get(`/clients/${clientId}`)
+      const response = await getCustomer(clientId)
 
       if (isMounted.current) {
         setLoading(false)
@@ -34,25 +36,24 @@ export const ClientForm: React.FC<Props> = ({ onCancel, onSuccess, clientId }) =
     }
   }, [clientId, isMounted, data.id])
 
-  useEffect(() => {
-    fetchClient()
-  }, [fetchClient])
-
   const handleSubmit = useCallback(
     async (values: Partial<Client>) => {
-      const url = clientId ? `/clients/${clientId}` : '/clients'
-      const { data: response } = await api[clientId ? 'put' : 'post'](url, values)
-      if (response && response.success) {
+      const response = await storeCustomer({ ...values, id: clientId || 0 })
+      if (response && response?.success) {
         setData({})
-        if (onSuccess) onSuccess(clientId)
+        if (onSuccess) onSuccess(response?.clientId || clientId)
       }
     },
     [clientId, onSuccess]
   )
 
+  useEffect(() => {
+    fetchClient()
+  }, [fetchClient])
+
   return (
     <>
-      <Form onSubmit={handleSubmit} initialData={data} key={data.id}>
+      <Form onSubmit={handleSubmit} initialData={data} key={`form-customer-${data?.id}`}>
         <FormContainer>
           <FieldContainer>
             <Input required fullWidth autoComplete="off" name="name" placeholder="nome" />

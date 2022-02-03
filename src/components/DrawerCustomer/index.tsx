@@ -6,7 +6,7 @@ import type { Client } from '@prisma/client'
 
 import { SearchBar } from '~/components/SearchBar'
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { findCustomer } from '~/services/api'
+import { findAllCustomers } from '~/services/api'
 
 import { CircleLoading } from '../CircleLoading'
 import { SpacedContainer, Text } from '../styled'
@@ -30,7 +30,7 @@ export const DrawerCustomer: React.FC<Props> = ({ defaultSelected, onSelecCustom
   const fetchCustomers = useCallback(
     async (search?: string) => {
       setLoading(true)
-      const response = await findCustomer({ search })
+      const response = await findAllCustomers({ search })
       if (isMounted.current) {
         setLoading(false)
         setData(response?.customers || [])

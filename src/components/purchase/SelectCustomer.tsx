@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react'
 
-import { Search, Add } from '@mui/icons-material'
-import { Button, Card, Fade, Stack } from '@mui/material'
+import { Search, Add, Delete } from '@mui/icons-material'
+import { Button, ButtonGroup, Card, Fade, IconButton, Stack } from '@mui/material'
 
 import { CardTitle } from '~/components/CardTitle'
 import { DrawerCustomer, SearchCustomerSelectHandler } from '~/components/DrawerCustomer'
-import { ModalCustomer } from '~/components/ModalCustomer'
+import { ModalCustomer, FormCustomerSuccessHandler } from '~/components/ModalCustomer'
 import { SpacedContainer } from '~/components/styled'
 
 import { usePurchaseCustomer } from './PurchaseProvider'
@@ -20,6 +20,15 @@ export const SelectCustomer: React.FC = () => {
   const handleSearchOpen = () => setOpenSearch(true)
   const handleNewClose = () => setOpenNew(false)
   const handleNewOpen = () => setOpenNew(true)
+  const handleClearCustomer = () => setCustomerId(null)
+
+  const handleCustomerSuccess: FormCustomerSuccessHandler = useCallback(
+    id => {
+      if (id) setCustomerId(id)
+      handleNewClose()
+    },
+    [setCustomerId]
+  )
 
   const handleSelectFound: SearchCustomerSelectHandler = useCallback(
     customerId => {
@@ -32,19 +41,31 @@ export const SelectCustomer: React.FC = () => {
   return (
     <>
       <Card>
-        <CardTitle title="Cliente" divider />
+        <CardTitle title="Cliente" divider>
+          <IconButton size="small" color="primary" onClick={handleSearchOpen}>
+            <Search fontSize="small" />
+          </IconButton>
+          <IconButton size="small" color="primary" onClick={handleNewOpen}>
+            <Add fontSize="small" />
+          </IconButton>
+          <IconButton size="small" color="primary" onClick={handleClearCustomer}>
+            <Delete fontSize="small" />
+          </IconButton>
+        </CardTitle>
         <SpacedContainer>
           {customerId ? (
             <SelectedCustomer customerId={customerId} />
           ) : (
             <Fade in={true}>
               <Stack direction="row" spacing={2} justifyContent="center">
-                <Button variant="outlined" color="primary" startIcon={<Search />} onClick={handleSearchOpen}>
-                  Procurar
-                </Button>
-                <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleNewOpen}>
-                  Novo
-                </Button>
+                <ButtonGroup>
+                  <Button variant="outlined" color="primary" startIcon={<Search />} onClick={handleSearchOpen}>
+                    Procurar
+                  </Button>
+                  <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleNewOpen}>
+                    Novo
+                  </Button>
+                </ButtonGroup>
               </Stack>
             </Fade>
           )}
@@ -56,7 +77,13 @@ export const SelectCustomer: React.FC = () => {
         onSelecCustomer={handleSelectFound}
         defaultSelected={customerId}
       />
-      <ModalCustomer open={openNew} onClose={handleNewClose} customerId={0} title={'Incluir cliente'} />
+      <ModalCustomer
+        open={openNew}
+        onClose={handleNewClose}
+        onSuccess={handleCustomerSuccess}
+        customerId={0}
+        title={'Incluir cliente'}
+      />
     </>
   )
 }

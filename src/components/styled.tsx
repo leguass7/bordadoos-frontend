@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { TextAlign, TextProps } from '~/styles/commonProps'
+import { FlexAlign, FlexJustify, TextAlign, TextProps } from '~/styles/commonProps'
 
 export const Text = styled.p<TextProps>`
   padding: 0;
@@ -9,6 +9,7 @@ export const Text = styled.p<TextProps>`
   color: ${({ theme, themeColor = 'text', textColor }) => textColor || theme.colors[themeColor]};
   font-size: ${({ size = 'inherit' }) => size}px;
   line-height: ${({ height = 'inherit' }) => height}px;
+  font-weight: ${({ bold }) => (bold ? 'bold' : 'normal')};
 `
 
 export const Span = styled.span<TextProps>`
@@ -18,6 +19,7 @@ export const Span = styled.span<TextProps>`
   color: ${({ theme, themeColor = 'text', textColor }) => textColor || theme.colors[themeColor]};
   font-size: ${({ size = 'inherit' }) => size}px;
   line-height: ${({ height = 'inherit' }) => height}px;
+  font-weight: ${({ bold }) => (bold ? 'bold' : 'normal')};
 `
 
 export const SpacedContainer = styled.div<{ align?: TextAlign }>`
@@ -26,4 +28,14 @@ export const SpacedContainer = styled.div<{ align?: TextAlign }>`
   padding: ${({ theme }) => theme.spacing.l}px;
   min-height: 72px;
   text-align: ${({ align = 'left' }) => align};
+`
+
+export const FlexContainer = styled.div<{ align?: FlexAlign; justify?: FlexJustify; spaced?: boolean }>`
+  position: relative;
+  max-width: 100%;
+  display: flex;
+  justify-content: ${({ justify = 'space-between' }) => justify};
+  align-content: ${({ align = 'flex-start' }) => align};
+  align-items: ${({ align = 'flex-start' }) => align};
+  padding: ${({ theme, spaced }) => (spaced ? `${theme.spacing.l}px` : `0px`)};
 `
