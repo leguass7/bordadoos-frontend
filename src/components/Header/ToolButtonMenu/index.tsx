@@ -1,9 +1,11 @@
+import React, { useCallback, useState } from 'react'
+
+import { useSession } from 'next-auth/client'
+import { useRouter } from 'next/router'
+
 import { Menu } from '@mui/icons-material'
 import { SwipeableDrawer, DrawerProps, Divider, IconButton, List, Typography, Avatar } from '@mui/material'
 import { blue } from '@mui/material/colors'
-import { useSession } from 'next-auth/client'
-import { useRouter } from 'next/router'
-import React, { useCallback, useState } from 'react'
 
 import { ItemMenu, ItemMenuProps } from './ItemMenu'
 import { ButtonContainer, UserContainer } from './styles'
@@ -44,7 +46,7 @@ export const ToolButtonMenu: React.FC<Props> = ({ anchor }) => {
       </IconButton>
       <UserContainer onClick={redirectAccount()}>
         <Avatar sx={{ bgcolor: blue[500] }} alt={session?.user?.name} src={session?.user?.image} />
-        <Typography variant="h6" color="GrayText" align="center" justifySelf="center" pl={1}>
+        <Typography variant="caption" color="GrayText" align="center" justifySelf="center" pl={1}>
           {session?.user?.name ?? null}
         </Typography>
       </UserContainer>

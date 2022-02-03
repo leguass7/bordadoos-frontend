@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
 
-import { querystring } from '../../helpers/string'
-import { useIsMounted } from '../../hooks/useIsMounted'
-import { api } from '../../services/api'
-import { IPagination, IResponsePaginate } from '../../services/api/api.types'
-import { CircleLoading } from '../CircleLoading'
+import { CircleLoading } from '~/components/CircleLoading'
+import { querystring } from '~/helpers/string'
+import { useIsMounted } from '~/hooks/useIsMounted'
+import { api } from '~/services/api'
+import { IPagination, IResponsePaginate } from '~/services/api/api.types'
 
 export interface IPaginationContext<T> {
   pagination: IPagination

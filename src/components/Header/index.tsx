@@ -1,6 +1,7 @@
+import React, { useCallback, useState } from 'react'
+
 import { Settings, ExitToApp, AccountCircle } from '@mui/icons-material'
 import { AppBar, Toolbar, Modal } from '@mui/material'
-import React, { useCallback, useState } from 'react'
 
 import { Container } from '~/components/Container'
 

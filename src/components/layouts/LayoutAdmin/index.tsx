@@ -1,6 +1,7 @@
+import React, { useRef, useState, useEffect } from 'react'
+
 import { useSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
-import React, { useRef, useState, useEffect } from 'react'
 
 import { CircleLoading } from '~/components/CircleLoading'
 import { Header } from '~/components/Header'
