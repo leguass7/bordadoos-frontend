@@ -1,6 +1,6 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { CardContent, Collapse, IconButton, IconButtonProps, styled } from '@mui/material'
-import Card, { CardProps } from '@mui/material/Card'
+import { CardContent, Card, CardProps, Collapse, IconButton, IconButtonProps, styled as muiStyled } from '@mui/material'
+import styled from 'styled-components'
 
 interface Props {
   spacing?: number
@@ -16,10 +16,11 @@ export const CardItem: React.FC<Props> = ({
   CollapsibleContent,
   expand,
   cardProps,
-  width = '20%'
+  width = '25%'
 }) => {
   return (
-    <div style={{ padding: spacing, width }}>
+    <CardContainer spacing={spacing} width={width}>
+      {/* <div style={{ padding: spacing, width }}> */}
       <Card {...cardProps}>
         {children}
         {CollapsibleContent ? (
@@ -28,7 +29,8 @@ export const CardItem: React.FC<Props> = ({
           </Collapse>
         ) : null}
       </Card>
-    </div>
+      {/* </div> */}
+    </CardContainer>
   )
 }
 
@@ -36,7 +38,7 @@ interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
 }
 
-export const CardExpandMore = styled((props: ExpandMoreProps) => {
+export const CardExpandMore = muiStyled((props: ExpandMoreProps) => {
   const { expand, ...other } = props
   return (
     <IconButton {...other}>
@@ -50,3 +52,21 @@ export const CardExpandMore = styled((props: ExpandMoreProps) => {
     duration: theme.transitions.duration.shortest
   })
 }))
+
+interface CardContainerProps {
+  spacing: number
+  width: string
+}
+
+const CardContainer = styled.div<CardContainerProps>`
+  padding: ${props => `${props.spacing}px`};
+  width: 100%;
+
+  @media (min-width: 420px) {
+    width: 50%;
+  }
+
+  @media (min-width: 768px) {
+    width: ${props => props.width};
+  }
+`
