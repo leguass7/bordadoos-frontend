@@ -6,7 +6,7 @@ import { Form } from '@unform/web'
 import styled from 'styled-components'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { api } from '~/services/api'
+import { api, getDefault } from '~/services/api'
 
 import { CircleLoading } from '../CircleLoading'
 import { Input } from '../Form/Input'
@@ -26,11 +26,11 @@ export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuc
   const fetchData = useCallback(async () => {
     if (embTypeId && embTypeId !== data.id) {
       setLoading(true)
-      const { data: response } = await api.get(`/embroidery/types/${embTypeId}`)
+      const { success = false, data: apiData } = await getDefault(`/embroidery/types/${embTypeId}`)
       if (isMounted.current) {
         setLoading(false)
-        if (response && response.success) {
-          setData(response.data)
+        if (success) {
+          setData(apiData)
         }
       }
     }

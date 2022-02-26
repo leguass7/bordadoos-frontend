@@ -6,7 +6,7 @@ import type { Client } from '@prisma/client'
 
 import { SearchBar } from '~/components/SearchBar'
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { findAllCustomers } from '~/services/api'
+import { findAllCustomers } from '~/services/api/customer'
 
 import { CircleLoading } from '../CircleLoading'
 import { SpacedContainer, Text } from '../styled'

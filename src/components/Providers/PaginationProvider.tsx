@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { CircleLoading } from '~/components/CircleLoading'
 import { querystring } from '~/helpers/string'
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { api } from '~/services/api'
+import { api, getDefault } from '~/services/api'
 import { IPagination, IResponsePaginate } from '~/services/api/api.types'
 
 export interface IPaginationContext<T> {
@@ -54,15 +54,14 @@ export const PaginationProvider: React.FC<Props> = ({
       if (payload.page === 1) setLoading(true)
 
       const currentURL = `${url}?${querystring(payload)}`
-      const { data: response } = (await api.get(currentURL)) as { data: IResponsePaginate<any> }
-      const { success = false, data: rData = [] } = response
+      const { success = false, data: apiData = [], page, pages } = await getDefault<IResponsePaginate<any>>(currentURL)
 
       if (isMounted.current) {
         setLoading(false)
         if (success) {
-          setPagination({ page: response.page })
-          setData(old => [...old, ...rData])
-          setHasMore(!!(response.page < response.pages))
+          setPagination({ page })
+          setData(old => [...old, ...apiData])
+          setHasMore(!!(page < pages))
         }
       }
     },

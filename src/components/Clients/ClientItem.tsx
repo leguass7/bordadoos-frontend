@@ -6,7 +6,7 @@ import { IconButton, Switch, Typography } from '@mui/material'
 
 import { memo, useCallback, useState } from 'react'
 
-import { api } from '~/services/api'
+import { api, putDefault } from '~/services/api'
 
 import { FlatItem, FlatDescriptionContainer, FlatDescriptionLine, FlatTitle, FlatText } from '../ListItems/FlatItem'
 
@@ -29,7 +29,7 @@ export const ClientItem: React.FC<Props> = ({ id, phone, name, showModal, toggle
 
       setLoading(true)
 
-      await api.put(`/clients/${id}`, { actived: newActived })
+      await putDefault(`/clients/${id}`, { actived: newActived })
       if (isMounted.current) {
         setLoading(false)
       }

@@ -6,7 +6,7 @@ import { Avatar, IconButton, Modal, Switch, Typography } from '@mui/material'
 import { memo, useCallback, useState } from 'react'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { api } from '~/services/api'
+import { putDefault } from '~/services/api'
 
 import {
   FlatItem,
@@ -47,10 +47,8 @@ export const ClientItem: React.FC<Props> = ({ id, name, email, cellPhone, active
 
       setLoading(true)
 
-      await api.put(`/users/${id}`, { actived: newActived })
-      if (isMounted.current) {
-        setLoading(false)
-      }
+      await putDefault(`/users/${id}`, { actived: newActived })
+      if (isMounted.current) setLoading(false)
     },
     [id, isMounted]
   )

@@ -38,3 +38,12 @@ export function toMask(mask: string, value: string | number): string {
 export function capitalize(string: string): string {
   return string.charAt(0).toUpperCase() + string.toLocaleLowerCase().slice(1)
 }
+
+export function normalizeUrl(path?: string): string {
+  const [base = '', query = ''] = `${path}`.split('?')
+  const params: any = querystring(query)
+
+  const q = querystring(params)
+  const result = [base.replace(/^(.*)\/$/, '$1'), Object.keys(q).length && q].filter(f => !!f)
+  return result.length > 1 ? result.join('?') : result[0]
+}

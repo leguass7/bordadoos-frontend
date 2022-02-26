@@ -6,7 +6,7 @@ import { Form } from '@unform/web'
 import styled from 'styled-components'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { getCustomer, storeCustomer } from '~/services/api'
+import { getCustomer, storeCustomer } from '~/services/api/customer'
 
 import { CircleLoading } from '../CircleLoading'
 import { Input } from '../Form/Input'
@@ -27,21 +27,21 @@ export const ClientForm: React.FC<Props> = ({ onCancel, onSuccess, clientId }) =
   const fetchClient = useCallback(async () => {
     if (clientId && clientId !== data?.id) {
       setLoading(true)
-      const response = await getCustomer(clientId)
+      const { success = false, client } = await getCustomer(clientId)
 
       if (isMounted.current) {
         setLoading(false)
-        if (response && response.success && response.client) setData(response.client)
+        if (success && client) setData(client)
       }
     }
   }, [clientId, isMounted, data.id])
 
   const handleSubmit = useCallback(
     async (values: Partial<Client>) => {
-      const response = await storeCustomer({ ...values, id: clientId || 0 })
-      if (response && response?.success) {
+      const { success = false, clientId: apiClientId } = await storeCustomer({ ...values, id: clientId || 0 })
+      if (success) {
         setData({})
-        if (onSuccess) onSuccess(response?.clientId || clientId)
+        if (onSuccess) onSuccess(apiClientId || clientId)
       }
     },
     [clientId, onSuccess]
