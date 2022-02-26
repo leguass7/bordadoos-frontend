@@ -1,5 +1,6 @@
-import { Card, Grid } from '@mui/material'
 import React from 'react'
+
+import { Card, Grid } from '@mui/material'
 
 import { CardTitle } from '~/components/CardTitle'
 import { SpacedContainer } from '~/components/styled'

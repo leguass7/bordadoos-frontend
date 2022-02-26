@@ -53,7 +53,6 @@ export const PaginationProvider: React.FC<Props> = ({
       const payload = { ...filter, size: 12, page: 1, ...paginateData }
       if (payload.page === 1) setLoading(true)
 
-      console.log('aaa')
       const currentURL = `${url}?${querystring(payload)}`
       const { data: response } = (await api.get(currentURL)) as { data: IResponsePaginate<any> }
       const { success = false, data: rData = [] } = response

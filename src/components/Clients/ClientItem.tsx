@@ -3,6 +3,7 @@ import { Client } from '.prisma/client'
 import styled from 'styled-components'
 import Edit from '@mui/icons-material/Edit'
 import { IconButton, Switch, Typography } from '@mui/material'
+
 import { memo, useCallback, useState } from 'react'
 
 import { api } from '~/services/api'

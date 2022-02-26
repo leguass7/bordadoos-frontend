@@ -1,6 +1,7 @@
+import { useEffect, useRef } from 'react'
+
 import { Input as MuiInput, InputProps, Typography } from '@mui/material'
 import { useField } from '@unform/core'
-import { useEffect, useRef } from 'react'
 
 interface Props extends InputProps {
   label?: string

@@ -2,6 +2,7 @@ import { EmbroideryType } from '.prisma/client'
 
 import { Edit } from '@mui/icons-material'
 import { IconButton, Switch, Typography } from '@mui/material'
+
 import { memo, useCallback, useState } from 'react'
 
 import { useIsMounted } from '~/hooks/useIsMounted'

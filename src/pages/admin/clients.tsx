@@ -1,7 +1,9 @@
+import { useState } from 'react'
+
+import type { NextPage } from 'next'
+
 import { Add } from '@mui/icons-material'
 import { Container, Toolbar, IconButton } from '@mui/material'
-import type { NextPage } from 'next'
-import { useState } from 'react'
 
 import { ClientList } from '~/components/Clients/ClientList'
 import { ClientSearch } from '~/components/Clients/ClientSearch'

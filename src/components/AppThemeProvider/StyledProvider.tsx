@@ -1,5 +1,6 @@
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
 import React from 'react'
+
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
 import { ThemeProvider } from 'styled-components'
 
 import GlobalStyle from '~/styles/global'

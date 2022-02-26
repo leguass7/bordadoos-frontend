@@ -8,7 +8,7 @@ export const ClientSearch: React.FC = () => {
   const handleSearchChange = (search: string) => {
     const filter = search ? { search } : {}
     updateFilter({ search })
-    console.log('searching', search)
+    // console.log('searching', search)
   }
   return <SearchBar onChangeText={handleSearchChange} />
 }

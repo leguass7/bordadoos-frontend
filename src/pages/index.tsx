@@ -1,7 +1,8 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+
 import type { NextPage } from 'next'
 import { useSession } from 'next-auth/client'
 import { useRouter } from 'next/dist/client/router'
-import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { CircleLoading } from '~/components/CircleLoading'
 import { LayoutCenter } from '~/components/layouts/LayoutCenter'

@@ -1,7 +1,9 @@
-import { Button } from '@mui/material'
-import { useSession, signIn, signOut } from 'next-auth/client'
 import React, { useMemo } from 'react'
 import { FaGoogle, FaGithub } from 'react-icons/fa'
+
+import { useSession, signIn, signOut } from 'next-auth/client'
+
+import { Button } from '@mui/material'
 import styled from 'styled-components'
 
 type Props = {

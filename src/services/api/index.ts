@@ -4,7 +4,6 @@ import axios from 'axios'
 import { querystring } from '~/helpers/string'
 import type { IClientFilter, IResponseClientDto, IResponseClientsDto } from '~/serverSide/clients/client.dto'
 
-import type { IResponseApi } from './api.types'
 import { responseDto, responseError } from './utils'
 
 const api = axios.create({

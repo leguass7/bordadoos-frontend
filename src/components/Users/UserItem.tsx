@@ -2,6 +2,7 @@ import { User } from '.prisma/client'
 
 import { Edit } from '@mui/icons-material'
 import { Avatar, IconButton, Modal, Switch, Typography } from '@mui/material'
+
 import { memo, useCallback, useState } from 'react'
 
 import { useIsMounted } from '~/hooks/useIsMounted'

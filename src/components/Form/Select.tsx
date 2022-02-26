@@ -1,8 +1,9 @@
+import { useEffect, useRef } from 'react'
+
 import { FormControl, InputLabel, OutlinedInput } from '@mui/material'
 import MenuItem, { MenuItemProps } from '@mui/material/MenuItem'
 import MuiSelect, { SelectProps } from '@mui/material/Select'
 import { useField } from '@unform/core'
-import { useEffect, useRef } from 'react'
 
 interface Props extends SelectProps {
   items: MenuItemProps<'li', { label: string; value: string | number }>[]
