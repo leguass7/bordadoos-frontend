@@ -135,6 +135,8 @@ model Purchase {
   typeId       Int // EmbroideryTypeId
   categoryId   Int // EmbroideryPositionId
   qtd          Int?      @default(0)
+  createdBy    Int
+  updatedBy    Int
   actived      Boolean?  @default(true)
   done         Boolean?  @default(false)
   paid         Boolean?  @default(false)
