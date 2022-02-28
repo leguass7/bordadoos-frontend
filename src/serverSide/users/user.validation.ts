@@ -1,7 +1,7 @@
-import { User } from '@prisma/client'
-import { celebrate, Joi, Segments } from 'celebrate'
 import { NextApiResponse } from 'next'
 import { NextHandler } from 'next-connect'
+
+import { celebrate, Joi, Segments } from 'celebrate'
 
 import { removeInvalidValues } from '~/helpers/object'
 
