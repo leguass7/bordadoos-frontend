@@ -1,6 +1,4 @@
-import { NextApiResponse } from 'next'
-
-export interface IResponseApi extends NextApiResponse {
+export interface IResponseApi {
   success?: boolean
   message?: string | string[]
 }

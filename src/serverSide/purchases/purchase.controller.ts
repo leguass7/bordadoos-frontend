@@ -1,4 +1,4 @@
-import type { NextApiRequest } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { IResponseApi } from '../api.interface'
 import ErrorApi from '../ErrorApi'
@@ -7,7 +7,7 @@ import type { IRequestFilter, IResponsePaginatePurchaseDto, IResponsePurchase } 
 import type { IPurchaseService } from './purchase.service'
 
 function create(purchaseService: IPurchaseService) {
-  return async (req: IRequestFilter, res: IResponsePurchase) => {
+  return async (req: IRequestFilter, res: NextApiResponse<IResponsePurchase>) => {
     const { userId } = req.auth
 
     const purchase = await purchaseService.create({ ...req.body, updatedBy: userId, createdBy: userId })
@@ -18,7 +18,7 @@ function create(purchaseService: IPurchaseService) {
 }
 
 function update(purchaseService: IPurchaseService) {
-  return async (req: IRequestFilter, res: IResponsePurchase) => {
+  return async (req: IRequestFilter, res: NextApiResponse<IResponsePurchase>) => {
     const { userId } = req.auth
     const { purchaseId } = req.query
 
@@ -30,7 +30,7 @@ function update(purchaseService: IPurchaseService) {
 }
 
 function paginate(purchaseService: IPurchaseService) {
-  return async (req: NextApiRequest, res: IResponsePaginatePurchaseDto) => {
+  return async (req: NextApiRequest, res: NextApiResponse<IResponsePaginatePurchaseDto>) => {
     const { page, size, orderBy, order, ...filter } = req.query as PaginationQueryDto
     const paginateData = { page, size, orderBy, order }
 
@@ -40,14 +40,14 @@ function paginate(purchaseService: IPurchaseService) {
 }
 
 function remove(purchaseService: IPurchaseService) {
-  return async (req: IRequestFilter, res: IResponseApi) => {
+  return async (req: IRequestFilter, res: NextApiResponse<IResponseApi>) => {
     const { purchaseId } = req.query
     const { userId } = req.auth
 
     const success = await purchaseService.deletePurchase(purchaseId, userId)
     if (!success) throw ErrorApi({ status: 500, message: 'Error on delete purchase' })
 
-    return res.status(202).json({ success, userId })
+    return res.status(202).json({ success })
   }
 }
 
