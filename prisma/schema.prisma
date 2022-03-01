@@ -28,6 +28,7 @@ model User {
 
   createdClients Client[] @relation(name: "clientCreatedUser")
   updatedClients Client[] @relation(name: "clientUpdatedUser")
+  createdPurchases Purchase[] @relation(name: "purchaseCreatedUser")
 
 
   @@map(name: "users")
@@ -91,6 +92,7 @@ model Client {
 
   createdUser User  @relation(name: "clientCreatedUser", fields: [createdBy], references: [id])
   updatedUser User? @relation(name: "clientUpdatedUser", fields: [updatedBy], references: [id])
+  purchases Purchase[]
 
   @@map(name: "clients")
 }
@@ -107,6 +109,7 @@ model EmbroideryType {
   updatedAt   DateTime? @updatedAt
 
   positions EmbroideryPosition[]
+  purchases Purchase[]
 
   @@map(name: "embroidery_types")
 }
@@ -124,6 +127,7 @@ model EmbroideryPosition {
   updatedAt   DateTime? @updatedAt
 
   embroidery EmbroideryType @relation(fields: [embType], references: [id])
+  purchases Purchase[]
 
   @@map(name: "embroidery_positions")
 }
@@ -132,15 +136,22 @@ model Purchase {
   id           Int       @id @default(autoincrement())
   value        Float     @default(0)
   clientId     Int
-  typeId       Int // EmbroideryTypeId
-  categoryId   Int // EmbroideryPositionId
+  typeId       Int       // EmbroideryTypeId
+  categoryId   Int       // EmbroideryPositionId
   qtd          Int?      @default(0)
   createdBy    Int
   updatedBy    Int
   actived      Boolean?  @default(true)
   done         Boolean?  @default(false)
   paid         Boolean?  @default(false)
-  deliveryDate DateTime
+  deliveryDate DateTime? @db.Date
   createdAt    DateTime? @default(now()) @db.Timestamp(0)
   updatedAt    DateTime? @updatedAt
+
+  type EmbroideryType    @relation(fields: [typeId], references: [id])
+  category EmbroideryPosition  @relation(fields: [categoryId], references: [id])
+  client Client  @relation(fields: [clientId], references: [id])
+  createdUser User  @relation(name: "purchaseCreatedUser", fields: [createdBy], references: [id])
+
+  @@map(name: "purchases")
 }
