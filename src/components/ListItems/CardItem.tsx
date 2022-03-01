@@ -21,7 +21,7 @@ export const CardItem: React.FC<Props> = ({
   return (
     <CardContainer spacing={spacing} width={width}>
       {/* <div style={{ padding: spacing, width }}> */}
-      <Card {...cardProps}>
+      <Card style={{ padding: `${spacing}px` }} {...cardProps}>
         {children}
         {CollapsibleContent ? (
           <Collapse in={!!expand}>
@@ -62,7 +62,7 @@ const CardContainer = styled.div<CardContainerProps>`
   padding: ${props => `${props.spacing}px`};
   width: 100%;
 
-  @media (min-width: 420px) {
+  @media (min-width: 520px) {
     width: 50%;
   }
 
