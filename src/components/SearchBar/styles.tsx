@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 
-export const SearchWrapper = styled.div<{ hasError?: boolean }>`
-  width: 100%;
+export const SearchWrapper = styled.div<{ hasError?: boolean; size?: string }>`
+  width: ${props => props?.size ?? '100%'};
   display: flex;
   flex-direction: row;
   justify-content: space-between;

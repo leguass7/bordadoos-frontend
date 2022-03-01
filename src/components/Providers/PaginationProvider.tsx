@@ -17,7 +17,7 @@ export interface IPaginationContext<T> {
   url: string
   refreshData: (filter?: any /* Completar com padrão do provider de filtro no futuro */) => void
   filter: Record<string, any>
-  updateFilter: (newFilterData: Record<string, string>) => void
+  updateFilter: (newFilterData: Record<string, string | number>) => void
   clearFilter: (persistData?: Record<string, string>) => void
 }
 

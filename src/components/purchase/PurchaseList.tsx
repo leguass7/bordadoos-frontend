@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
+import { Container } from '@mui/material'
 import { Purchase } from '@prisma/client'
 
 import { CircleLoading } from '../CircleLoading'
-import { Container } from '../Container'
 import { usePagination } from '../Providers/PaginationProvider'
 import { Paragraph } from '../shared/web/src/styled'
 import { PurchaseItem } from './PurchaseItem'

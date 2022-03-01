@@ -19,12 +19,12 @@ async function paginate(
   pagination: PaginationQueryDto,
   filter: IPurchaseFilter = {}
 ): Promise<PaginationDto<Purchase>> {
-  const { search } = filter
+  const { search, clientId } = filter
   const where: PrismaTypes.PurchaseWhereInput = { id: { not: 0 } }
 
   if (search)
     where.AND = {
-      OR: [{ deliveryDate: search }]
+      OR: [{ deliveryDate: search }, { clientId }]
     }
 
   const purchases = await PrismaService.paginate<Purchase>({

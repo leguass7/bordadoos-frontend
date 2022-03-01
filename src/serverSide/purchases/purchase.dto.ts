@@ -6,6 +6,7 @@ import { AuthorizedApiRequest } from '../auth/auth-protect.middleware'
 export interface IPurchaseFilter {
   search?: string
   purchaseId?: number
+  clientId?: number
   actived?: boolean
 }
 
