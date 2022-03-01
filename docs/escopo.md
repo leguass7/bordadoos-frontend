@@ -143,7 +143,9 @@ Deve ser aplicado ao projeto a estrutura de _Integração Contínua/Entrega Cont
 | edição do formulário de tipos de bordados |   ~2h    |    1h20m    |
 | listagem das posições de bordados         |   ~2h    |     40m     |
 | incluir/editar posições dos bordados      |   ~2h    |    1h40m    |
+| servidor - crud de compras                |   ~1h    |    1h06m    |
+| listagem de ordens de serviço (OS)        |   ~2h    |    2h16m    |
 | -                                         |    -     |      -      |
-| **Total**                                 | **~21h** | **~21h06m** |
+| **Total**                                 | **~21h** | **~23h48m** |
 
 ---

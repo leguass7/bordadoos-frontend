@@ -1,11 +1,12 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+
 import { Button, ButtonGroup } from '@mui/material'
 import { EmbroideryPosition, EmbroideryType } from '@prisma/client'
 import { Form } from '@unform/web'
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { api } from '~/services/api'
+import { api, getDefault } from '~/services/api'
 
 import { CircleLoading } from '../CircleLoading'
 import { Input } from '../Form/Input'
@@ -28,10 +29,10 @@ export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, on
     if (!embTypes.length) {
       setLoading(true)
 
-      const { data: response } = await api.get('embroidery/types?size=1000')
+      const { success = false, data: apiData } = await getDefault('embroidery/types?size=1000')
       if (isMounted.current) {
         setLoading(false)
-        if (response && response.success) setEmbTypes(response?.data)
+        if (success) setEmbTypes(apiData)
       }
     }
   }, [isMounted, embTypes.length])
@@ -40,10 +41,10 @@ export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, on
     if (embPosId && embPosId !== data.id) {
       setLoading(true)
 
-      const { data: response } = await api.get(`/embroidery/positions/${embPosId}`)
+      const { success = false, data: apiData } = await getDefault(`/embroidery/positions/${embPosId}`)
       if (isMounted.current) {
         setLoading(false)
-        if (response && response.success) setData(response.data)
+        if (success) setData(apiData)
       }
     }
   }, [isMounted, embPosId, data.id])

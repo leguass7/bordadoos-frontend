@@ -1,6 +1,8 @@
-import { ArrowBack } from '@mui/icons-material'
-import { useRouter } from 'next/dist/client/router'
 import React, { useCallback, useMemo } from 'react'
+
+import { useRouter } from 'next/dist/client/router'
+
+import { ArrowBack } from '@mui/icons-material'
 
 import { VariantColorsTypes } from '../AppThemeProvider/types'
 import { useAppTheme } from '../AppThemeProvider/useAppTheme'

@@ -1,11 +1,13 @@
+import { useCallback, useEffect, useState } from 'react'
+
 import { Button, ButtonGroup } from '@mui/material'
 import { User } from '@prisma/client'
 import { Form } from '@unform/web'
-import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { api } from '~/services/api'
+import { getDefault, putDefault } from '~/services/api'
+import { IResponseUser } from '~/services/api/api.types'
 
 import { CircleLoading } from '../CircleLoading'
 import { Input } from '../Form/Input'
@@ -27,12 +29,10 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initial
   const fetchData = useCallback(async () => {
     if (userId) {
       setLoading(true)
-      const { data: response } = await api.get(`/users/${userId}`)
+      const { success = false, user = {} } = await getDefault<IResponseUser>(`/users/${userId}`)
       if (isMounted.current) {
         setLoading(false)
-        if (response && response.success) {
-          setData(response.user)
-        }
+        if (success) setData(user)
       }
     }
   }, [isMounted, userId])
@@ -44,12 +44,15 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initial
   const handleSubmit = useCallback(
     async (values: Partial<User>) => {
       if (userId) {
-        api.put(`users/${userId}`, values).then(() => {
+        setLoading(true)
+        await putDefault(`users/${userId}`, values)
+        if (isMounted.current) {
+          setLoading(false)
           if (onSuccess) onSuccess()
-        })
+        }
       }
     },
-    [userId, onSuccess]
+    [userId, onSuccess, isMounted]
   )
 
   return (

@@ -17,7 +17,7 @@ model User {
   cpf           String?   @db.VarChar(15)
   cnpj          String?   @db.VarChar(18)
   cellPhone     String?   @db.VarChar(20)
-  level         Int?      // @db.UnsignedInt
+  level         Int? // @db.UnsignedInt
   meta          Json?
   image         String?   @db.Text
   actived       Boolean?  @default(false)
@@ -28,6 +28,7 @@ model User {
 
   createdClients Client[] @relation(name: "clientCreatedUser")
   updatedClients Client[] @relation(name: "clientUpdatedUser")
+  createdPurchases Purchase[] @relation(name: "purchaseCreatedUser")
 
 
   @@map(name: "users")
@@ -55,75 +56,102 @@ model Account {
 }
 
 model Session {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   userId       Int
   expires      DateTime
-  sessionToken String   @unique
-  accessToken  String   @unique
+  sessionToken String    @unique
+  accessToken  String    @unique
   createdAt    DateTime? @default(now()) @db.Timestamp(0)
   updatedAt    DateTime? @updatedAt
-  user         User     @relation(fields: [userId], references: [id])
+  user         User      @relation(fields: [userId], references: [id])
 
   @@map(name: "sessions")
 }
 
 model VerificationRequest {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   identifier String
-  token      String   @unique
+  token      String    @unique
   expires    DateTime
-  createdAt  DateTime?  @default(now())
+  createdAt  DateTime? @default(now())
   updatedAt  DateTime? @updatedAt
 
   @@map(name: "verification_requests")
 }
 
 model Client {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
-  phone     String   @unique
-  doc       String?  @unique
-  actived   Boolean  @default(true)
+  phone     String    @unique
+  doc       String?   @unique
+  actived   Boolean   @default(true)
   createdBy Int
   updatedBy Int?
-  createdAt DateTime?  @default(now()) @db.Timestamp(0)
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
   updatedAt DateTime? @updatedAt
 
-  createdUser User   @relation(name: "clientCreatedUser", fields: [createdBy], references: [id])
-  updatedUser User?  @relation(name: "clientUpdatedUser", fields: [updatedBy], references: [id])
+  createdUser User  @relation(name: "clientCreatedUser", fields: [createdBy], references: [id])
+  updatedUser User? @relation(name: "clientUpdatedUser", fields: [updatedBy], references: [id])
+  purchases Purchase[]
 
   @@map(name: "clients")
 }
 
 model EmbroideryType {
-  id          Int     @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   label       String
   description String?
-  actived     Boolean? @default(true)
+  actived     Boolean?  @default(true)
   image       String?
   createdBy   Int
   updatedBy   Int?
   createdAt   DateTime? @default(now()) @db.Timestamp(0)
   updatedAt   DateTime? @updatedAt
 
-  positions   EmbroideryPosition[]
+  positions EmbroideryPosition[]
+  purchases Purchase[]
 
   @@map(name: "embroidery_types")
 }
 
 model EmbroideryPosition {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   embType     Int
   label       String
   description String?
-  actived     Boolean? @default(true)
+  actived     Boolean?  @default(true)
   image       String?
   createdBy   Int
   updatedBy   Int?
   createdAt   DateTime? @default(now()) @db.Timestamp(0)
   updatedAt   DateTime? @updatedAt
 
-  embroidery  EmbroideryType @relation(fields: [embType], references: [id])
+  embroidery EmbroideryType @relation(fields: [embType], references: [id])
+  purchases Purchase[]
 
   @@map(name: "embroidery_positions")
+}
+
+model Purchase {
+  id           Int       @id @default(autoincrement())
+  value        Float     @default(0)
+  clientId     Int
+  typeId       Int       // EmbroideryTypeId
+  categoryId   Int       // EmbroideryPositionId
+  qtd          Int?      @default(0)
+  createdBy    Int
+  updatedBy    Int
+  actived      Boolean?  @default(true)
+  done         Boolean?  @default(false)
+  paid         Boolean?  @default(false)
+  deliveryDate DateTime? @db.Date
+  createdAt    DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime? @updatedAt
+
+  type EmbroideryType    @relation(fields: [typeId], references: [id])
+  category EmbroideryPosition  @relation(fields: [categoryId], references: [id])
+  client Client  @relation(fields: [clientId], references: [id])
+  createdUser User  @relation(name: "purchaseCreatedUser", fields: [createdBy], references: [id])
+
+  @@map(name: "purchases")
 }

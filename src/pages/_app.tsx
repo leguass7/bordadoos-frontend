@@ -1,14 +1,14 @@
 import '../styles/globals.css'
 import 'react-toastify/dist/ReactToastify.min.css'
-import { CacheProvider, EmotionCache } from '@emotion/react'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
-import ptBr from 'date-fns/locale/pt-BR'
-
 import { ToastContainer } from 'react-toastify'
 
 import { Provider as ProviderAuth } from 'next-auth/client'
 import type { AppProps } from 'next/app'
+
+import { CacheProvider, EmotionCache } from '@emotion/react'
+import AdapterDateFns from '@mui/lab/AdapterDateFns'
+import LocalizationProvider from '@mui/lab/LocalizationProvider'
+import ptBr from 'date-fns/locale/pt-BR'
 
 import { AppThemeProvider } from '~/components/AppThemeProvider'
 import createEmotionCache from '~/config/createEmotionCache'

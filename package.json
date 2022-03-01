@@ -1,6 +1,6 @@
 {
   "name": "bordadoos-frontend",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "scripts": {
     "release": "standard-version --no-verify --skip.tag --release-as patch",
@@ -23,7 +23,7 @@
     "@mui/lab": "^5.0.0-alpha.56",
     "@mui/material": "^5.1.1",
     "@next/bundle-analyzer": "^12.0.4",
-    "@prisma/client": "^3.9.0",
+    "@prisma/client": "^3.10.0",
     "@unform/core": "^2.1.6",
     "@unform/web": "^2.1.6",
     "axios": "^0.24.0",
@@ -65,7 +65,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "faker": "^5.5.3",
     "prettier": "^2.4.1",
-    "prisma": "^3.9.0",
+    "prisma": "^3.10.0",
     "standard-version": "^9.3.2",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"

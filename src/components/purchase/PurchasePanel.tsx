@@ -1,8 +1,6 @@
-import { Card, Grid } from '@mui/material'
 import React from 'react'
 
-import { CardTitle } from '~/components/CardTitle'
-import { SpacedContainer } from '~/components/styled'
+import { Grid } from '@mui/material'
 
 import { PurchaseProvider } from './PurchaseProvider'
 import { SelectCustomer } from './SelectCustomer'

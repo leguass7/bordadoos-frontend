@@ -4,7 +4,7 @@ import { Fade } from '@mui/material'
 import type { Client } from '@prisma/client'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { getCustomer } from '~/services/api'
+import { getCustomer } from '~/services/api/customer'
 
 import { CircleLoading } from '../CircleLoading'
 import { Text, Span, FlexContainer } from '../styled'

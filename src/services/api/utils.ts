@@ -1,14 +1,14 @@
 import { AxiosError, AxiosResponse } from 'axios'
-import camelcaseKeys from 'camelcase-keys'
 
-import type { IResponseApi } from './api.types'
+import { ResponseApi } from '.'
 
 export function responseDto(res: AxiosResponse): AxiosResponse {
-  const axiosPayload = res && res?.data
+  const axiosData = res && res?.data
 
-  const data: IResponseApi = {
-    ...axiosPayload,
-    data: camelcaseKeys(axiosPayload, { deep: true })
+  const data: ResponseApi = {
+    ...axiosData,
+    success: !!(res?.status < 400)
+    // ...camelcaseKeys(axiosData, { deep: true })
   }
 
   return { ...res, data }

@@ -1,11 +1,12 @@
+import { memo, useCallback, useState } from 'react'
+
 import Edit from '@mui/icons-material/Edit'
 import { CardActions, IconButton, Switch, Typography, CardMedia, CardContent, Collapse } from '@mui/material'
 import { EmbroideryType } from '@prisma/client'
-import { memo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { api } from '~/services/api'
+import { api, putDefault } from '~/services/api'
 
 import { CardExpandMore, CardItem } from '../ListItems/CardItem'
 
@@ -46,7 +47,7 @@ export const EmbroideryTypeItem: React.FC<Props> = ({
 
       setLoading(true)
 
-      await api.put(`/embroidery/types/${id}`, { actived: newActived })
+      await putDefault(`/embroidery/types/${id}`, { actived: newActived })
       if (isMounted.current) {
         setLoading(false)
       }

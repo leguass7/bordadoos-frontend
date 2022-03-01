@@ -1,7 +1,8 @@
+import { useEffect, useRef } from 'react'
+
 import type { NextPage } from 'next'
 import { signOut, useSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
-import { useEffect, useRef } from 'react'
 
 import { useAppTheme } from '~/components/AppThemeProvider/useAppTheme'
 import { CircleLoading } from '~/components/CircleLoading'

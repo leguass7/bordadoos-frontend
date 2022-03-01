@@ -1,10 +1,7 @@
-import type { Client } from '@prisma/client'
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 
-import { querystring } from '~/helpers/string'
-import type { IClientFilter, IResponseClientDto, IResponseClientsDto } from '~/serverSide/clients/client.dto'
+import { normalizeUrl } from '~/helpers/string'
 
-import type { IResponseApi } from './api.types'
 import { responseDto, responseError } from './utils'
 
 const api = axios.create({
@@ -16,34 +13,41 @@ api.interceptors.response.use(responseDto, responseError)
 
 export { api }
 
-export async function findAllCustomers(params: IClientFilter): Promise<IResponseClientsDto> {
-  const query = `?${querystring(params)}`
-  const response = await api.get<IResponseClientsDto>(`/clients/search${query}`)
-  const data = response?.data
-  return {
-    success: !!data?.success,
-    customers: data?.customers || []
-  }
+export type ResponseApi<T = any> = T & {
+  success?: boolean
+  message?: string | string[]
 }
 
-export async function getCustomer(customerId: number): Promise<IResponseClientDto> {
-  const response = await api.get<IResponseClientDto>(`/clients/${customerId}`)
-  const data = response?.data
-  return {
-    success: !!data?.success,
-    client: data?.client
-  }
+export async function getDefault<T = any>(path?: string, config?: AxiosRequestConfig): Promise<ResponseApi<T>> {
+  const url = normalizeUrl(path)
+  const response = await api.get(url, config)
+  return response && response.data
 }
 
-export async function storeCustomer(formData: Partial<Client>): Promise<IResponseClientDto> {
-  const { id: clientId } = formData
-  const action = clientId ? api.put : api.post
-  const url = `/clients${clientId ? `/${clientId}` : ``}`
-  const response = await action<IResponseClientDto>(url, formData)
-  const data = response?.data
-  return {
-    success: !!data?.success,
-    client: data?.client,
-    clientId: data?.client?.id
-  }
+export async function postDefault<T = any, P = any>(
+  path: string,
+  payload: P,
+  config?: AxiosRequestConfig
+): Promise<ResponseApi<T>> {
+  const url = normalizeUrl(path)
+  const response = await api.post(url, payload, config)
+
+  return response && response.data
+}
+
+export async function putDefault<T = any, P = any>(
+  path: string,
+  payload: P,
+  config?: AxiosRequestConfig
+): Promise<ResponseApi<T>> {
+  const url = normalizeUrl(path)
+  const response = await api.put(url, payload, config)
+
+  return response && response.data && response.data
+}
+
+export async function deleteDefault<T = any>(path: string, config?: AxiosRequestConfig): Promise<ResponseApi<T>> {
+  const url = normalizeUrl(path)
+  const response = await api.delete(url, config)
+  return response && response.data
 }
