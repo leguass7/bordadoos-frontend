@@ -5,13 +5,13 @@ import { ncConfig } from '~/serverSide/ErrorApi'
 import { preparePagination } from '~/serverSide/middlewares/paginate'
 import { factoryPurchaseController } from '~/serverSide/purchases/purchase.controller'
 import { PurchaseService } from '~/serverSide/purchases/purchase.service'
-import { createPurchasesSchema, listPurchasesSchema } from '~/serverSide/purchases/purchase.validation'
+import { createPurchasesSchema } from '~/serverSide/purchases/purchase.validation'
 
 const controller = factoryPurchaseController(PurchaseService)
 
 const handler = nc(ncConfig)
-  .get(listPurchasesSchema, preparePagination, controller.paginate)
   .use(authProtect)
+  .get(preparePagination, controller.paginate)
   .post(createPurchasesSchema, controller.create)
 
 export default handler

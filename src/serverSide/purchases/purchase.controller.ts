@@ -35,6 +35,7 @@ function paginate(purchaseService: IPurchaseService) {
     const paginateData = { page, size, orderBy, order }
 
     const { data, ...pagination } = await purchaseService.paginate(paginateData, filter)
+
     return res.status(200).json({ success: true, data, ...pagination })
   }
 }

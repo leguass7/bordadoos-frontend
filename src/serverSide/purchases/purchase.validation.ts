@@ -1,13 +1,6 @@
-import { Purchase } from '@prisma/client'
 import { Segments, celebrate, Joi } from 'celebrate'
 
-export const listPurchasesSchema = celebrate({
-  [Segments.QUERY]: {
-    search: Joi.string()
-  }
-})
-
-export const createPurchasesSchema = celebrate<Purchase, Purchase, Purchase, Purchase>({
+export const createPurchasesSchema = celebrate({
   [Segments.BODY]: {
     actived: Joi.boolean(),
     done: Joi.boolean(),
