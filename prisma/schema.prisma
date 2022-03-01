@@ -130,7 +130,7 @@ model EmbroideryPosition {
 
 model Purchase {
   id           Int       @id @default(autoincrement())
-  value        Decimal?  @default(0)
+  value        Float     @default(0)
   clientId     Int
   typeId       Int // EmbroideryTypeId
   categoryId   Int // EmbroideryPositionId
