@@ -19,8 +19,8 @@ async function paginate(
   pagination: PaginationQueryDto,
   filter: IPurchaseFilter = {}
 ): Promise<PaginationDto<Purchase>> {
-  const { search, actived = false } = filter
-  const where: PrismaTypes.PurchaseWhereInput = { id: { not: 0 }, actived }
+  const { search } = filter
+  const where: PrismaTypes.PurchaseWhereInput = { id: { not: 0 } }
 
   if (search)
     where.AND = {
