@@ -41,8 +41,6 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initial
     fetchData()
   }, [fetchData])
 
-  console.log(userId)
-
   const handleSubmit = useCallback(
     async (values: Partial<User>) => {
       if (userId) {
