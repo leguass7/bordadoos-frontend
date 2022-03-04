@@ -2,15 +2,20 @@ import { useCallback } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { Container } from '@mui/material'
-import { Purchase } from '@prisma/client'
+import { Prisma, Purchase } from '@prisma/client'
 
 import { CircleLoading } from '../CircleLoading'
 import { usePagination } from '../Providers/PaginationProvider'
 import { Paragraph } from '../shared/web/src/styled'
 import { PurchaseItem } from './PurchaseItem'
 
+export type PurchaseWithRelations = Prisma.PurchaseGetPayload<{
+  include: { category: true; client: true; type: true }
+}>
+// We are using select, so some fields could not me found
+
 export const PurchaseList: React.FC = () => {
-  const { data, hasMore, fetchMoreData, pagination } = usePagination<Purchase>()
+  const { data, hasMore, fetchMoreData, pagination } = usePagination<PurchaseWithRelations>()
 
   const renderMessage = useCallback((text: string) => {
     return (
@@ -34,9 +39,11 @@ export const PurchaseList: React.FC = () => {
         }
         endMessage={renderMessage('FIM')}
       >
-        {data?.map?.(item => {
-          return <PurchaseItem key={`purchase-${item?.id}`} {...item} />
-        })}
+        <div style={{ display: 'flex', flexFlow: 'row wrap', padding: 4 }}>
+          {data?.map?.(item => {
+            return <PurchaseItem key={`purchase-${item?.id}`} {...item} />
+          })}
+        </div>
       </InfiniteScroll>
     </div>
   )

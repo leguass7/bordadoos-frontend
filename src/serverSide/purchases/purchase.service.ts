@@ -21,16 +21,50 @@ async function paginate(
 ): Promise<PaginationDto<Purchase>> {
   const { search, clientId } = filter
   const where: PrismaTypes.PurchaseWhereInput = { id: { not: 0 } }
-
   if (search)
     where.AND = {
       OR: [{ deliveryDate: search }, { clientId }]
     }
 
+  const allowedFields: (keyof Purchase)[] = [
+    'id',
+    'createdAt',
+    'deliveryDate',
+    'actived',
+    'paid',
+    'done',
+    'qtd',
+    'value'
+  ]
+
+  const spreadAllowed = (fields: (keyof Purchase)[]) =>
+    fields.reduce((ac, at) => {
+      ac[at] = true
+      return ac
+    }, {})
+
   const purchases = await PrismaService.paginate<Purchase>({
     model: 'Purchase',
     ...pagination,
-    where
+    where,
+    select: {
+      ...spreadAllowed(allowedFields),
+      category: {
+        select: {
+          label: true
+        }
+      },
+      client: {
+        select: {
+          name: true
+        }
+      },
+      type: {
+        select: {
+          label: true
+        }
+      }
+    }
   })
 
   return purchases

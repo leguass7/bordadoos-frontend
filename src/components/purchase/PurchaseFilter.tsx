@@ -47,10 +47,10 @@ export const PurchaseFilter: React.FC = () => {
           {/* </IconButton> */}
         </PageTitle>
       </Container>
-      <Container>
+      <Container style={{ marginBottom: '4px' }}>
         <SearchBar onChangeText={handleSearchChange} />
         <ButtonGroup style={{ margin: '0 4px' }}>
-          <Button variant="outlined" color="primary" onClick={() => setOpenSearch(true)}>
+          <Button variant="contained" color="primary" onClick={() => setOpenSearch(true)}>
             Procurar cliente
           </Button>
         </ButtonGroup>

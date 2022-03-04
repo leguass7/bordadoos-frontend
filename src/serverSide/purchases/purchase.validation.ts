@@ -19,15 +19,15 @@ export const updatePurchasesSchema = celebrate({
     purchaseId: Joi.number().required()
   },
   [Segments.BODY]: {
-    actived: Joi.boolean(),
-    done: Joi.boolean(),
-    paid: Joi.boolean(),
-    categoryId: Joi.number(),
-    typeId: Joi.number(),
-    clientId: Joi.number(),
-    qtd: Joi.number(),
-    value: Joi.number(),
-    deliveryDate: Joi.date()
+    // actived: Joi.boolean(),
+    done: Joi.boolean()
+    // paid: Joi.boolean(),
+    // categoryId: Joi.number(),
+    // typeId: Joi.number(),
+    // clientId: Joi.number(),
+    // qtd: Joi.number(),
+    // value: Joi.number(),
+    // deliveryDate: Joi.date()
   }
 })
 
