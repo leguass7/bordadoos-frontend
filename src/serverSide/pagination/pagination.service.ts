@@ -12,6 +12,7 @@ interface Props extends PaginationQueryDto {
   orderBy?: string
   order?: 'asc' | 'desc'
   include?: any
+  select?: any
   where?: any
 }
 
@@ -21,6 +22,7 @@ async function paginate<T = unknown>({
   page = 1,
   orderBy,
   order,
+  select,
   include,
   where
 }: Props): Promise<PaginationDto<T>> {
@@ -45,6 +47,7 @@ async function paginate<T = unknown>({
   try {
     const results = await prismaModel.findMany({
       ...findManyArgs,
+      select,
       take: size
     })
     return {
