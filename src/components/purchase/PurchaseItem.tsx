@@ -1,76 +1,41 @@
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 
-import { CardActions, Switch, Typography } from '@mui/material'
-import { Client, EmbroideryPosition, EmbroideryType, Purchase } from '@prisma/client'
+import { Edit } from '@mui/icons-material'
+import { IconButton, Switch, Typography } from '@mui/material'
+import { Prisma } from '@prisma/client'
 
+import { formatDate, toMoney } from '~/helpers/string'
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { getDefault, putDefault } from '~/services/api'
+import { putDefault } from '~/services/api'
 
 import { CircleLoading } from '../CircleLoading'
-import { CardItem } from '../ListItems/CardItem'
-import { ItemLine, SwitchContainer } from './styles'
+import { CardColumn, CardItem, CardRow } from '../ListItems/CardItem'
+import { PurchaseWithRelations } from './PurchaseList'
 
-interface Props extends Purchase {}
+interface Props extends PurchaseWithRelations {}
+
+const overflowTextProps = {
+  textOverflow: 'ellipsis',
+  noWrap: true,
+  overflow: 'hidden'
+}
 
 const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
-  const { value = 0, done, paid, clientId, id, actived, typeId, categoryId } = props
-  const [itemActived, setItemActived] = useState(actived)
-
-  const [client, setClient] = useState<Partial<Client>>({})
-  const [category, setCategory] = useState<Partial<EmbroideryPosition>>({})
-  const [type, setType] = useState<Partial<EmbroideryType>>({})
+  const { value = 0, qtd = 0, done = false, id, category, client, type, createdAt, deliveryDate } = props
+  const [itemDone, setItemDone] = useState(done)
 
   const isMounted = useIsMounted()
   const [loading, setLoading] = useState(false)
 
-  const fetchClient = useCallback(async () => {
-    if (clientId) {
-      setLoading(true)
-      const { client, success } = await getDefault<{ client: Client }>(`/users/${clientId}`)
-      if (isMounted.current) {
-        setLoading(false)
-        if (success) setClient(client)
-      }
-    }
-  }, [isMounted, clientId])
-
-  const fetchType = useCallback(async () => {
-    if (typeId) {
-      setLoading(true)
-      const { data, success } = await getDefault<{ data: EmbroideryType }>(`/embroidery/types/${typeId}`)
-      if (isMounted.current) {
-        setLoading(false)
-        if (success) setType(data)
-      }
-    }
-  }, [isMounted, typeId])
-
-  const fetchCategory = useCallback(async () => {
-    if (categoryId) {
-      setLoading(true)
-      const { data, success } = await getDefault<{ data: EmbroideryPosition }>(`/embroidery/positions/${categoryId}`)
-      if (isMounted.current) {
-        setLoading(false)
-        if (success) setCategory(data)
-      }
-    }
-  }, [isMounted, categoryId])
-
-  useEffect(() => {
-    fetchClient()
-    fetchType()
-    fetchCategory()
-  }, [fetchClient, fetchType, fetchCategory])
-
   const toggleActived = useCallback(
     async e => {
       if (id) {
-        const newActived = e.target.checked
-        setItemActived(newActived)
+        const newDone = e.target.checked
+        setItemDone(newDone)
 
         setLoading(true)
 
-        await putDefault(`/purchases/${id}`, { actived: newActived })
+        await putDefault(`/purchases/${id}`, { done: newDone })
         if (isMounted.current) {
           setLoading(false)
         }
@@ -81,49 +46,52 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
 
   return (
     <>
-      <CardItem spacing={4} width="33.33%">
-        <ItemLine hideShadow>
-          <Typography alignSelf="center" variant="h5" display="block">
-            Ordem de serviço
-          </Typography>
-          <Typography alignSelf="center" variant="subtitle1" display="block">
-            R$ {String(value).padEnd(4, ',00')}
-          </Typography>
-        </ItemLine>
-        <ItemLine color="#dfdfdf">
-          <Typography variant="h6">Informações do cliente:</Typography>
-          <Typography component="span" pl={2}>
-            nome: {client?.name ?? 'Não informado'}
-          </Typography>
-          <Typography component="span" pl={2}>
-            telefone: {client?.phone ?? 'Não informado'}
-          </Typography>
-        </ItemLine>
-        <ItemLine color="#dfdfdf">
-          <Typography variant="h6">Informações do bordado:</Typography>
-          <Typography component="span" pl={2}>
-            Tipo do bordado: {type?.label ?? 'Não informado'}
-          </Typography>
-          <Typography component="span" pl={4}>
-            {type?.description}
-          </Typography>
-          <Typography component="span" pl={2}>
-            Posição do bordado: {category?.label ?? 'Não informado'}
-          </Typography>
-          <Typography component="span" pl={4}>
-            {category?.description ?? 'Não informado'}
-          </Typography>
-        </ItemLine>
-        <CardActions>
-          <SwitchContainer>
-            <Switch name="actived" checked={itemActived} color="info" onChange={toggleActived} disabled={loading} />
-            <Typography pr={2} variant="caption" color="GrayText" htmlFor="actived" component="label">
-              ativo
+      <CardItem spacing={4} width="50%" breakpoints={{ mobile: '420px' }}>
+        <CardRow align="stretch" justify="stretch">
+          <CardColumn expand={1} align="flex-start">
+            <Typography variant="subtitle1" {...overflowTextProps}>
+              {type?.label ?? '--'} {'>'} {category?.label ?? '--'}
             </Typography>
-          </SwitchContainer>
-        </CardActions>
+            <Typography variant="h6" {...overflowTextProps}>
+              {client?.name ?? '--'}
+            </Typography>
+            <Switch name="done" checked={itemDone} color="info" onChange={toggleActived} disabled={loading} />
+            <Typography pl={2} variant="caption" color="GrayText" htmlFor="done" component="label">
+              Finalizado
+            </Typography>
+          </CardColumn>
+          <CardColumn expand={1}>
+            <Typography variant="subtitle1" {...overflowTextProps}>
+              {qtd}x
+            </Typography>
+            <Typography variant="subtitle1" {...overflowTextProps}>
+              {toMoney(value)}
+            </Typography>
+            <Typography variant="subtitle1" {...overflowTextProps}>
+              total: {toMoney(value * qtd)}
+            </Typography>
+          </CardColumn>
+          <CardColumn expand={1} align="flex-end">
+            <Typography variant="caption" color="GrayText" {...overflowTextProps}>
+              data de criação
+            </Typography>
+            <Typography variant="body1" {...overflowTextProps}>
+              {createdAt && formatDate(createdAt, 'dd/MM/yyyy')}
+            </Typography>
+            <Typography variant="caption" color="GrayText" {...overflowTextProps}>
+              data de entrega
+            </Typography>
+            <Typography variant="body1" {...overflowTextProps}>
+              {deliveryDate && formatDate(deliveryDate, 'dd/MM/yyyy')}
+            </Typography>
+            <CardRow justify="flex-end">
+              <IconButton onClick={() => {}}>
+                <Edit color="info" />
+              </IconButton>
+            </CardRow>
+          </CardColumn>
+        </CardRow>
       </CardItem>
-      {loading ? <CircleLoading /> : null}
     </>
   )
 }
