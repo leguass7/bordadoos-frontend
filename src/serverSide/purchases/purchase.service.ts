@@ -26,7 +26,16 @@ async function paginate(
       OR: [{ deliveryDate: search }, { clientId }]
     }
 
-  const allowedFields: (keyof Purchase)[] = ['createdAt', 'deliveryDate', 'actived', 'paid', 'done', 'qtd', 'value']
+  const allowedFields: (keyof Purchase)[] = [
+    'id',
+    'createdAt',
+    'deliveryDate',
+    'actived',
+    'paid',
+    'done',
+    'qtd',
+    'value'
+  ]
 
   const spreadAllowed = (fields: (keyof Purchase)[]) =>
     fields.reduce((ac, at) => {
