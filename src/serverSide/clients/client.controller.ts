@@ -78,9 +78,9 @@ function remove(clientService: IClientService) {
 
 function search(clientService: IClientService) {
   return async (req: IRequestSearchClientDto, res: NextApiResponse<IResponseClientsDto>) => {
-    const { query, auth } = req
+    const { query } = req
     const { search } = query
-    if (!search) return res.status(200).json({ success: true, customers: [] })
+    // if (!search) return res.status(200).json({ success: true, customers: [] })
 
     const customers = await clientService.search({ search })
     return res.status(201).json({ success: true, customers })
