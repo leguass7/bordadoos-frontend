@@ -2,14 +2,13 @@ import { memo, useCallback, useState } from 'react'
 
 import { Edit } from '@mui/icons-material'
 import { IconButton, Switch, Typography } from '@mui/material'
-import { Prisma } from '@prisma/client'
 
 import { formatDate, toMoney } from '~/helpers/string'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { putDefault } from '~/services/api'
+import { Column, Row } from '~/styles/grid'
 
-import { CircleLoading } from '../CircleLoading'
-import { CardColumn, CardItem, CardRow } from '../ListItems/CardItem'
+import { CardItem } from '../ListItems/CardItem'
 import { PurchaseWithRelations } from './PurchaseList'
 
 interface Props extends PurchaseWithRelations {}
@@ -47,8 +46,8 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
   return (
     <>
       <CardItem spacing={4} width="50%" breakpoints={{ mobile: '420px' }}>
-        <CardRow align="stretch" justify="stretch">
-          <CardColumn expand={1} align="flex-start">
+        <Row align="stretch" justify="stretch">
+          <Column expand={1} align="flex-start">
             <Typography variant="subtitle1" {...overflowTextProps}>
               {type?.label ?? '--'} {'>'} {category?.label ?? '--'}
             </Typography>
@@ -59,8 +58,8 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
             <Typography pl={2} variant="caption" color="GrayText" htmlFor="done" component="label">
               Finalizado
             </Typography>
-          </CardColumn>
-          <CardColumn expand={1}>
+          </Column>
+          <Column expand={1}>
             <Typography variant="subtitle1" {...overflowTextProps}>
               {qtd}x
             </Typography>
@@ -70,8 +69,8 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
             <Typography variant="subtitle1" {...overflowTextProps}>
               total: {toMoney(value * qtd)}
             </Typography>
-          </CardColumn>
-          <CardColumn expand={1} align="flex-end">
+          </Column>
+          <Column expand={1} align="flex-end">
             <Typography variant="caption" color="GrayText" {...overflowTextProps}>
               data de criação
             </Typography>
@@ -84,13 +83,13 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
             <Typography variant="body1" {...overflowTextProps}>
               {deliveryDate && formatDate(deliveryDate, 'dd/MM/yyyy')}
             </Typography>
-            <CardRow justify="flex-end">
+            <Row justify="flex-end">
               <IconButton onClick={() => {}}>
                 <Edit color="info" />
               </IconButton>
-            </CardRow>
-          </CardColumn>
-        </CardRow>
+            </Row>
+          </Column>
+        </Row>
       </CardItem>
     </>
   )

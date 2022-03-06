@@ -4,7 +4,7 @@ import { Search, Add, Delete } from '@mui/icons-material'
 import { Button, ButtonGroup, Card, Fade, IconButton, Stack } from '@mui/material'
 
 import { CardTitle } from '~/components/CardTitle'
-import { DrawerCustomer, SearchCustomerSelectHandler } from '~/components/DrawerCustomer'
+import { DrawerCustomer, SearchCustomerSelectHandler } from '~/components/Drawers/DrawerCustomer'
 import { ModalCustomer, FormCustomerSuccessHandler } from '~/components/ModalCustomer'
 import { SpacedContainer } from '~/components/styled'
 
