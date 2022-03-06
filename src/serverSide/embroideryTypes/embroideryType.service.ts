@@ -40,11 +40,25 @@ async function update(embTypeId: number, data: Partial<EmbroideryType>): Promise
   return emb && emb.id
 }
 
+async function search(filter: IEmbroideryTypeFilter = {}): Promise<EmbroideryType[]> {
+  const { search } = filter
+  const where: PrismaTypes.EmbroideryTypeWhereInput = { id: { not: 0 }, actived: true }
+
+  if (search)
+    where.AND = {
+      OR: [{ label: { contains: `${search}` } }, { description: { contains: `${search}` } }]
+    }
+
+  const embroideryTypes = await prisma.embroideryType.findMany({ take: 10, where, orderBy: { label: 'asc' } })
+  return embroideryTypes
+}
+
 export const EmbroideryTypeService = {
   paginate,
   findOne,
   create,
-  update
+  update,
+  search
 }
 
 export type IEmbroideryTypeService = typeof EmbroideryTypeService
