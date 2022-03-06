@@ -28,6 +28,9 @@ export interface IRequestCreateEmbtypeDto extends AuthorizedApiRequest {
 export interface IRequestEmbroideryType extends Omit<AuthorizedApiRequest, 'query'> {
   query: { embTypeId?: number } & Omit<Partial<EmbroideryType>, 'id'>
 }
+export interface IRequestSearchEmbroideryType extends Omit<AuthorizedApiRequest, 'query'> {
+  query: IEmbroideryTypeFilter
+}
 
 export interface IRequestUpdateEmbTypeDto extends Omit<AuthorizedApiRequest, 'query'> {
   body: Partial<IEmbTypeDTO>

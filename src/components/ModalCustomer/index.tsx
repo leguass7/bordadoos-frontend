@@ -12,6 +12,7 @@ type Props = {
   open: boolean
   customerId: number
 }
+
 export const ModalCustomer: React.FC<Props> = ({ title, open, onClose, customerId, onSuccess, ...modalProps }) => {
   return (
     <Modal open={open} onClose={onClose}>

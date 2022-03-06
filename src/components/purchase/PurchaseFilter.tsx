@@ -7,7 +7,7 @@ import { Add } from '@mui/icons-material'
 import { ButtonGroup, IconButton, Button, Container } from '@mui/material'
 import { Purchase } from '@prisma/client'
 
-import { DrawerCustomer } from '../DrawerCustomer'
+import { DrawerCustomer } from '../Drawers/DrawerCustomer'
 import { PageTitle } from '../PageTitle'
 import { usePagination } from '../Providers/PaginationProvider'
 import { SearchBar } from '../SearchBar'

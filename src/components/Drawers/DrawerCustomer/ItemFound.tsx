@@ -5,7 +5,7 @@ import type { Client } from '@prisma/client'
 
 import { Text } from '~/components/styled'
 
-import { ItemContainer, ItemTitle, ItemDescription } from './styles'
+import { ItemContainer, ItemTitle, ItemDescription } from '../styles'
 
 export type SearchCustomerSelectHandler = (customerId?: number) => void
 

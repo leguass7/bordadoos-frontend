@@ -3,7 +3,13 @@ import React, { useCallback, useState } from 'react'
 import { createContext, useContext, useContextSelector } from 'use-context-selector'
 
 export interface IPurchaseData {
-  customerId?: number
+  customerId?: number // for search
+
+  clientId?: number
+  typeId?: number
+  categoryId?: number
+  qtd?: number
+  value?: number
 }
 
 export interface IContextPurchase {

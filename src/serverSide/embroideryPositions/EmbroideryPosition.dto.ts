@@ -35,6 +35,10 @@ export interface IRequestUpdateEmbPos extends Omit<AuthorizedApiRequest, 'query'
   query: { embPosId: number }
 }
 
+export interface IRequestSearchEmbroideryPosition extends Omit<AuthorizedApiRequest, 'query'> {
+  query: IEmbPosFilter
+}
+
 // Responses
 export interface IResponsePaginateEmbPos extends IResponseApi {
   data: EmbroideryPosition[]
