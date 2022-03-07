@@ -3,6 +3,8 @@ import styled from 'styled-components'
 
 import { Column, Row } from '~/styles/grid'
 
+import { usePurchase } from './PurchaseProvider'
+
 export enum PurchaseActionSelect {
   client = 'CLIENT',
   type = 'TYPE',
@@ -15,6 +17,8 @@ interface Props {
 }
 
 export const PurchaseActions: React.FC<Props> = ({ onSave, onSelect }) => {
+  const { canSave } = usePurchase()
+
   return (
     <ActionContainer>
       <Row expand={1} justify="space-between" align="flex-end">
@@ -32,13 +36,11 @@ export const PurchaseActions: React.FC<Props> = ({ onSave, onSelect }) => {
             </>
           ) : null}
         </Column>
-        {onSave ? (
-          <Column>
-            <Button variant="contained" onClick={onSave}>
-              Salvar
-            </Button>
-          </Column>
-        ) : null}
+        <Column>
+          <Button variant="contained" onClick={onSave} disabled={!onSave || !canSave}>
+            Salvar
+          </Button>
+        </Column>
       </Row>
     </ActionContainer>
   )

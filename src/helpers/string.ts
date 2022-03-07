@@ -58,9 +58,9 @@ export function validDate(date?: Date | string | number) {
   if (date instanceof Date) return date
   if (typeof date === 'string') {
     const d = parseISO(date)
-    return isValid(d) ? d : undefined
+    return isValid(d) ? d : null
   }
-  return undefined
+  return null
 }
 
 export function formatDate(date: Date | string | number, formatString: string) {

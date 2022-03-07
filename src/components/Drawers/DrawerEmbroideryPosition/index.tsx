@@ -15,7 +15,7 @@ import { PositionFound } from './PositionFound'
 
 type Props = Omit<DrawerProps, 'onSelect'> & {
   defaultSelected?: number
-  onSelect?: (_id: number) => void
+  onSelect?: (_id: number, label?: string) => void
 }
 
 export const DrawerEmbroideryPosition: React.FC<Props> = ({ defaultSelected, onSelect, ...drawerProps }) => {

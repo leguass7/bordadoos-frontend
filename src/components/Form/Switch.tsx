@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { SwitchProps, Switch as MuiSwitch, Typography } from '@mui/material'
 import { useField } from '@unform/core'
@@ -16,9 +16,10 @@ export const Switch: React.FC<Props> = ({ name, label, ...props }) => {
     registerField({
       name: fieldName,
       ref: ref.current,
-      getValue() {
-        return !!ref.current?.firstElementChild?.checked
-      }
+      path: 'checked'
+      // clearValue() {
+      //   if (ref.current?.checked) ref.current.checked = false
+      // }
     })
   }, [registerField, fieldName])
 
@@ -29,7 +30,7 @@ export const Switch: React.FC<Props> = ({ name, label, ...props }) => {
           {label}
         </Typography>
       ) : null}
-      <MuiSwitch ref={ref} defaultChecked={!!defaultValue} {...props} />
+      <MuiSwitch inputRef={ref} defaultChecked={!!defaultValue} {...props} />
     </div>
   )
 }

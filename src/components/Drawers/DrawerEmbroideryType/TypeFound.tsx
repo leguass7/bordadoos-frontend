@@ -9,13 +9,13 @@ import { formatDate } from '~/helpers/string'
 import { ItemContainer, ItemDescription, ItemTitle } from '../styles'
 
 interface Props extends EmbroideryType {
-  onSelect: (_typeId: number) => void
+  onSelect: (_typeId: number, label?: string) => void
   selectedId?: number
 }
 
 const TypeFoundComponent: React.FC<Props> = ({ onSelect, selectedId, id, label, description, createdAt }) => {
   const handleClick = () => {
-    if (onSelect) onSelect(id)
+    if (onSelect) onSelect(id, label)
   }
 
   return (
