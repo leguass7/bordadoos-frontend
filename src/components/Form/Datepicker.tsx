@@ -15,17 +15,25 @@ interface Props extends Partial<DatePickerProps> {
 export const Datepicker: React.FC<Props> = ({ name, onChange, ...props }) => {
   const ref = useRef(null)
   const { fieldName, defaultValue, registerField, error } = useField(name)
-  const [value, setValue] = useState<Date | string>(validDate(defaultValue))
+  const [value, setValue] = useState<string | Date>(validDate(defaultValue))
 
   useEffect(() => {
     registerField({
       name: fieldName,
       ref: ref.current,
       getValue() {
-        return formatDate(value, 'dd/MM/yyyy')
+        if (ref.current) {
+          return ref.current.value
+        }
+      },
+      clearValue() {
+        if (ref.current) {
+          ref.current.value = ''
+          setValue(null)
+        }
       }
     })
-  }, [registerField, fieldName, value])
+  }, [registerField, fieldName])
 
   const handleChange = useCallback(
     (date: string | Date, keyboardInputValue?: string) => {
@@ -36,16 +44,18 @@ export const Datepicker: React.FC<Props> = ({ name, onChange, ...props }) => {
   )
 
   return (
-    <>
+    <div style={{ padding: 4 }}>
       <DatePicker
         {...props}
-        ref={ref}
+        inputRef={ref}
         label="Data de entrega"
+        clearable
         value={value}
+        clearText="limpar"
         onChange={handleChange}
         renderInput={params => <TextField {...params} />}
       />
       {error ? <ErrorMessage>{error}</ErrorMessage> : null}
-    </>
+    </div>
   )
 }

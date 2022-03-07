@@ -18,7 +18,10 @@ export const Input: React.FC<Props> = ({ name, type = 'text', id, label, number,
     registerField({
       name: fieldName,
       ref: ref.current,
-      path: 'value'
+      path: 'value',
+      clearValue() {
+        ref.current.value = ''
+      }
     })
   }, [registerField, fieldName])
 
