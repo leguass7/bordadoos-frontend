@@ -7,7 +7,7 @@ import { Text } from '~/components/styled'
 
 import { ItemContainer, ItemTitle, ItemDescription } from '../styles'
 
-export type SearchCustomerSelectHandler = (customerId?: number) => void
+export type SearchCustomerSelectHandler = (customerId?: number, name?: string) => void
 
 type Props = Partial<Client> & {
   onSelect: SearchCustomerSelectHandler
@@ -16,8 +16,9 @@ type Props = Partial<Client> & {
 
 const Item: React.FC<Props> = ({ name, phone, doc, id, onSelect, selectedId }) => {
   const handleClick = () => {
-    if (onSelect) onSelect(id)
+    if (onSelect) onSelect(id, name)
   }
+
   return (
     <ItemContainer onClick={handleClick} actived={!!(selectedId === id)}>
       <ItemTitle>{name}</ItemTitle>

@@ -23,10 +23,11 @@ import { usePurchase } from './PurchaseProvider'
 interface Props {}
 
 const schema = Yup.object().shape({
-  clientId: Yup.string().required('O cliente é obrigatório'),
-  categoryId: Yup.string().required('A posição do bordado é obrigatória'),
-  typeId: Yup.string().required('O tipo de bordado é obrigatório'),
+  clientName: Yup.string().required('O cliente é obrigatório'),
+  categoryLabel: Yup.string().required('A posição do bordado é obrigatória'),
+  typeLabel: Yup.string().required('O tipo de bordado é obrigatório'),
   qtd: Yup.string().required('A quantidade de peças é obrigatória'),
+  value: Yup.string().required('O valor unitário é obrigatório'),
   paid: Yup.bool().required('O cliente é obrigatório'),
   done: Yup.bool().required('O cliente é obrigatório'),
   deliveryDate: Yup.string().required('Data de entrega é obrigatória') // lembrete: Validar formato de data
@@ -40,24 +41,6 @@ export const PurchaseForm: React.FC<Props> = () => {
   const isMounted = useIsMounted()
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = useCallback(
-    async (data: Partial<Purchase>) => {
-      const isInValid = await validateFormData(schema, data, formRef.current)
-      if (isInValid) return
-
-      setLoading(true)
-      await postDefault(`/purchases`, data)
-      if (isMounted.current) setLoading(false)
-    },
-    [isMounted]
-  )
-
-  const handleAction = useCallback((type: PurchaseActionSelect) => {
-    if (type === PurchaseActionSelect['client']) setshowDrawer(1)
-    if (type === PurchaseActionSelect['type']) setshowDrawer(2)
-    if (type === PurchaseActionSelect['category']) setshowDrawer(3)
-  }, [])
-
   const updateForm = useCallback(
     (data: any) => {
       formRef.current.setData(data)
@@ -66,16 +49,45 @@ export const PurchaseForm: React.FC<Props> = () => {
     [updatePurchase]
   )
 
+  const handleSubmit = useCallback(
+    async data => {
+      const isInValid = await validateFormData(schema, data, formRef.current)
+      if (isInValid) return
+
+      // TEMP
+      if (data?.clientName) delete data?.clientName
+      if (data?.typeLabel) delete data?.typeLabel
+      if (data?.categoryLabel) delete data?.categoryLabel
+
+      setLoading(true)
+      await postDefault(`/purchases`, data)
+      if (isMounted.current) {
+        setLoading(false)
+        updateForm({})
+        formRef.current?.reset?.({})
+      }
+    },
+    [isMounted, updateForm]
+  )
+
+  const handleAction = useCallback((type: PurchaseActionSelect) => {
+    if (type === PurchaseActionSelect['client']) setshowDrawer(1)
+    if (type === PurchaseActionSelect['type']) setshowDrawer(2)
+    if (type === PurchaseActionSelect['category']) setshowDrawer(3)
+  }, [])
+
   const cancelDrawer = useCallback(() => {
     setshowDrawer(0)
   }, [])
 
   const handleSelect = useCallback(
-    (field: string) => (id: number) => {
+    (fieldId: string, fieldName: string) => (id: number, label: string) => {
       cancelDrawer()
       const aux: any = {}
-      aux[field] = id
+      aux[fieldId] = id
+      if (aux[fieldId]) aux[fieldName] = label
       updateForm(aux)
+      // formRef.current?.reset?.()
     },
     [updateForm, cancelDrawer]
   )
@@ -87,18 +99,22 @@ export const PurchaseForm: React.FC<Props> = () => {
           <Form ref={formRef} onSubmit={handleSubmit} initialData={purchase}>
             <Grid container>
               <Grid item xs={12} md={6} lg={4}>
-                <Input name="clientId" placeholder="Cliente" disabled />
-                <Input name="typeId" placeholder="Bordado" disabled />
-                <Input name="categoryId" placeholder="Posição" disabled />
+                <Input name="clientName" placeholder="Cliente" disabled />
+                <Input name="typeLabel" placeholder="Bordado" disabled />
+                <Input name="categoryLabel" placeholder="Posição" disabled />
+
+                <Input style={{ display: 'none' }} name="clientId" />
+                <Input style={{ display: 'none' }} name="typeId" />
+                <Input style={{ display: 'none' }} name="categoryId" />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
                 <Input number name="qtd" placeholder="Quantidade" autoComplete="off" />
                 <Input number name="value" placeholder="Valor unitário" autoComplete="off" />
               </Grid>
-              <Grid item xs={12} md={6} lg={4} justifyContent="center">
+              <Grid item xs={12} md={6} lg={4} alignItems="flex-start">
                 <Datepicker name="deliveryDate" />
               </Grid>
-              <Grid item xs={12} md={6} lg={4} justifyContent="center">
+              <Grid item xs={12} md={6} lg={4} direction="column" alignItems="center">
                 <Switch label="pago" name="paid" />
                 <Switch label="finalizado" name="done" />
               </Grid>
@@ -109,9 +125,21 @@ export const PurchaseForm: React.FC<Props> = () => {
           <PurchaseActions onSelect={handleAction} onSave={formRef.current?.submitForm} />
         </Grid>
       </Grid>
-      <DrawerCustomer onSelecCustomer={handleSelect('clientId')} open={showDrawer === 1} onClose={cancelDrawer} />
-      <DrawerEmbroideryType onSelect={handleSelect('typeId')} open={showDrawer === 2} onClose={cancelDrawer} />
-      <DrawerEmbroideryPosition onSelect={handleSelect('categoryId')} open={showDrawer === 3} onClose={cancelDrawer} />
+      <DrawerCustomer
+        onSelecCustomer={handleSelect('clientId', 'clientName')}
+        open={showDrawer === 1}
+        onClose={cancelDrawer}
+      />
+      <DrawerEmbroideryType
+        onSelect={handleSelect('typeId', 'typeLabel')}
+        open={showDrawer === 2}
+        onClose={cancelDrawer}
+      />
+      <DrawerEmbroideryPosition
+        onSelect={handleSelect('categoryId', 'categoryLabel')}
+        open={showDrawer === 3}
+        onClose={cancelDrawer}
+      />
 
       {loading ? <CircleLoading light /> : null}
     </>

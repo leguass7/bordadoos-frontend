@@ -15,7 +15,7 @@ import { TypeFound } from './TypeFound'
 
 type Props = Omit<DrawerProps, 'onSelect'> & {
   defaultSelected?: number
-  onSelect?: (_id: number) => void
+  onSelect?: (_id: number, label?: string) => void
 }
 
 export const DrawerEmbroideryType: React.FC<Props> = ({ defaultSelected, onSelect, ...drawerProps }) => {

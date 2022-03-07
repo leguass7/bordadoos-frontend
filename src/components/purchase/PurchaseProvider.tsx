@@ -1,9 +1,13 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
 import { createContext, useContext, useContextSelector } from 'use-context-selector'
 
 export interface IPurchaseData {
   customerId?: number // for search
+
+  clientName?: string
+  typeLabel?: string
+  categoryLabel?: string
 
   clientId?: number
   typeId?: number
@@ -33,8 +37,13 @@ export const PurchaseProvider: React.FC = ({ children }) => {
 }
 
 export function usePurchase() {
-  const context = useContext(PurchaseContext)
-  return { ...context }
+  const { purchase, ...context } = useContext(PurchaseContext)
+
+  const canSave = useMemo(() => {
+    return purchase?.clientId && purchase?.typeId && purchase?.categoryId
+  }, [purchase])
+
+  return { purchase, ...context, canSave }
 }
 
 export function usePurchaseCustomer(): [number, (customerId?: number) => void] {
