@@ -1,5 +1,7 @@
 import { memo, useCallback, useState } from 'react'
 
+import { useRouter } from 'next/router'
+
 import { Edit } from '@mui/icons-material'
 import { IconButton, Switch, Typography } from '@mui/material'
 
@@ -22,6 +24,7 @@ const overflowTextProps = {
 const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
   const { value = 0, qtd = 0, done = false, id, category, client, type, createdAt, deliveryDate } = props
   const [itemDone, setItemDone] = useState(done)
+  const { push } = useRouter()
 
   const isMounted = useIsMounted()
   const [loading, setLoading] = useState(false)
@@ -43,10 +46,14 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
     [isMounted, id]
   )
 
+  const handleEdit = useCallback(() => {
+    push(`/admin?purchaseId=${id}`)
+  }, [push, id])
+
   return (
     <>
-      <CardItem spacing={4} width="50%" breakpoints={{ mobile: '420px' }}>
-        <Row align="stretch" justify="stretch">
+      <CardItem spacing={4} width="50%">
+        <Row>
           <Column expand={1} align="flex-start">
             <Typography variant="subtitle1" {...overflowTextProps}>
               {type?.label ?? '--'} {'>'} {category?.label ?? '--'}
@@ -84,7 +91,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
               {deliveryDate && formatDate(deliveryDate, 'dd/MM/yyyy')}
             </Typography>
             <Row justify="flex-end">
-              <IconButton onClick={() => {}}>
+              <IconButton onClick={handleEdit}>
                 <Edit color="info" />
               </IconButton>
             </Row>

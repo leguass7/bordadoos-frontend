@@ -15,6 +15,14 @@ async function update(purchaseId: number, data: Partial<Purchase>): Promise<Purc
   return purchase
 }
 
+async function findById(purchaseId: number): Promise<Purchase> {
+  const purchase = await prisma.purchase.findFirst({
+    where: { id: purchaseId },
+    include: { client: true, category: true, type: true }
+  })
+  return purchase
+}
+
 async function paginate(
   pagination: PaginationQueryDto,
   filter: IPurchaseFilter = {}
@@ -91,7 +99,8 @@ export const PurchaseService = {
   create,
   update,
   paginate,
-  deletePurchase
+  deletePurchase,
+  findById
 }
 
 export type IPurchaseService = typeof PurchaseService

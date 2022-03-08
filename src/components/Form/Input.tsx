@@ -27,9 +27,13 @@ export const Input: React.FC<Props> = ({ name, type = 'text', id, label, number,
 
   const handleChange = useCallback(
     e => {
-      const value = e.target.value
+      let value: string = e.target.value
       if (number) {
-        ref.current.value = value.replace(/\D/g, '')
+        if (value.includes('.')) {
+          // Only lets value have 1 dot
+          value = `${value.split('.')[0]}.${value.split('.')[1].replace(/\./, '')}`
+        }
+        ref.current.value = value.replace(/[^0-9.]/g, '')
       }
       if (onChange) onChange(e)
     },

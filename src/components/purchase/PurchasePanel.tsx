@@ -1,16 +1,24 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { Grid, Paper } from '@mui/material'
+import { Purchase } from '@prisma/client'
 import styled from 'styled-components'
 
+import { useIsMounted } from '~/hooks/useIsMounted'
+import { getDefault } from '~/services/api'
+
 import { CardTitle } from '../CardTitle'
-import { PurchaseActions } from './PurchaseActions'
+import { CircleLoading } from '../CircleLoading'
 import { PurchaseForm } from './PurchaseForm'
 import { PurchaseProvider } from './PurchaseProvider'
 import { SelectCustomer } from './SelectCustomer'
 import { PanelWrapper } from './styles'
 
-export const PurchasePanel: React.FC = () => {
+interface Props {
+  purchaseId?: number
+}
+
+export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
   return (
     <PurchaseProvider>
       <PanelWrapper>
@@ -28,7 +36,7 @@ export const PurchasePanel: React.FC = () => {
             </Grid>
             <Grid container direction="column" flex={1}>
               <CardTitle title="Criar pedido" divider />
-              <PurchaseForm />
+              <PurchaseForm purchaseId={purchaseId} />
             </Grid>
           </Grid>
         </Paper>

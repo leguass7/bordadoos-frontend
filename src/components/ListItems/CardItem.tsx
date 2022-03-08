@@ -32,8 +32,7 @@ export const CardItem: React.FC<Props> = ({
       spacing={spacing}
       width={width}
     >
-      {/* <div style={{ padding: spacing, width }}> */}
-      <Card style={{ padding: `${spacing}px` }} {...cardProps}>
+      <Card style={{ padding: `${spacing}px`, height: '100%' }} {...cardProps}>
         {children}
         {CollapsibleContent ? (
           <Collapse in={!!expand}>
@@ -41,7 +40,6 @@ export const CardItem: React.FC<Props> = ({
           </Collapse>
         ) : null}
       </Card>
-      {/* </div> */}
     </CardContainer>
   )
 }
