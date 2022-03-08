@@ -1,4 +1,6 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+
+import { useRouter } from 'next/router'
 
 import { Grid } from '@mui/material'
 import { Purchase } from '@prisma/client'
@@ -8,7 +10,7 @@ import * as Yup from 'yup'
 
 import { validateFormData } from '~/helpers/form'
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { postDefault } from '~/services/api'
+import { getDefault, postDefault, putDefault } from '~/services/api'
 
 import { CircleLoading } from '../CircleLoading'
 import { DrawerCustomer } from '../Drawers/DrawerCustomer'
@@ -18,9 +20,8 @@ import { Datepicker } from '../Form/Datepicker'
 import { Input } from '../Form/Input'
 import { Switch } from '../Form/Switch'
 import { PurchaseActions, PurchaseActionSelect } from './PurchaseActions'
+import { PurchaseWithRelations } from './PurchaseList'
 import { usePurchase } from './PurchaseProvider'
-
-interface Props {}
 
 const schema = Yup.object().shape({
   clientName: Yup.string().required('O cliente é obrigatório'),
@@ -33,21 +34,52 @@ const schema = Yup.object().shape({
   deliveryDate: Yup.string().required('Data de entrega é obrigatória') // lembrete: Validar formato de data
 })
 
-export const PurchaseForm: React.FC<Props> = () => {
+interface Props {
+  purchaseId?: number
+  initialData?: Partial<Purchase>
+}
+
+export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0 }) => {
   const formRef = useRef<FormHandles>(null)
-  const { purchase, updatePurchase } = usePurchase()
+  const { updatePurchase } = usePurchase()
   const [showDrawer, setshowDrawer] = useState(0)
+  const { push } = useRouter()
 
   const isMounted = useIsMounted()
   const [loading, setLoading] = useState(false)
 
   const updateForm = useCallback(
     (data: any) => {
-      formRef.current.setData(data)
+      formRef?.current?.setData?.(data)
       updatePurchase(data)
     },
     [updatePurchase]
   )
+
+  const fetchData = useCallback(async () => {
+    if (purchaseId) {
+      setLoading(true)
+      const { purchase, success } = await getDefault<{ purchase: PurchaseWithRelations }>(`/purchases/${purchaseId}`)
+      if (isMounted?.current) {
+        setLoading(false)
+        if (success) {
+          // TEMP
+          const data = {
+            ...purchase,
+            clientName: purchase?.client?.name,
+            typeLabel: purchase?.type?.label,
+            categoryLabel: purchase?.category?.label
+          }
+
+          updateForm(data)
+        }
+      }
+    }
+  }, [isMounted, purchaseId, updateForm])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   const handleSubmit = useCallback(
     async data => {
@@ -60,14 +92,18 @@ export const PurchaseForm: React.FC<Props> = () => {
       if (data?.categoryLabel) delete data?.categoryLabel
 
       setLoading(true)
-      await postDefault(`/purchases`, data)
+      if (purchaseId) {
+        const { success } = await putDefault<{}>(`/purchases/${purchaseId}`, data)
+        if (success) push('/admin/purchases')
+      } else await postDefault(`/purchases`, data)
+
       if (isMounted.current) {
         setLoading(false)
         updateForm({})
         formRef.current?.reset?.({})
       }
     },
-    [isMounted, updateForm]
+    [isMounted, updateForm, purchaseId, push]
   )
 
   const handleAction = useCallback((type: PurchaseActionSelect) => {
@@ -82,12 +118,12 @@ export const PurchaseForm: React.FC<Props> = () => {
 
   const handleSelect = useCallback(
     (fieldId: string, fieldName: string) => (id: number, label: string) => {
+      // FIXME: name fields
       cancelDrawer()
       const aux: any = {}
       aux[fieldId] = id
       if (aux[fieldId]) aux[fieldName] = label
       updateForm(aux)
-      // formRef.current?.reset?.()
     },
     [updateForm, cancelDrawer]
   )
@@ -96,7 +132,7 @@ export const PurchaseForm: React.FC<Props> = () => {
     <>
       <Grid container direction="column" flex={1}>
         <Grid item flex={1} p={1}>
-          <Form ref={formRef} onSubmit={handleSubmit} initialData={purchase}>
+          <Form ref={formRef} onSubmit={handleSubmit} initialData={initialData}>
             <Grid container>
               <Grid item xs={12} md={6} lg={4}>
                 <Input name="clientName" placeholder="Cliente" disabled />
@@ -114,7 +150,7 @@ export const PurchaseForm: React.FC<Props> = () => {
               <Grid item xs={12} md={6} lg={4} alignItems="flex-start">
                 <Datepicker name="deliveryDate" />
               </Grid>
-              <Grid item xs={12} md={6} lg={4} direction="column" alignItems="center">
+              <Grid container direction="column" alignItems="flex-start">
                 <Switch label="pago" name="paid" />
                 <Switch label="finalizado" name="done" />
               </Grid>

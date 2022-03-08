@@ -39,7 +39,13 @@ export const PurchaseList: React.FC = () => {
         }
         endMessage={renderMessage('FIM')}
       >
-        <div style={{ display: 'flex', flexFlow: 'row wrap', padding: 4 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexFlow: 'row wrap',
+            padding: 4
+          }}
+        >
           {data?.map?.(item => {
             return <PurchaseItem key={`purchase-${item?.id}`} {...item} />
           })}
