@@ -47,7 +47,7 @@ export const PurchaseList: React.FC = () => {
           }}
         >
           {data?.map?.(item => {
-            return <PurchaseItem key={`purchase-${item?.id}`} {...item} />
+            return <PurchaseItem key={`purchase-${item?.id}-${item?.deliveryDate}`} {...item} />
           })}
         </div>
       </InfiniteScroll>

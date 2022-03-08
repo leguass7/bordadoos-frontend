@@ -36,3 +36,13 @@ export const findPurchasesSchema = celebrate({
     purchaseId: Joi.number().required()
   }
 })
+
+export const listPurchasesSchema = celebrate({
+  [Segments.QUERY]: {
+    search: Joi.string(),
+    startDate: Joi.date(),
+    endDate: Joi.date(),
+    size: Joi.number(),
+    page: Joi.number()
+  }
+})

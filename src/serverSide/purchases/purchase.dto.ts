@@ -8,6 +8,10 @@ export interface IPurchaseFilter {
   purchaseId?: number
   clientId?: number
   actived?: boolean
+  startDate?: Date
+  endDate?: Date
+  paid?: boolean
+  done?: boolean
 }
 
 export interface IRequestFilter extends Omit<AuthorizedApiRequest, 'query'> {

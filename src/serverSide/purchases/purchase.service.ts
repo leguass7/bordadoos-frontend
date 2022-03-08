@@ -1,5 +1,7 @@
 import { Prisma as PrismaTypes, Purchase } from '.prisma/client'
 
+import { isDefined } from '~/helpers/variables'
+
 import prisma from '../database/prisma'
 import { PaginationDto, PaginationQueryDto } from '../pagination/pagination.dto'
 import { PrismaService } from '../pagination/pagination.service'
@@ -27,12 +29,25 @@ async function paginate(
   pagination: PaginationQueryDto,
   filter: IPurchaseFilter = {}
 ): Promise<PaginationDto<Purchase>> {
-  const { search, clientId } = filter
+  const { search, startDate, endDate, paid, done } = filter
   const where: PrismaTypes.PurchaseWhereInput = { id: { not: 0 } }
   if (search)
     where.AND = {
-      OR: [{ deliveryDate: search }, { clientId }]
+      OR: [
+        { client: { name: { contains: search } } },
+        { category: { label: { contains: search } } },
+        { type: { label: { contains: search } } }
+      ]
     }
+
+  if (startDate && endDate) where.AND = { ...where.AND, deliveryDate: { lte: endDate, gte: startDate } }
+  else {
+    if (startDate) where.AND = { ...where.AND, deliveryDate: { gte: startDate } }
+    if (endDate) where.AND = { ...where.AND, deliveryDate: { lte: endDate } }
+  }
+
+  if (isDefined(paid)) where.AND = { ...where.AND, paid }
+  if (isDefined(done)) where.AND = { ...where.AND, done }
 
   const allowedFields: (keyof Purchase)[] = [
     'id',

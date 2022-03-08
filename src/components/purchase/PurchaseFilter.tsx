@@ -4,30 +4,30 @@ import { IoReload } from 'react-icons/io5'
 import { useRouter } from 'next/router'
 
 import { Add } from '@mui/icons-material'
-import { ButtonGroup, IconButton, Button, Container } from '@mui/material'
+import { DatePicker } from '@mui/lab'
+import { IconButton, Container } from '@mui/material'
 import { Purchase } from '@prisma/client'
+import { Form } from '@unform/web'
 
-import { DrawerCustomer } from '../Drawers/DrawerCustomer'
+import { formatDate } from '~/helpers/string'
+
+import { Datepicker } from '../Form/Datepicker'
 import { PageTitle } from '../PageTitle'
 import { usePagination } from '../Providers/PaginationProvider'
 import { SearchBar } from '../SearchBar'
 
 export const PurchaseFilter: React.FC = () => {
   const { updateFilter, refreshData } = usePagination<Purchase>()
-  const [openSearch, setOpenSearch] = useState(false)
   const { push } = useRouter()
 
   const handleSearchChange = useCallback(
-    (search: string | number) => {
-      const filter = search ? { search } : {}
-      updateFilter(filter)
-    },
-    [updateFilter]
-  )
-
-  const handleSelectCustomer = useCallback(
-    (clientId?: number) => {
-      if (clientId) updateFilter({ clientId })
+    (field: string) => (search: string | number | Date) => {
+      if (field && search) {
+        if (search instanceof Date) search = formatDate(search, 'yyyy-MM-dd')
+        const filter: any = {}
+        filter[field] = search
+        updateFilter(filter)
+      }
     },
     [updateFilter]
   )
@@ -39,7 +39,7 @@ export const PurchaseFilter: React.FC = () => {
           <IconButton size="large" color="primary" onClick={() => push('/admin')}>
             <Add />
           </IconButton>
-          <IconButton size="large" color="primary" onClick={() => refreshData()}>
+          <IconButton size="large" color="primary" onClick={refreshData}>
             <IoReload size={18} />
           </IconButton>
           {/* <IconButton size="large" color="primary" onClick={() => setFiltered(old => !old)}> */}
@@ -48,14 +48,20 @@ export const PurchaseFilter: React.FC = () => {
         </PageTitle>
       </Container>
       <Container style={{ marginBottom: '4px' }}>
-        <SearchBar onChangeText={handleSearchChange} />
-        <ButtonGroup style={{ margin: '0 4px' }}>
+        <SearchBar onChangeText={handleSearchChange('search')} />
+        <Form onSubmit={null}>
+          <div style={{ display: 'flex' }}>
+            <Datepicker name="startDate" onChange={handleSearchChange('startDate')} />
+            <Datepicker name="endDate" onChange={handleSearchChange('endDate')} />
+          </div>
+        </Form>
+        {/* <ButtonGroup style={{ margin: '0 4px' }}>
           <Button variant="contained" color="primary" onClick={() => setOpenSearch(true)}>
             Procurar cliente
           </Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
       </Container>
-      <DrawerCustomer open={openSearch} onClose={() => setOpenSearch(false)} onSelecCustomer={handleSelectCustomer} />
+      {/* <DrawerCustomer open={openSearch} onClose={() => setOpenSearch(false)} onSelecCustomer={handleSelectCustomer} /> */}
     </>
   )
 }
