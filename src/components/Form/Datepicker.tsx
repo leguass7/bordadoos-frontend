@@ -4,8 +4,6 @@ import { DatePicker, DatePickerProps } from '@mui/lab'
 import { TextField } from '@mui/material'
 import { useField } from '@unform/core'
 
-import { formatDate, validDate } from '~/helpers/string'
-
 import { ErrorMessage } from './styles'
 
 interface Props extends Partial<DatePickerProps> {
@@ -14,29 +12,28 @@ interface Props extends Partial<DatePickerProps> {
 
 export const Datepicker: React.FC<Props> = ({ name, onChange, ...props }) => {
   const ref = useRef(null)
-  const { fieldName, defaultValue, registerField, error } = useField(name)
-  const [value, setValue] = useState<string | Date>(validDate(defaultValue))
+  const { fieldName, defaultValue = null, registerField, error } = useField(name)
+  const [value, setValue] = useState<string | Date>(defaultValue)
 
   useEffect(() => {
     registerField({
       name: fieldName,
       ref: ref.current,
       getValue() {
-        if (ref.current) {
-          return ref.current.value
-        }
+        return value
       },
-      clearValue() {
-        if (ref.current) {
-          ref.current.value = ''
-          setValue(null)
-        }
+      clearValue(clearRef: HTMLInputElement) {
+        setValue(null)
+        if (clearRef) clearRef.value = ''
+      },
+      setValue(setRef: HTMLInputElement, date: string | Date = null) {
+        setValue(date)
       }
     })
-  }, [registerField, fieldName])
+  }, [registerField, fieldName, value])
 
   const handleChange = useCallback(
-    (date: string | Date, keyboardInputValue?: string) => {
+    (date: string | Date = null, keyboardInputValue?: string) => {
       setValue(date)
       if (onChange) onChange(date, keyboardInputValue)
     },
@@ -49,9 +46,7 @@ export const Datepicker: React.FC<Props> = ({ name, onChange, ...props }) => {
         {...props}
         inputRef={ref}
         label="Data de entrega"
-        clearable
         value={value}
-        clearText="limpar"
         onChange={handleChange}
         renderInput={params => <TextField {...params} />}
       />
