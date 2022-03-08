@@ -66,5 +66,5 @@ export function validDate(date?: Date | string | number) {
 export function formatDate(date: Date | string | number, formatString: string) {
   const valid = validDate(date)
   if (valid) return format(valid, formatString)
-  return ''
+  return null
 }
