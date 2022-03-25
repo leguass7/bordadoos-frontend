@@ -19,8 +19,9 @@ interface Props {
 }
 
 export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
+  //
   return (
-    <PurchaseProvider>
+    <>
       <PanelWrapper>
         <Grid container>
           <Grid item xs={12} sm={6} md={4} position="relative">
@@ -30,18 +31,18 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
       </PanelWrapper>
       <PanelWrapper>
         <Paper>
+          <CardTitle title="Criar pedido" divider />
           <Grid container justifyContent="space-between">
-            <Grid width={300} item>
-              <Image src="/camisa.png" alt="Camisa" />
-            </Grid>
-            <Grid container direction="column" flex={1}>
-              <CardTitle title="Criar pedido" divider />
+            <Grid container direction="column" md={6}>
               <PurchaseForm purchaseId={purchaseId} />
+            </Grid>
+            <Grid container alignContent={'flex-start'} md={6}>
+              <Image src="/camisa.png" alt="Camisa" />
             </Grid>
           </Grid>
         </Paper>
       </PanelWrapper>
-    </PurchaseProvider>
+    </>
   )
 }
 

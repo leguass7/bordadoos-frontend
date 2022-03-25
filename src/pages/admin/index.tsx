@@ -8,6 +8,7 @@ import { Container } from '@mui/material'
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
 import { PageTitle } from '~/components/PageTitle'
 import { PurchasePanel } from '~/components/purchase/PurchasePanel'
+import { PurchaseProvider } from '~/components/purchase/PurchaseProvider'
 
 const PageAdminIndex: NextPage = () => {
   const { query } = useRouter()
@@ -22,7 +23,9 @@ const PageAdminIndex: NextPage = () => {
           title="ordem de serviço"
           description={'Preencha as informações para iniciar uma nova O.S.'}
         />
-        <PurchasePanel purchaseId={purchaseId} />
+        <PurchaseProvider>
+          <PurchasePanel purchaseId={purchaseId} />
+        </PurchaseProvider>
       </Container>
     </LayoutAdmin>
   )
