@@ -8,7 +8,7 @@ interface Props extends SwitchProps {
   label?: string
 }
 
-export const Switch: React.FC<Props> = ({ name, label, onChange, ...props }) => {
+export const Switch: React.FC<Props> = ({ name, label = '', onChange, ...props }) => {
   const ref = useRef(null)
   const { defaultValue, fieldName, registerField } = useField(name)
   const [checked, setChecked] = useState(!!defaultValue)
@@ -41,7 +41,7 @@ export const Switch: React.FC<Props> = ({ name, label, onChange, ...props }) => 
         path: 'checked',
         setValue: (r, value: boolean) => {
           setChecked(value)
-          if (r.current) r.current.checked = value
+          if (r.current) r.checked = value
         },
         clearValue() {
           setChecked(false)

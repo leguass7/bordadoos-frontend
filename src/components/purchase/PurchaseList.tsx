@@ -43,6 +43,7 @@ export const PurchaseList: React.FC = () => {
           style={{
             display: 'flex',
             flexFlow: 'row wrap',
+            alignItems: 'flex-start',
             padding: 4
           }}
         >
