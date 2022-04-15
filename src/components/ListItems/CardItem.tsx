@@ -1,6 +1,6 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { CardContent, Card, CardProps, Collapse, IconButton, IconButtonProps, styled as muiStyled } from '@mui/material'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 type Breakpoints = {
   mobile?: string
@@ -35,7 +35,7 @@ export const CardItem: React.FC<Props> = ({
       <Card style={{ padding: `${spacing}px`, height: '100%' }} {...cardProps}>
         {children}
         {CollapsibleContent ? (
-          <Collapse in={!!expand}>
+          <Collapse mountOnEnter unmountOnExit in={!!expand}>
             <CardContent>{CollapsibleContent}</CardContent>
           </Collapse>
         ) : null}

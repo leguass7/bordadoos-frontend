@@ -1,12 +1,12 @@
 import { memo, useCallback, useState } from 'react'
 
 import Edit from '@mui/icons-material/Edit'
-import { CardActions, CardContent, CardMedia, IconButton, Switch, Typography } from '@mui/material'
+import { CardActions, CardMedia, IconButton, Switch, Typography } from '@mui/material'
 import { EmbroideryPosition } from '@prisma/client'
 import styled from 'styled-components'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { api, putDefault } from '~/services/api'
+import { putDefault } from '~/services/api'
 
 import { CardExpandMore, CardItem } from '../ListItems/CardItem'
 

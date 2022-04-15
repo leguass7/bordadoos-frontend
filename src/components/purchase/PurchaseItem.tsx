@@ -10,10 +10,8 @@ import { useIsMounted } from '~/hooks/useIsMounted'
 import { putDefault } from '~/services/api'
 import { Column, Row } from '~/styles/grid'
 
-import { CardItem } from '../ListItems/CardItem'
+import { CardExpandMore, CardItem } from '../ListItems/CardItem'
 import { PurchaseWithRelations } from './PurchaseList'
-
-interface Props extends PurchaseWithRelations {}
 
 const overflowTextProps = {
   textOverflow: 'ellipsis',
@@ -21,10 +19,41 @@ const overflowTextProps = {
   overflow: 'hidden'
 }
 
+interface CollapsibleContentProps {
+  unityValue?: number
+  createdAt?: Date
+  qtd?: number
+}
+
+const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ unityValue = 0, createdAt, qtd = 0 }) => (
+  <Row justify="space-between" align="stretch">
+    <Column align="flex-start">
+      <Typography variant="subtitle1" {...overflowTextProps}>
+        {qtd}x
+      </Typography>
+      <Typography variant="subtitle1" {...overflowTextProps}>
+        {toMoney(unityValue)}
+      </Typography>
+    </Column>
+    <Column align="flex-end">
+      <Typography variant="caption" color="GrayText" {...overflowTextProps}>
+        data de criação
+      </Typography>
+      <Typography variant="body1" {...overflowTextProps}>
+        {createdAt && formatDate(createdAt, 'dd/MM/yyyy')}
+      </Typography>
+    </Column>
+  </Row>
+)
+
+interface Props extends PurchaseWithRelations {}
+
 const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
   const { value = 0, qtd = 0, done = false, id, category, client, type, createdAt, deliveryDate } = props
   const [itemDone, setItemDone] = useState(done)
   const { push } = useRouter()
+
+  const [expand, setExpand] = useState(false)
 
   const isMounted = useIsMounted()
   const [loading, setLoading] = useState(false)
@@ -52,9 +81,14 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
 
   return (
     <>
-      <CardItem spacing={4} width="50%">
-        <Row>
-          <Column expand={1} align="flex-start">
+      <CardItem
+        spacing={4}
+        width="50%"
+        expand={expand}
+        CollapsibleContent={<CollapsibleContent unityValue={value} createdAt={createdAt} qtd={qtd} />}
+      >
+        <Row align="stretch">
+          <Column align="flex-start">
             <Typography variant="subtitle1" {...overflowTextProps}>
               {type?.label ?? '--'} {'>'} {category?.label ?? '--'}
             </Typography>
@@ -62,38 +96,32 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
               {client?.name ?? '--'}
             </Typography>
             <Switch name="done" checked={itemDone} color="info" onChange={toggleActived} disabled={loading} />
-            <Typography pl={2} variant="caption" color="GrayText" htmlFor="done" component="label">
+            <Typography pl={1} variant="caption" color="GrayText" htmlFor="done" component="label">
               Finalizado
             </Typography>
           </Column>
-          <Column expand={1}>
-            <Typography variant="subtitle1" {...overflowTextProps}>
-              {qtd}x
-            </Typography>
-            <Typography variant="subtitle1" {...overflowTextProps}>
-              {toMoney(value)}
-            </Typography>
-            <Typography variant="subtitle1" {...overflowTextProps}>
-              total: {toMoney(value * qtd)}
-            </Typography>
-          </Column>
-          <Column expand={1} align="flex-end">
-            <Typography variant="caption" color="GrayText" {...overflowTextProps}>
-              data de criação
-            </Typography>
-            <Typography variant="body1" {...overflowTextProps}>
-              {createdAt && formatDate(createdAt, 'dd/MM/yyyy')}
-            </Typography>
-            <Typography variant="caption" color="GrayText" {...overflowTextProps}>
-              data de entrega
-            </Typography>
-            <Typography variant="body1" {...overflowTextProps}>
-              {deliveryDate && formatDate(deliveryDate, 'dd/MM/yyyy')}
-            </Typography>
-            <Row justify="flex-end">
+          <Column align="flex-end" expand={1} justify="space-between">
+            <Column align="flex-end">
+              <Typography variant="caption" color="GrayText" {...overflowTextProps}>
+                data de entrega
+              </Typography>
+              <Typography variant="body1" {...overflowTextProps}>
+                {deliveryDate && formatDate(deliveryDate, 'dd/MM/yyyy')}
+              </Typography>
+              <Typography variant="subtitle1" {...overflowTextProps}>
+                total: {toMoney(value * qtd)}
+              </Typography>
+            </Column>
+            <Row align="flex-end" justify="flex-end">
               <IconButton onClick={handleEdit}>
                 <Edit color="info" />
               </IconButton>
+              <CardExpandMore
+                expand={expand}
+                onClick={() => setExpand(old => !old)}
+                aria-expanded={expand}
+                aria-label="saber mais"
+              />
             </Row>
           </Column>
         </Row>
