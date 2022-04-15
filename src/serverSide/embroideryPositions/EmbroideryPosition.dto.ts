@@ -7,6 +7,7 @@ import { PaginationQueryDto } from '../pagination/pagination.dto'
 export interface IEmbPosFilter {
   search?: string
   actived?: boolean
+  typeId?: number
 }
 
 export type IPaginateEmbPosDTO = PaginationQueryDto & IEmbPosFilter

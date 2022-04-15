@@ -41,13 +41,15 @@ async function update(embPosId: number, data: Partial<EmbroideryPosition>): Prom
 }
 
 async function search(filter: IEmbPosFilter = {}): Promise<EmbroideryPosition[]> {
-  const { search } = filter
+  const { search, typeId } = filter
   const where: PrismaTypes.EmbroideryPositionWhereInput = { id: { not: 0 }, actived: true }
 
   if (search)
     where.AND = {
       OR: [{ label: { contains: `${search}` } }, { description: { contains: `${search}` } }]
     }
+
+  if (typeId) where.AND = { ...where.AND, embType: typeId }
 
   const embroideryPositions = await prisma.embroideryPosition.findMany({ take: 10, where, orderBy: { label: 'asc' } })
   return embroideryPositions
