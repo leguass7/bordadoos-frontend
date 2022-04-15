@@ -43,6 +43,8 @@ export const listPurchasesSchema = celebrate({
     startDate: Joi.date(),
     endDate: Joi.date(),
     size: Joi.number(),
-    page: Joi.number()
+    page: Joi.number(),
+    paid: Joi.number(),
+    done: Joi.number()
   }
 })
