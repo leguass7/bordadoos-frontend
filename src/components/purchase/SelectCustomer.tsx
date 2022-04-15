@@ -8,34 +8,34 @@ import { DrawerCustomer, SearchCustomerSelectHandler } from '~/components/Drawer
 import { ModalCustomer, FormCustomerSuccessHandler } from '~/components/ModalCustomer'
 import { SpacedContainer } from '~/components/styled'
 
-import { usePurchaseCustomer } from './PurchaseProvider'
+import { usePurchase } from './PurchaseProvider'
 import { SelectedCustomer } from './SelectedCustomer'
 
 export const SelectCustomer: React.FC = () => {
   const [openSearch, setOpenSearch] = useState(false)
   const [openNew, setOpenNew] = useState(false)
-  const [customerId, setCustomerId] = usePurchaseCustomer()
+  const { updatePurchase, clientId } = usePurchase()
 
   const handleSearchClose = () => setOpenSearch(false)
   const handleSearchOpen = () => setOpenSearch(true)
   const handleNewClose = () => setOpenNew(false)
   const handleNewOpen = () => setOpenNew(true)
-  const handleClearCustomer = () => setCustomerId(null)
+  const handleClearCustomer = () => updatePurchase({ clientId: null })
 
   const handleCustomerSuccess: FormCustomerSuccessHandler = useCallback(
-    id => {
-      if (id) setCustomerId(id)
+    clientId => {
+      if (clientId) updatePurchase({ clientId })
       handleNewClose()
     },
-    [setCustomerId]
+    [updatePurchase]
   )
 
   const handleSelectFound: SearchCustomerSelectHandler = useCallback(
-    customerId => {
-      setCustomerId(customerId)
+    clientId => {
+      updatePurchase({ clientId })
       handleSearchClose()
     },
-    [setCustomerId]
+    [updatePurchase]
   )
 
   return (
@@ -53,8 +53,8 @@ export const SelectCustomer: React.FC = () => {
           </IconButton>
         </CardTitle>
         <SpacedContainer>
-          {customerId ? (
-            <SelectedCustomer customerId={customerId} />
+          {clientId ? (
+            <SelectedCustomer customerId={clientId} />
           ) : (
             <Fade in={true}>
               <Stack direction="row" spacing={2} justifyContent="center">
@@ -75,7 +75,7 @@ export const SelectCustomer: React.FC = () => {
         open={openSearch}
         onClose={handleSearchClose}
         onSelecCustomer={handleSelectFound}
-        defaultSelected={customerId}
+        defaultSelected={clientId}
       />
       <ModalCustomer
         open={openNew}
