@@ -78,6 +78,8 @@ async function paginate(
     model: 'Purchase',
     ...pagination,
     where,
+    order: 'desc',
+    orderBy: 'createdAt',
     select: {
       ...spreadAllowed(allowedFields),
       category: {

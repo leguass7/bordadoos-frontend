@@ -7,6 +7,7 @@ import { Form } from '@unform/web'
 import * as Yup from 'yup'
 
 import { validateFormData } from '~/helpers/form'
+import { removeInvalidValues } from '~/helpers/object'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { getPositionByType } from '~/services/api/embroidery'
 import { findPurchaseWithItems } from '~/services/api/purchase'
@@ -22,8 +23,10 @@ const schema = Yup.object().shape({
   qtd: Yup.string().required('A quantidade de peças é obrigatória'),
   value: Yup.string().required('O valor unitário é obrigatório'),
   paid: Yup.bool().required('O cliente é obrigatório'),
+  typeId: Yup.string().required('O tipo do bordado é obrigatório'),
+  categoryId: Yup.string().required('A categoria do bordado é obrigatória'),
   done: Yup.bool().required('O cliente é obrigatório'),
-  deliveryDate: Yup.string().required('Data de entrega é obrigatória') // lembrete: Validar formato de data
+  deliveryDate: Yup.string().nullable() // lembrete: Validar formato de data
 })
 
 interface Props {
@@ -89,9 +92,9 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
       if (isInvalid) return
 
       setLoading(true)
-      if (onSubmit) await onSubmit({ ...data, clientId }, !purchaseId)
+      if (onSubmit) await onSubmit(removeInvalidValues({ ...data, clientId }), !purchaseId)
 
-      if (isMounted.current) {
+      if (!!isMounted?.current) {
         setLoading(false)
 
         if (!purchaseId) {

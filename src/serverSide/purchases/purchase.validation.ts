@@ -10,7 +10,7 @@ export const createPurchasesSchema = celebrate({
     clientId: Joi.number().required(),
     qtd: Joi.number(),
     value: Joi.number(),
-    deliveryDate: Joi.date().required()
+    deliveryDate: Joi.date()
   }
 })
 
