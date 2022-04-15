@@ -50,6 +50,7 @@ interface Props extends PurchaseWithRelations {}
 
 const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
   const { value = 0, qtd = 0, done = false, id, category, client, type, createdAt, deliveryDate } = props
+  const hasLabel = !!(type?.label || category?.label)
   const [itemDone, setItemDone] = useState(done)
   const { push } = useRouter()
 
@@ -90,7 +91,13 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
         <Row align="stretch">
           <Column align="flex-start">
             <Typography variant="subtitle1" {...overflowTextProps}>
-              {type?.label ?? '--'} {'>'} {category?.label ?? '--'}
+              {hasLabel ? (
+                <>
+                  {type?.label ?? '--'} {'>'} {category?.label ?? '--'}
+                </>
+              ) : (
+                '--'
+              )}
             </Typography>
             <Typography variant="h6" {...overflowTextProps}>
               {client?.name ?? '--'}
