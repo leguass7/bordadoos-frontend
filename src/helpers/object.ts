@@ -7,7 +7,7 @@ export function isObject(item?: any) {
 export function removeInvalidValues<T = unknown>(obj: Record<string, any>): T {
   return Object.entries(obj).reduce((acc, [key, value]) => {
     if (isDefined(value)) {
-      if (isNaN(value)) return acc
+      if (isNaN(value) || value === '') return acc
       acc[key] = value
     }
     return acc
