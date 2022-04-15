@@ -44,6 +44,7 @@ export const Input: React.FC<Props> = ({ name, type = 'text', id, label, number,
     <div style={{ padding: 4 }}>
       {label ? <label htmlFor={id}>{label}</label> : null}
       <MuiInput
+        fullWidth
         type={type}
         inputProps={{ id }}
         name={name}

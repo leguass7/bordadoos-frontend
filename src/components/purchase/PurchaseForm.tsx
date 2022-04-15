@@ -1,32 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { useRouter } from 'next/router'
-
-import { Grid } from '@mui/material'
-import { Purchase } from '@prisma/client'
+import { Button, Grid } from '@mui/material'
+import { EmbroideryPosition, EmbroideryType, Purchase } from '@prisma/client'
 import { FormHandles } from '@unform/core'
 import { Form } from '@unform/web'
 import * as Yup from 'yup'
 
 import { validateFormData } from '~/helpers/form'
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { getDefault, postDefault, putDefault } from '~/services/api'
+import { getPositionByType } from '~/services/api/embroidery'
+import { findPurchaseWithItems } from '~/services/api/purchase'
 
 import { CircleLoading } from '../CircleLoading'
-import { DrawerCustomer } from '../Drawers/DrawerCustomer'
-import { DrawerEmbroideryPosition } from '../Drawers/DrawerEmbroideryPosition'
-import { DrawerEmbroideryType } from '../Drawers/DrawerEmbroideryType'
 import { Datepicker } from '../Form/Datepicker'
 import { Input } from '../Form/Input'
+import Select, { SelectItem } from '../Form/Select'
 import { Switch } from '../Form/Switch'
-import { PurchaseActions, PurchaseActionSelect } from './PurchaseActions'
-import { PurchaseWithRelations } from './PurchaseList'
 import { usePurchase } from './PurchaseProvider'
 
 const schema = Yup.object().shape({
-  clientName: Yup.string().required('O cliente é obrigatório'),
-  categoryLabel: Yup.string().required('A posição do bordado é obrigatória'),
-  typeLabel: Yup.string().required('O tipo de bordado é obrigatório'),
   qtd: Yup.string().required('A quantidade de peças é obrigatória'),
   value: Yup.string().required('O valor unitário é obrigatório'),
   paid: Yup.bool().required('O cliente é obrigatório'),
@@ -37,145 +29,112 @@ const schema = Yup.object().shape({
 interface Props {
   purchaseId?: number
   initialData?: Partial<Purchase>
+  onSubmit: (formData: Purchase, creating?: boolean) => Promise<void>
 }
 
-export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0 }) => {
+function selectItemsDto(data: EmbroideryPosition[] | EmbroideryType[]): SelectItem[] {
+  return data
+    .filter(item => item?.actived)
+    .map(({ id, label = '' }) => {
+      return { label, value: id }
+    })
+}
+
+export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0, onSubmit }) => {
   const formRef = useRef<FormHandles>(null)
-  const { updatePurchase } = usePurchase()
-  const [showDrawer, setshowDrawer] = useState(0)
-  const { push } = useRouter()
+  const { clientId, updatePurchase } = usePurchase()
+
+  const [typeItems, setTypeItems] = useState<SelectItem[]>([])
+  const [positionItems, setPositionItems] = useState<SelectItem[]>([])
 
   const isMounted = useIsMounted()
   const [loading, setLoading] = useState(false)
 
-  const updateForm = useCallback(
-    (data: any) => {
-      formRef?.current?.setData?.(data)
-      updatePurchase(data)
-    },
-    [updatePurchase]
-  )
-
   const fetchData = useCallback(async () => {
-    if (purchaseId) {
-      setLoading(true)
-      const { purchase, success } = await getDefault<{ purchase: PurchaseWithRelations }>(`/purchases/${purchaseId}`)
-      if (isMounted?.current) {
-        setLoading(false)
-        if (success) {
-          // TEMP
-          const data = {
-            ...purchase,
-            clientName: purchase?.client?.name,
-            typeLabel: purchase?.type?.label,
-            categoryLabel: purchase?.category?.label
-          }
+    setLoading(true)
+    const { purchase, categories, types } = await findPurchaseWithItems(purchaseId)
+    if (isMounted?.current) {
+      setLoading(false)
 
-          updateForm(data)
-        }
-      }
+      if (types) setTypeItems(selectItemsDto(types))
+      if (categories) setPositionItems(selectItemsDto(categories))
+
+      formRef?.current?.setData?.(purchase)
+      updatePurchase({ clientId: purchase?.clientId })
     }
-  }, [isMounted, purchaseId, updateForm])
+  }, [isMounted, purchaseId, updatePurchase])
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
+  const handleChangeType = useCallback(
+    async e => {
+      const value = parseInt(`${e.target?.value || 0}`) || 0
+      if (value) {
+        setLoading(true)
+        const { success, positions } = await getPositionByType(value)
+        if (isMounted?.current) {
+          setLoading(false)
+          if (success) setPositionItems(selectItemsDto(positions))
+        }
+      }
+    },
+    [isMounted]
+  )
+
   const handleSubmit = useCallback(
     async data => {
-      const isInValid = await validateFormData(schema, data, formRef.current)
-      if (isInValid) return
-
-      // TEMP
-      if (data?.clientName) delete data?.clientName
-      if (data?.typeLabel) delete data?.typeLabel
-      if (data?.categoryLabel) delete data?.categoryLabel
+      const isInvalid = await validateFormData(schema, data, formRef.current)
+      if (isInvalid) return
 
       setLoading(true)
-      if (purchaseId) {
-        const { success } = await putDefault<{}>(`/purchases/${purchaseId}`, data)
-        if (success) push('/admin/purchases')
-      } else await postDefault(`/purchases`, data)
+      if (onSubmit) await onSubmit({ ...data, clientId }, !purchaseId)
 
       if (isMounted.current) {
         setLoading(false)
-        updateForm({})
-        formRef.current?.reset?.({})
+
+        if (!purchaseId) {
+          formRef?.current?.setData?.({})
+          formRef.current?.reset?.({})
+        }
       }
     },
-    [isMounted, updateForm, purchaseId, push]
-  )
-
-  const handleAction = useCallback((type: PurchaseActionSelect) => {
-    if (type === PurchaseActionSelect['client']) setshowDrawer(1)
-    if (type === PurchaseActionSelect['type']) setshowDrawer(2)
-    if (type === PurchaseActionSelect['category']) setshowDrawer(3)
-  }, [])
-
-  const cancelDrawer = useCallback(() => {
-    setshowDrawer(0)
-  }, [])
-
-  const handleSelect = useCallback(
-    (fieldId: string, fieldName: string) => (id: number, label: string) => {
-      // FIXME: name fields
-      cancelDrawer()
-      const aux: any = {}
-      aux[fieldId] = id
-      if (aux[fieldId]) aux[fieldName] = label
-      updateForm(aux)
-    },
-    [updateForm, cancelDrawer]
+    [isMounted, purchaseId, onSubmit, clientId]
   )
 
   return (
     <>
       <Grid container direction="column" flex={1}>
-        <Grid item flex={1} p={1}>
-          <Form ref={formRef} onSubmit={handleSubmit} initialData={initialData}>
-            <Grid container>
-              <Grid item xs={12} md={6} lg={4}>
-                <Input name="clientName" placeholder="Cliente" disabled />
-                <Input name="typeLabel" placeholder="Bordado" disabled />
-                <Input name="categoryLabel" placeholder="Posição" disabled />
-
-                <Input style={{ display: 'none' }} name="clientId" />
-                <Input style={{ display: 'none' }} name="typeId" />
-                <Input style={{ display: 'none' }} name="categoryId" />
-              </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                <Input number name="qtd" placeholder="Quantidade" autoComplete="off" />
-                <Input number name="value" placeholder="Valor unitário" autoComplete="off" />
-              </Grid>
-              <Grid item xs={12} md={6} lg={4} alignItems="flex-start">
-                <Datepicker name="deliveryDate" />
-              </Grid>
-              <Grid container direction="column" alignItems="flex-start">
-                <Switch label="pago" name="paid" />
-                <Switch label="finalizado" name="done" />
-              </Grid>
+        <Form ref={formRef} onSubmit={handleSubmit} initialData={initialData}>
+          <Grid container p={1}>
+            <Grid item xs={12} sm={6}>
+              <Select
+                disabled={!clientId}
+                items={typeItems}
+                onChange={handleChangeType}
+                label="Tipo de bordado"
+                name="typeId"
+              />
+              <Select disabled={!clientId} items={positionItems} label="Categoria do bordado" name="categoryId" />
+              <Datepicker disabled={!clientId} name="deliveryDate" />
             </Grid>
-          </Form>
-        </Grid>
-        <Grid item p={1}>
-          <PurchaseActions onSelect={handleAction} onSave={formRef.current?.submitForm} />
-        </Grid>
+            <Grid item xs={12} sm={6}>
+              <Input disabled={!clientId} number name="qtd" placeholder="Quantidade" autoComplete="off" />
+              <Input disabled={!clientId} number name="value" placeholder="Valor unitário" autoComplete="off" />
+            </Grid>
+            <Grid container direction="column" alignItems="flex-start">
+              <Switch disabled={!clientId} label="pago" name="paid" />
+              <Switch disabled={!clientId} label="finalizado" name="done" />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Button variant="contained" type="submit" disabled={!clientId}>
+                Salvar
+              </Button>
+            </Grid>
+          </Grid>
+        </Form>
       </Grid>
-      <DrawerCustomer
-        onSelecCustomer={handleSelect('clientId', 'clientName')}
-        open={showDrawer === 1}
-        onClose={cancelDrawer}
-      />
-      <DrawerEmbroideryType
-        onSelect={handleSelect('typeId', 'typeLabel')}
-        open={showDrawer === 2}
-        onClose={cancelDrawer}
-      />
-      <DrawerEmbroideryPosition
-        onSelect={handleSelect('categoryId', 'categoryLabel')}
-        open={showDrawer === 3}
-        onClose={cancelDrawer}
-      />
 
       {loading ? <CircleLoading light /> : null}
     </>

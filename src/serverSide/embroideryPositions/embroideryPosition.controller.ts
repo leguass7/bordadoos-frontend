@@ -57,9 +57,9 @@ function update(EmbroideryPositionService: IEmbroideryPositionService) {
 function search(embroideryPositionService: IEmbroideryPositionService) {
   return async (req: IRequestSearchEmbroideryPosition, res: NextApiResponse) => {
     const { search } = req.query
-    // if (!search) return res.status(200).json({ success: true, positions: [] })
+    const typeId = parseInt(`${req.query?.typeId || 0}`) || 0
 
-    const positions = await embroideryPositionService.search({ search })
+    const positions = await embroideryPositionService.search({ search, typeId })
     return res.status(200).json({ success: true, positions })
   }
 }

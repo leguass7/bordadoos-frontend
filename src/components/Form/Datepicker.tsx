@@ -10,7 +10,7 @@ interface Props extends Partial<DatePickerProps> {
   name: string
 }
 
-export const Datepicker: React.FC<Props> = ({ name, onChange, ...props }) => {
+export const Datepicker: React.FC<Props> = ({ name, onChange, label = 'Data de entrega', ...props }) => {
   const ref = useRef(null)
   const { fieldName, defaultValue = null, registerField, error } = useField(name)
   const [value, setValue] = useState<string | Date>(defaultValue)
@@ -45,10 +45,10 @@ export const Datepicker: React.FC<Props> = ({ name, onChange, ...props }) => {
       <DatePicker
         {...props}
         inputRef={ref}
-        label="Data de entrega"
+        label={label}
         value={value}
         onChange={handleChange}
-        renderInput={params => <TextField {...params} />}
+        renderInput={params => <TextField fullWidth {...params} />}
       />
       {error ? <ErrorMessage>{error}</ErrorMessage> : null}
     </div>
