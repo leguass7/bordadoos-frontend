@@ -5,6 +5,8 @@ import MenuItem, { MenuItemProps } from '@mui/material/MenuItem'
 import MuiSelect, { SelectProps } from '@mui/material/Select'
 import { useField } from '@unform/core'
 
+import { ErrorMessage } from './styles'
+
 export type SelectItem = MenuItemProps<'li', { label: string; value: string | number }>
 
 interface Props extends SelectProps {
@@ -15,26 +17,25 @@ interface Props extends SelectProps {
 
 const Select: React.FC<Props> = ({ name, items, label, inputProps, onChange, ...props }) => {
   const inputRef = useRef(null)
-  const [value, setValue] = useState('')
-  const { fieldName, defaultValue, registerField } = useField(name)
+  const [selected, setSelected] = useState('')
+  const { fieldName, defaultValue, registerField, error } = useField(name)
 
   useEffect(() => {
     registerField<string>({
       name: fieldName,
       ref: inputRef,
-      getValue(ref) {
-        return ref?.value
+      getValue() {
+        return selected
       },
       setValue(ref, newValue = '') {
-        setValue(newValue)
+        setSelected(newValue)
       }
     })
-  }, [registerField, fieldName])
+  }, [registerField, fieldName, selected])
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     e => {
-      setValue(e.target?.value ?? '')
-      if (inputRef.current) inputRef.current.value = e.target?.value
+      setSelected(e.target?.value ?? '')
       if (onChange) onChange(e)
     },
     [onChange]
@@ -47,7 +48,7 @@ const Select: React.FC<Props> = ({ name, items, label, inputProps, onChange, ...
         <MuiSelect
           labelId={label}
           name={name}
-          value={value}
+          value={selected}
           onChange={handleChange}
           defaultValue={defaultValue}
           inputRef={inputRef}
@@ -64,6 +65,7 @@ const Select: React.FC<Props> = ({ name, items, label, inputProps, onChange, ...
           })}
         </MuiSelect>
       </FormControl>
+      {error ? <ErrorMessage>{error}</ErrorMessage> : null}
     </div>
   )
 }
