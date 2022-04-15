@@ -5,11 +5,11 @@ export const createPurchasesSchema = celebrate({
     actived: Joi.boolean(),
     done: Joi.boolean(),
     paid: Joi.boolean(),
-    categoryId: Joi.number().required(),
-    typeId: Joi.number().required(),
+    categoryId: Joi.number().allow(''),
+    typeId: Joi.number().allow(''),
     clientId: Joi.number().required(),
-    qtd: Joi.number(),
-    value: Joi.number(),
+    qtd: Joi.number().required(),
+    value: Joi.number().allow(''),
     deliveryDate: Joi.date()
   }
 })
