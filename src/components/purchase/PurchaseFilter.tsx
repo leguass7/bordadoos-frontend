@@ -62,7 +62,7 @@ export const PurchaseFilter: React.FC = () => {
       <Container style={{ marginBottom: '4px' }}>
         <SearchBar onChangeText={handleSearchChange('search')} />
         <Form onSubmit={null}>
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', flexFlow: 'row wrap', justifyContent: 'flex-start' }}>
             <Datepicker name="startDate" label="Data inicial" onChange={handleSearchChange('startDate')} />
             <Datepicker name="endDate" label="Data final" onChange={handleSearchChange('endDate')} />
             <Select

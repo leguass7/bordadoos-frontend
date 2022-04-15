@@ -21,11 +21,11 @@ import { usePurchase } from './PurchaseProvider'
 
 const schema = Yup.object().shape({
   qtd: Yup.string().required('A quantidade de peças é obrigatória'),
-  value: Yup.string().required('O valor unitário é obrigatório'),
-  paid: Yup.bool().required('O cliente é obrigatório'),
-  typeId: Yup.string().required('O tipo do bordado é obrigatório'),
-  categoryId: Yup.string().required('A categoria do bordado é obrigatória'),
-  done: Yup.bool().required('O cliente é obrigatório'),
+  value: Yup.string(),
+  paid: Yup.bool(),
+  typeId: Yup.string(),
+  categoryId: Yup.string(),
+  done: Yup.bool(),
   deliveryDate: Yup.string().nullable() // lembrete: Validar formato de data
 })
 
