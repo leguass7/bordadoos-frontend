@@ -1,6 +1,7 @@
-import { isCelebrateError, errors } from 'celebrate'
 import { NextApiResponse, NextApiRequest } from 'next'
 import { Options } from 'next-connect'
+
+import { isCelebrateError, errors } from 'celebrate'
 
 export interface ApiErrorParam {
   status: number
@@ -15,10 +16,10 @@ export default function ErrorApi(data: ApiErrorParam | string) {
 
 export function onErrorApi(err: any, req: NextApiRequest, res: NextApiResponse) {
   try {
-    if (isCelebrateError(err)) {
-      return errors()
-    }
+    if (isCelebrateError(err)) return res.send(errors())
+
     const errorObject = JSON.parse(err.message)
+
     return res
       .status(errorObject?.status || 500)
       .json({ success: false, message: errorObject?.message || 'unexpected error' })

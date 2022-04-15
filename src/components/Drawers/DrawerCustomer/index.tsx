@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import SearchOffIcon from '@mui/icons-material/SearchOff'
 import { Drawer, DrawerProps } from '@mui/material'
@@ -8,10 +8,10 @@ import { SearchBar } from '~/components/SearchBar'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { findAllCustomers } from '~/services/api/customer'
 
-import { CircleLoading } from '../CircleLoading'
-import { SpacedContainer, Text } from '../styled'
+import { CircleLoading } from '../../CircleLoading'
+import { SpacedContainer, Text } from '../../styled'
+import { ListContainer } from '../styles'
 import { ItemFound, SearchCustomerSelectHandler } from './ItemFound'
-import { ListContainer } from './styles'
 
 export type { SearchCustomerSelectHandler }
 export { ItemFound }
@@ -24,11 +24,10 @@ type Props = DrawerProps & {
 export const DrawerCustomer: React.FC<Props> = ({ defaultSelected, onSelecCustomer, ...drawerProps }) => {
   const isMounted = useIsMounted()
   const [loading, setLoading] = useState(false)
-  const [hasText, setHasText] = useState(false)
   const [data, setData] = useState<Client[]>([])
 
   const fetchCustomers = useCallback(
-    async (search?: string) => {
+    async (search = '') => {
       setLoading(true)
       const response = await findAllCustomers({ search })
       if (isMounted.current) {
@@ -39,15 +38,26 @@ export const DrawerCustomer: React.FC<Props> = ({ defaultSelected, onSelecCustom
     [isMounted]
   )
 
+  useEffect(() => {
+    fetchCustomers()
+  }, [fetchCustomers])
+
+  // const handleSearchChange = useCallback(
+  //   (search: string) => {
+  //     if (!search) {
+  //       setHasText(false)
+  //       setData([])
+  //       setLoading(false)
+  //     } else {
+  //       fetchCustomers(search)
+  //     }
+  //   },
+  //   [fetchCustomers]
+  // )
+
   const handleSearchChange = useCallback(
     (search: string) => {
-      if (!search) {
-        setHasText(false)
-        setData([])
-        setLoading(false)
-      } else {
-        fetchCustomers(search)
-      }
+      fetchCustomers(search)
     },
     [fetchCustomers]
   )
@@ -56,18 +66,22 @@ export const DrawerCustomer: React.FC<Props> = ({ defaultSelected, onSelecCustom
     <Drawer {...drawerProps}>
       <SearchBar onChangeText={handleSearchChange} />
       <ListContainer>
-        {data.map(customer => {
-          const key = `item-${customer.id}`
-          return <ItemFound key={key} {...customer} onSelect={onSelecCustomer} selectedId={defaultSelected} />
-        })}
-        {loading ? <CircleLoading light /> : null}
+        {data?.length
+          ? data.map(customer => {
+              const key = `item-${customer.id}`
+              return <ItemFound key={key} {...customer} onSelect={onSelecCustomer} selectedId={defaultSelected} />
+            })
+          : null}
       </ListContainer>
-      {!loading && hasText ? (
+
+      {!loading && !data?.length ? (
         <SpacedContainer align="center">
           <SearchOffIcon />
           <Text align="center">Nenhum cliente encontrado</Text>
         </SpacedContainer>
       ) : null}
+
+      {loading ? <CircleLoading light /> : null}
     </Drawer>
   )
 }

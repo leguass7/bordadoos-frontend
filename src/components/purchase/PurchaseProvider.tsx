@@ -1,9 +1,11 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
-import { createContext, useContext, useContextSelector } from 'use-context-selector'
+import { createContext, useContext } from 'use-context-selector'
 
 export interface IPurchaseData {
-  customerId?: number
+  // customerId?: number // for search
+
+  clientId?: number
 }
 
 export interface IContextPurchase {
@@ -27,20 +29,25 @@ export const PurchaseProvider: React.FC = ({ children }) => {
 }
 
 export function usePurchase() {
-  const context = useContext(PurchaseContext)
-  return { ...context }
+  const { purchase, ...context } = useContext(PurchaseContext)
+
+  const clientId = useMemo(() => {
+    return purchase?.clientId
+  }, [purchase])
+
+  return { purchase, ...context, clientId }
 }
 
-export function usePurchaseCustomer(): [number, (customerId?: number) => void] {
-  const customerSelected = useContextSelector(PurchaseContext, ({ purchase }) => purchase?.customerId)
-  const updatePurchase = useContextSelector(PurchaseContext, context => context.updatePurchase)
+// export function usePurchaseCustomer(): [number, (customerId?: number) => void] {
+//   const customerSelected = useContextSelector(PurchaseContext, ({ purchase }) => purchase?.customerId)
+//   const updatePurchase = useContextSelector(PurchaseContext, context => context.updatePurchase)
 
-  const setCustomerSelected = useCallback(
-    (customerId?: number) => {
-      updatePurchase({ customerId })
-    },
-    [updatePurchase]
-  )
+//   const setCustomerSelected = useCallback(
+//     (customerId?: number) => {
+//       updatePurchase({ customerId })
+//     },
+//     [updatePurchase]
+//   )
 
-  return [customerSelected, setCustomerSelected]
-}
+//   return [customerSelected, setCustomerSelected]
+// }

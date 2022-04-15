@@ -4,6 +4,7 @@ export const PanelWrapper = styled.div`
   position: relative;
   display: block;
   border: 0;
+  padding-bottom: 8px;
 `
 
 export const ItemLine = styled.div<{ hideShadow?: boolean; color?: string }>`

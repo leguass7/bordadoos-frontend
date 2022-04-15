@@ -1,15 +1,19 @@
+import { useMemo } from 'react'
+
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
 
 import { Container } from '@mui/material'
-
-// import { useSession } from 'next-auth/client'
 
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
 import { PageTitle } from '~/components/PageTitle'
 import { PurchasePanel } from '~/components/purchase/PurchasePanel'
+import { PurchaseProvider } from '~/components/purchase/PurchaseProvider'
 
 const PageAdminIndex: NextPage = () => {
-  // const [session] = useSession()
+  const { query } = useRouter()
+
+  const purchaseId = useMemo(() => (query?.purchaseId ? parseInt(`${query?.purchaseId}`) : 0), [query])
 
   return (
     <LayoutAdmin>
@@ -19,7 +23,9 @@ const PageAdminIndex: NextPage = () => {
           title="ordem de serviço"
           description={'Preencha as informações para iniciar uma nova O.S.'}
         />
-        <PurchasePanel />
+        <PurchaseProvider>
+          <PurchasePanel purchaseId={purchaseId} />
+        </PurchaseProvider>
       </Container>
     </LayoutAdmin>
   )

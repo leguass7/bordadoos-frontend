@@ -5,6 +5,7 @@ import { PaginationQueryDto } from '../pagination/pagination.dto'
 import type {
   IRequestCreateEmbPos,
   IRequestEmbPos,
+  IRequestSearchEmbroideryPosition,
   IRequestUpdateEmbPos,
   IResponseEmbPos,
   IResponsePaginateEmbPos
@@ -53,11 +54,22 @@ function update(EmbroideryPositionService: IEmbroideryPositionService) {
   }
 }
 
+function search(embroideryPositionService: IEmbroideryPositionService) {
+  return async (req: IRequestSearchEmbroideryPosition, res: NextApiResponse) => {
+    const { search } = req.query
+    const typeId = parseInt(`${req.query?.typeId || 0}`) || 0
+
+    const positions = await embroideryPositionService.search({ search, typeId })
+    return res.status(200).json({ success: true, positions })
+  }
+}
+
 export function factoryEmbroideryPositionController(embroideryPositionService: IEmbroideryPositionService) {
   return {
     paginate: paginate(embroideryPositionService),
     create: create(embroideryPositionService),
     update: update(embroideryPositionService),
+    search: search(embroideryPositionService),
     findOne: findOne(embroideryPositionService)
   }
 }

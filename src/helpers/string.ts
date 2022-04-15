@@ -1,3 +1,5 @@
+import { format, isValid, parseISO } from 'date-fns'
+
 export function querystring(_str?: Record<string, any>): string
 export function querystring(_str?: string): Record<string, string>
 export function querystring(_str?: any): any {
@@ -46,4 +48,23 @@ export function normalizeUrl(path?: string): string {
   const q = querystring(params)
   const result = [base.replace(/^(.*)\/$/, '$1'), Object.keys(q).length && q].filter(f => !!f)
   return result.length > 1 ? result.join('?') : result[0]
+}
+
+export function toMoney(number: number) {
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(number)
+}
+
+export function validDate(date?: Date | string | number) {
+  if (date instanceof Date) return date
+  if (typeof date === 'string') {
+    const d = parseISO(date)
+    return isValid(d) ? d : null
+  }
+  return null
+}
+
+export function formatDate(date: Date | string | number, formatString: string) {
+  const valid = validDate(date)
+  if (valid) return format(valid, formatString)
+  return null
 }

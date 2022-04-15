@@ -7,6 +7,7 @@ import { PaginationQueryDto } from '../pagination/pagination.dto'
 export interface IEmbPosFilter {
   search?: string
   actived?: boolean
+  typeId?: number
 }
 
 export type IPaginateEmbPosDTO = PaginationQueryDto & IEmbPosFilter
@@ -33,6 +34,10 @@ export interface IRequestEmbPos extends Omit<AuthorizedApiRequest, 'query'> {
 export interface IRequestUpdateEmbPos extends Omit<AuthorizedApiRequest, 'query'> {
   body: Partial<IEmbPosDTO>
   query: { embPosId: number }
+}
+
+export interface IRequestSearchEmbroideryPosition extends Omit<AuthorizedApiRequest, 'query'> {
+  query: IEmbPosFilter
 }
 
 // Responses

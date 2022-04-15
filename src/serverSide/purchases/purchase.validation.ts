@@ -5,12 +5,12 @@ export const createPurchasesSchema = celebrate({
     actived: Joi.boolean(),
     done: Joi.boolean(),
     paid: Joi.boolean(),
-    categoryId: Joi.number().required(),
-    typeId: Joi.number().required(),
+    categoryId: Joi.number().allow(''),
+    typeId: Joi.number().allow(''),
     clientId: Joi.number().required(),
-    qtd: Joi.number(),
-    value: Joi.number(),
-    deliveryDate: Joi.date().required()
+    qtd: Joi.number().required(),
+    value: Joi.number().allow(''),
+    deliveryDate: Joi.date()
   }
 })
 
@@ -31,8 +31,20 @@ export const updatePurchasesSchema = celebrate({
   }
 })
 
-export const deletePurchasesSchema = celebrate({
+export const findPurchasesSchema = celebrate({
   [Segments.QUERY]: {
     purchaseId: Joi.number().required()
+  }
+})
+
+export const listPurchasesSchema = celebrate({
+  [Segments.QUERY]: {
+    search: Joi.string(),
+    startDate: Joi.date(),
+    endDate: Joi.date(),
+    size: Joi.number(),
+    page: Joi.number(),
+    paid: Joi.number(),
+    done: Joi.number()
   }
 })
