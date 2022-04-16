@@ -1,5 +1,7 @@
 import { Prisma as PrismaTypes, Purchase } from '.prisma/client'
 
+import { endOfDay, startOfDay } from 'date-fns'
+
 import { isDefined } from '~/helpers/variables'
 
 import prisma from '../database/prisma'
@@ -41,10 +43,11 @@ async function paginate(
       ]
     }
 
-  if (startDate && endDate) where.AND = { ...where.AND, deliveryDate: { lte: endDate, gte: startDate } }
+  if (startDate && endDate)
+    where.AND = { ...where.AND, createdAt: { lte: endOfDay(endDate), gte: startOfDay(startDate) } }
   else {
-    if (startDate) where.AND = { ...where.AND, deliveryDate: { gte: startDate } }
-    if (endDate) where.AND = { ...where.AND, deliveryDate: { lte: endDate } }
+    if (startDate) where.AND = { ...where.AND, createdAt: { gte: startOfDay(startDate) } }
+    if (endDate) where.AND = { ...where.AND, createdAt: { lte: endOfDay(endDate) } }
   }
 
   if (isDefined(paid)) {
@@ -115,7 +118,7 @@ async function deletePurchase(purchaseId: number, userId: number, force = false)
 
     return true
   } catch (err) {
-    console.log(err)
+    // console.log(err)
     return false
   }
 }

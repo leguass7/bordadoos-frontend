@@ -34,12 +34,8 @@ export const PurchaseFilter: React.FC = () => {
 
   const handleSearchChange = useCallback(
     (field: string) => (search?: string | number | Date | boolean) => {
-      if (field && search) {
-        if (search instanceof Date) search = formatDate(search, 'yyyy-MM-dd')
-        const filter: any = {}
-        filter[field] = search
-        updateFilter(filter)
-      }
+      const filter: any = { [field]: search instanceof Date ? formatDate(search, 'yyyy-MM-dd HH:mm:01') : search }
+      updateFilter(filter)
     },
     [updateFilter]
   )
@@ -63,8 +59,8 @@ export const PurchaseFilter: React.FC = () => {
         <SearchBar onChangeText={handleSearchChange('search')} />
         <Form onSubmit={null}>
           <div style={{ display: 'flex', flexFlow: 'row wrap', justifyContent: 'flex-start' }}>
-            <Datepicker name="startDate" label="Data inicial" onChange={handleSearchChange('startDate')} />
-            <Datepicker name="endDate" label="Data final" onChange={handleSearchChange('endDate')} />
+            <Datepicker name="startDate" label="Data inicial" onChange={handleSearchChange('startDate')} clearable />
+            <Datepicker name="endDate" label="Data final" onChange={handleSearchChange('endDate')} clearable />
             <Select
               sx={{ width: 200 }}
               name="paid"

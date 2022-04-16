@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { Container } from '@mui/material'
@@ -25,11 +25,15 @@ export const PurchaseList: React.FC = () => {
     )
   }, [])
 
+  const container = useMemo(() => {
+    return window?.document.getElementById('layout-container')
+  }, [])
+
   return (
     <div>
       <InfiniteScroll
         dataLength={data.length}
-        scrollableTarget="layout-container"
+        scrollableTarget={container}
         hasMore={!!hasMore}
         next={fetchMoreData}
         loader={
@@ -44,7 +48,8 @@ export const PurchaseList: React.FC = () => {
             display: 'flex',
             flexFlow: 'row wrap',
             alignItems: 'flex-start',
-            padding: 4
+            padding: 4,
+            overflow: 'hidden'
           }}
         >
           {data?.map?.(item => {

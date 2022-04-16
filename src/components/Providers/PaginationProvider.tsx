@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
 
 import { CircleLoading } from '~/components/CircleLoading'
+import { removeInvalidValues } from '~/helpers/object'
 import { querystring } from '~/helpers/string'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { api, getDefault } from '~/services/api'
@@ -83,7 +84,7 @@ export const PaginationProvider: React.FC<Props> = ({
   const updateFilter = useCallback(
     (newFilter: Record<string, any>) => {
       clearData()
-      setFilter(old => ({ ...old, ...newFilter }))
+      setFilter(old => removeInvalidValues({ ...old, ...newFilter }))
     },
     [clearData]
   )
