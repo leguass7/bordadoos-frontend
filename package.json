@@ -9,6 +9,23 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "author": {
+    "email": "leandro.sbrissa@hotmail.com",
+    "name": "Leandro Sbrissa",
+    "url": "https://avatarsolucoesdigitais.com.br"
+  },
+  "contributors": [
+    {
+      "email": "leandro.sbrissa@hotmail.com",
+      "name": "Leandro Sbrissa",
+      "url": "https://avatarsolucoesdigitais.com.br"
+    },
+    {
+      "email": "fs.severoemanuel@gmail.com",
+      "name": "Emanuel Severo",
+      "url": "https://github.com/severoemanuel"
+    }
+  ],
   "prisma": {
     "seed": "ts-node --project ./tsconfig.seed.json ./prisma/seed.ts"
   },
