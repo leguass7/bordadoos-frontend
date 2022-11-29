@@ -13,20 +13,20 @@ type Props = {
   customerId: number
 }
 export const SelectedCustomer: React.FC<Props> = ({ customerId }) => {
-  const insMounted = useIsMounted()
+  const isMounted = useIsMounted()
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<Partial<Client>>(null)
 
   const fetchCustomer = useCallback(async () => {
     setLoading(true)
     const response = await getCustomer(customerId)
-    if (insMounted.current) {
+    if (isMounted()) {
       setLoading(false)
       if (response?.success) {
         setData(response?.client)
       }
     }
-  }, [customerId, insMounted])
+  }, [customerId, isMounted])
 
   useEffect(() => {
     let active = true
