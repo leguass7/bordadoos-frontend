@@ -24,7 +24,7 @@ export const Input: React.FC<Props> = ({ name, type = 'text', id, label, number,
       name: fieldName,
       ref: ref.current,
       getValue(input) {
-        const value = number ? validNumber(input.value) : input.value
+        const value = number ? validNumber(input.value) : input?.value || null
         return value
       },
       setValue(input, value) {
