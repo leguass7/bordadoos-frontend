@@ -97,5 +97,5 @@ export function addSeparatorsToNumberString(value: string, separators: string[] 
 }
 
 export function validNumber(value: string) {
-  return value.replace(',', '.')
+  return value?.replace(',', '.') ?? null
 }

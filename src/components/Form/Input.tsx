@@ -24,10 +24,10 @@ export const Input: React.FC<Props> = ({ name, type = 'text', id, label, number,
       name: fieldName,
       ref: ref.current,
       getValue(input) {
-        const value = number ? validNumber(input.value) : input?.value || null
-        return value
+        const value = number ? validNumber(input.value) : input?.value
+        return value || null
       },
-      setValue(input, value) {
+      setValue(input, value = null) {
         input.value = value
       },
       clearValue() {
