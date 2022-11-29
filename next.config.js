@@ -26,7 +26,7 @@ const withPWAConfig = {
     dest: 'public',
     disable: !!(process.env.NODE_ENV === 'development'),
     // disable: true,
-    register: !(process.env.NODE_ENV === 'development'),
+    register: !!(process.env.NODE_ENV === 'production'),
     runtimeCaching: [
       {
         urlPattern: /.(?:eot|otf|ttc|ttf|woff|woff2|font.css)$/i,
