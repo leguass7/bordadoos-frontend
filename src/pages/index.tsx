@@ -21,7 +21,7 @@ const PageIndex: NextPage = () => {
     if (loaded && session && session.user) {
       setProcessing(true)
       await prefetch('/admin')
-      if (isMounted.current) {
+      if (isMounted()) {
         setProcessing(false)
         replace('/admin')
       }

@@ -48,7 +48,7 @@ export const ClientItem: React.FC<Props> = ({ id, name, email, cellPhone, active
       setLoading(true)
 
       await putDefault(`/users/${id}`, { actived: newActived })
-      if (isMounted.current) setLoading(false)
+      if (isMounted()) setLoading(false)
     },
     [id, isMounted]
   )

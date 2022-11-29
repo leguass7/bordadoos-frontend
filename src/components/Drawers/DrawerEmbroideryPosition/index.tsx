@@ -29,7 +29,7 @@ export const DrawerEmbroideryPosition: React.FC<Props> = ({ defaultSelected, onS
       const { positions, success } = await getDefault<{ positions: EmbroideryPosition[] }>(
         `/embroidery/positions/search?search=${search}`
       )
-      if (isMounted.current) {
+      if (isMounted()) {
         setLoading(false)
         if (success) setData(positions)
       }

@@ -27,7 +27,7 @@ export const EmbroideryTypeForm: React.FC<Props> = ({ embTypeId, onCancel, onSuc
     if (embTypeId && embTypeId !== data.id) {
       setLoading(true)
       const { success = false, data: apiData } = await getDefault(`/embroidery/types/${embTypeId}`)
-      if (isMounted.current) {
+      if (isMounted()) {
         setLoading(false)
         if (success) {
           setData(apiData)

@@ -1,11 +1,13 @@
-import { EmbroideryPosition, EmbroideryType, Purchase } from '@prisma/client'
+import { EmbroideryPosition, EmbroideryType, Prisma, Purchase } from '@prisma/client'
 
 import { IResponsePurchase } from '~/serverSide/purchases/purchase.dto'
 
 import { getDefault } from '.'
 
+export type PurchaseWithItems = Prisma.PurchaseGetPayload<{ include: { client: true; category: true; type: true } }>
+
 type FindResponse = {
-  purchase?: Purchase
+  purchase?: PurchaseWithItems
   categories?: EmbroideryPosition[]
   types?: EmbroideryType[]
 }

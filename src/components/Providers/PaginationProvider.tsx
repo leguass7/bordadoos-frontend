@@ -57,7 +57,7 @@ export const PaginationProvider: React.FC<Props> = ({
       const currentURL = `${url}?${querystring(payload)}`
       const { success = false, data: apiData = [], page, pages } = await getDefault<IResponsePaginate<any>>(currentURL)
 
-      if (isMounted.current) {
+      if (isMounted()) {
         setLoading(false)
         if (success) {
           setPagination({ page })

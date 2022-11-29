@@ -30,7 +30,7 @@ export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, on
       setLoading(true)
 
       const { success = false, data: apiData } = await getDefault('embroidery/types?size=1000')
-      if (isMounted.current) {
+      if (isMounted()) {
         setLoading(false)
         if (success) setEmbTypes(apiData)
       }
@@ -42,7 +42,7 @@ export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, on
       setLoading(true)
 
       const { success = false, data: apiData } = await getDefault(`/embroidery/positions/${embPosId}`)
-      if (isMounted.current) {
+      if (isMounted()) {
         setLoading(false)
         if (success) setData(apiData)
       }

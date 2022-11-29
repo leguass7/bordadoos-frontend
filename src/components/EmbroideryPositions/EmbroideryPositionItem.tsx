@@ -48,7 +48,7 @@ export const EmbroideryPositionItem: React.FC<Props> = ({
       setLoading(true)
 
       await putDefault(`/embroidery/positions/${id}`, { actived: newActived })
-      if (isMounted.current) {
+      if (isMounted()) {
         setLoading(false)
       }
     },

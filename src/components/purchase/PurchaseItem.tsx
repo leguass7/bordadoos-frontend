@@ -2,7 +2,7 @@ import { memo, useCallback, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { Edit } from '@mui/icons-material'
+import { Edit, Print } from '@mui/icons-material'
 import { IconButton, Switch, Typography } from '@mui/material'
 
 import { formatDate, toMoney } from '~/helpers/string'
@@ -68,7 +68,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
         setLoading(true)
 
         await putDefault(`/purchases/${id}`, { done: newDone })
-        if (isMounted.current) {
+        if (isMounted()) {
           setLoading(false)
         }
       }
@@ -79,6 +79,11 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
   const handleEdit = useCallback(() => {
     push(`/admin?purchaseId=${id}`)
   }, [push, id])
+
+  const handlePrint = useCallback(() => {
+    const printablePage = window.open(`/admin/print/${id}`, '_blank')
+    printablePage.print()
+  }, [id])
 
   return (
     <>
@@ -121,7 +126,10 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
             </Column>
             <Row align="flex-end" justify="flex-end">
               <IconButton onClick={handleEdit}>
-                <Edit color="info" />
+                <Edit />
+              </IconButton>
+              <IconButton onClick={handlePrint}>
+                <Print />
               </IconButton>
               <CardExpandMore
                 expand={expand}

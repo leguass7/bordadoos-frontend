@@ -29,7 +29,7 @@ export const DrawerEmbroideryType: React.FC<Props> = ({ defaultSelected, onSelec
       const { types, success } = await getDefault<{ types: EmbroideryType[] }>(
         `/embroidery/types/search?search=${search}`
       )
-      if (isMounted.current) {
+      if (isMounted()) {
         setLoading(false)
         if (success) setData(types)
       }

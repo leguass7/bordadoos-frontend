@@ -30,7 +30,7 @@ export const DrawerCustomer: React.FC<Props> = ({ defaultSelected, onSelecCustom
     async (search = '') => {
       setLoading(true)
       const response = await findAllCustomers({ search })
-      if (isMounted.current) {
+      if (isMounted()) {
         setLoading(false)
         setData(response?.customers || [])
       }

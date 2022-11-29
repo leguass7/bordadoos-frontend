@@ -30,7 +30,7 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initial
     if (userId) {
       setLoading(true)
       const { success = false, user = {} } = await getDefault<IResponseUser>(`/users/${userId}`)
-      if (isMounted.current) {
+      if (isMounted()) {
         setLoading(false)
         if (success) setData(user)
       }
@@ -46,7 +46,7 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initial
       if (userId) {
         setLoading(true)
         await putDefault(`users/${userId}`, values)
-        if (isMounted.current) {
+        if (isMounted()) {
           setLoading(false)
           if (onSuccess) onSuccess()
         }

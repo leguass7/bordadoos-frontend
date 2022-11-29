@@ -29,7 +29,7 @@ export const ClientForm: React.FC<Props> = ({ onCancel, onSuccess, clientId }) =
       setLoading(true)
       const { success = false, client } = await getCustomer(clientId)
 
-      if (isMounted.current) {
+      if (isMounted()) {
         setLoading(false)
         if (success && client) setData(client)
       }

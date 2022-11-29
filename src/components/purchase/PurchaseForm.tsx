@@ -56,7 +56,7 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
   const fetchData = useCallback(async () => {
     setLoading(true)
     const { purchase, categories, types } = await findPurchaseWithItems(purchaseId)
-    if (isMounted?.current) {
+    if (isMounted()) {
       setLoading(false)
 
       if (types) setTypeItems(selectItemsDto(types))
@@ -77,7 +77,7 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
       if (value) {
         setLoading(true)
         const { success, positions } = await getPositionByType(value)
-        if (isMounted?.current) {
+        if (isMounted()) {
           setLoading(false)
           if (success) setPositionItems(selectItemsDto(positions))
         }
@@ -94,7 +94,7 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
       setLoading(true)
       if (onSubmit) await onSubmit(removeInvalidValues({ ...data, clientId }), !purchaseId)
 
-      if (!!isMounted?.current) {
+      if (!!isMounted()) {
         setLoading(false)
 
         if (!purchaseId) {

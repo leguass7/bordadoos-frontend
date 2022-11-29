@@ -3,6 +3,7 @@ import { Prisma as PrismaTypes, Purchase } from '.prisma/client'
 import { endOfDay, startOfDay } from 'date-fns'
 
 import { isDefined } from '~/helpers/variables'
+import { PurchaseWithItems } from '~/services/api/purchase'
 
 import prisma from '../database/prisma'
 import { PaginationDto, PaginationQueryDto } from '../pagination/pagination.dto'
@@ -19,7 +20,7 @@ async function update(purchaseId: number, data: Partial<Purchase>): Promise<Purc
   return purchase
 }
 
-async function findById(purchaseId: number): Promise<Purchase> {
+async function findById(purchaseId: number): Promise<PurchaseWithItems> {
   const purchase = await prisma.purchase.findFirst({
     where: { id: purchaseId },
     include: { client: true, category: true, type: true }

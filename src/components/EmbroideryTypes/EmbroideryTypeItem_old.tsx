@@ -30,7 +30,7 @@ export const EmbroideryTypeItem: React.FC<Props> = ({ id, label, description, ac
       setLoading(true)
 
       await api.put(`/embroidery/types/${id}`, { actived: newActived })
-      if (isMounted.current) {
+      if (isMounted()) {
         setLoading(false)
       }
     },
