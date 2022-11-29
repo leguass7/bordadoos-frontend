@@ -83,6 +83,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
   const handlePrint = useCallback(() => {
     const printablePage = window.open(`/admin/print/${id}`, '_blank')
     printablePage.print()
+    printablePage.onafterprint = window.close
   }, [id])
 
   return (
