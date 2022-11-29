@@ -15,12 +15,12 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase }) => {
       {purchase?.id ? (
         <>
           <Grid justifyContent="space-between" container>
-            <Typography variant="h4">
-              <Typography component="p" variant="h6">
-                {purchase.category.label} {'>'} {purchase.type.label}
-              </Typography>
+            <Typography variant="h6">
+              {purchase.category.label} {'>'} {purchase.type.label}
               <br />
-              {purchase.client.name}
+              <Typography component="p" variant="h4">
+                {purchase.client.name}
+              </Typography>
             </Typography>
             <Typography variant="h6" align="right">
               {formatDate(purchase.createdAt, 'dd/MM/yyyy HH:mm:ss')}

@@ -17,7 +17,7 @@ const Print: NextPage<Props> = ({ purchase }) => {
   return (
     <Container>
       <div style={{ width: '100%' }}>
-        <Typography variant="h4" align="center">
+        <Typography variant="h4" align="center" pb={2}>
           Pedido {purchase?.id}
         </Typography>
         <Divider />
