@@ -1,6 +1,6 @@
 import { GetServerSideProps, NextPage } from 'next'
 
-import { Typography } from '@mui/material'
+import { Divider, Typography } from '@mui/material'
 import styled from 'styled-components'
 
 import { PurchasePrinter } from '~/components/Printer/PurchasePrinter'
@@ -16,10 +16,15 @@ interface Props {
 const Print: NextPage<Props> = ({ purchase }) => {
   return (
     <Container>
-      <Typography variant="h4" align="center">
-        Dados do pedido {3}
-      </Typography>
+      <div style={{ width: '100%' }}>
+        <Typography variant="h4" align="center">
+          Pedido {purchase?.id}
+        </Typography>
+        <Divider />
+      </div>
+
       <PurchasePrinter purchase={purchase} />
+      <div style={{ flex: 1 }}></div>
     </Container>
   )
 }
@@ -46,4 +51,8 @@ const Container = styled.div`
   height: 100%;
   flex-flow: column wrap;
   align-items: center;
+  /* border: 1px dashed #000; */
+  margin: auto;
+  width: 219mm;
+  background-color: #fff;
 `

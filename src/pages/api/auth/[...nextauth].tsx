@@ -1,18 +1,17 @@
-import { NextApiHandler } from 'next'
+import type { NextApiHandler } from 'next'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import { Prisma } from 'next-auth/adapters'
 import Providers from 'next-auth/providers'
 
 import prisma from '~/serverSide/database/prisma'
 
-const secret = process.env.SECRET
+const secret = process?.env?.NEXTAUTH_SECRET || process?.env?.SECRET
+const maxAge = 30 * 24 * 60 * 60 // 30 days
 
 const options: NextAuthOptions = {
+  debug: process.env.NODE_ENV !== 'production',
   secret,
-  session: {
-    jwt: true,
-    maxAge: 30 * 24 * 60 * 60 // 30 days
-  },
+  session: { maxAge, jwt: true },
   callbacks: {
     async session(session, token) {
       const result: any = { ...session }
@@ -20,7 +19,7 @@ const options: NextAuthOptions = {
       return result
     }
   },
-  jwt: { secret },
+  jwt: { secret, maxAge },
   adapter: Prisma.Adapter({ prisma }),
   providers: [
     Providers.Google({
@@ -57,5 +56,8 @@ const options: NextAuthOptions = {
   // }
 }
 
-const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, options)
+const authHandler: NextApiHandler = (req, res) => {
+  // console.log('secret', secret)
+  return NextAuth(req, res, options)
+}
 export default authHandler

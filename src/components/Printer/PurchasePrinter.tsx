@@ -66,6 +66,6 @@ const Content = styled.div`
   margin: 0 auto;
   max-width: 910px;
   padding: 20px;
-  padding-top: 200px;
-  flex: 1;
+  /* padding-top: 200px; */
+  /* flex: 1; */
 `

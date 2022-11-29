@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material'
+import { alpha, createTheme } from '@mui/material'
 
 import { IThemeSpacing, IAppTheme } from './types'
 
@@ -56,6 +56,17 @@ export const appThemeLigth: IAppTheme = {
 }
 
 export const appMuiTheme = createTheme({
+  components: {
+    MuiDivider: {
+      styleOverrides: {
+        root: {
+          '&::before, &::after': {
+            borderColor: alpha('#000000', 1)
+          }
+        }
+      }
+    }
+  },
   palette: {
     primary: {
       main: appThemeLigth.colors.primary
