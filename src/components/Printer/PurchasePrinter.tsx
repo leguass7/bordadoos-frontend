@@ -18,7 +18,7 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase }) => {
             <Typography variant="h6">
               {purchase.category.label} {'>'} {purchase.type.label}
               <br />
-              <Typography component="p" variant="h4">
+              <Typography component="span" variant="h4">
                 {purchase.client.name}
               </Typography>
             </Typography>
@@ -46,7 +46,7 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase }) => {
               </Typography>
               <Typography variant="body1">
                 <b>Data de entrega: </b>
-                {formatDate(purchase.deliveryDate, 'dd/MM/yyyy HH:mm:ss')}
+                {formatDate(purchase.deliveryDate, 'dd/MM/yyyy HH:mm:ss') || '---'}
               </Typography>
             </Grid>
             <Grid item xs={3}>
