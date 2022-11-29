@@ -40,7 +40,7 @@ export const Input: React.FC<Props> = ({ name, type = 'text', id, label, number,
     e => {
       let value: string = e.target.value
 
-      if (value && mask) value = masks[mask](value)
+      if (value && mask) e.target.value = masks[mask](value)
 
       if (number) {
         value = addSeparatorsToNumberString(value, ['.', ','])
