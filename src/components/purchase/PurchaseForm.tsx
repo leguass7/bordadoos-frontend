@@ -23,7 +23,7 @@ const schema = Yup.object().shape({
   qtd: Yup.string().required('A quantidade de peças é obrigatória'),
   value: Yup.string(),
   paid: Yup.bool(),
-  typeId: Yup.string(),
+  typeId: Yup.string().required('O tipo do bordado é obrigatório'),
   categoryId: Yup.string(),
   done: Yup.bool(),
   deliveryDate: Yup.string().nullable() // lembrete: Validar formato de data
@@ -123,8 +123,8 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
               <Datepicker disabled={!clientId} name="deliveryDate" />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Input disabled={!clientId} number name="qtd" placeholder="Quantidade" autoComplete="off" />
-              <Input disabled={!clientId} number name="value" placeholder="Valor unitário" autoComplete="off" />
+              <Input disabled={!clientId} number int name="qtd" label="Quantidade" autoComplete="off" />
+              <Input disabled={!clientId} number name="value" label="Valor unitário" autoComplete="off" />
             </Grid>
             <Grid container direction="column" alignItems="flex-start">
               <Switch disabled={!clientId} label="pago" name="paid" />

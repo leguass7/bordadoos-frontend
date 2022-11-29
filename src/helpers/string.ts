@@ -68,3 +68,34 @@ export function formatDate(date: Date | string | number, formatString: string) {
   if (valid) return format(valid, formatString)
   return null
 }
+
+export function addSeparatorsToNumberString(value: string, separators: string[] = []) {
+  separators.forEach(separator => {
+    if (value.includes(separator)) {
+      // Only lets value have 1 separator of the same type
+      value = `${value.split(separator)[0]}${separator}${value.split(separator)[1].replace(/separator/, '')}`
+    }
+
+    const qtdSeparators = separators.reduce((ac, at) => {
+      if (value.includes(at)) ac += 1
+      return ac
+    }, 0)
+
+    if (qtdSeparators > 1) {
+      const firstSeparatorIndex = separators
+        .map(separator => value.indexOf(separator))
+        .reduce((ac, at) => (ac < at ? ac : at))
+
+      const firstSeparator = separators.find(separator => value.indexOf(separator) === firstSeparatorIndex)
+
+      const regex = new RegExp(`[^1-9${firstSeparator}]`, 'g')
+      value = value.replace(regex, '')
+    }
+  })
+
+  return value
+}
+
+export function validNumber(value: string) {
+  return value.replace(',', '.')
+}
