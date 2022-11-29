@@ -32,6 +32,7 @@ const Print: NextPage<Props> = ({ purchase }) => {
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const purchaseId = Number(params.purchaseId)
 
+  if (!purchaseId) return { props: { purchase: {} } }
   const purchase = await PurchaseService.findById(purchaseId)
 
   purchase.category = serializedDto(purchase.category)
