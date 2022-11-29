@@ -45,6 +45,7 @@ export const listPurchasesSchema = celebrate({
     size: Joi.number(),
     page: Joi.number(),
     paid: Joi.number(),
+    clientId: Joi.number(),
     done: Joi.number()
   }
 })

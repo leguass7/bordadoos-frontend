@@ -55,7 +55,7 @@ export function toMoney(number: number) {
 }
 
 export function validDate(date?: Date | string | number) {
-  if (date instanceof Date) return date
+  if (isValid(date) && date instanceof Date) return date
   if (typeof date === 'string') {
     const d = parseISO(date)
     return isValid(d) ? d : null
