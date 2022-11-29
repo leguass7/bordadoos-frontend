@@ -32,7 +32,7 @@ async function paginate(
   pagination: PaginationQueryDto,
   filter: IPurchaseFilter = {}
 ): Promise<PaginationDto<Purchase>> {
-  const { search, startDate, endDate, paid, done } = filter
+  const { search, startDate, endDate, paid, done, clientId } = filter
   const where: PrismaTypes.PurchaseWhereInput = { id: { not: 0 } }
 
   if (search)
@@ -44,6 +44,8 @@ async function paginate(
       ]
     }
 
+  if (clientId) where.AND = { clientId }
+
   if (startDate && endDate)
     where.AND = { ...where.AND, createdAt: { lte: endOfDay(endDate), gte: startOfDay(startDate) } }
   else {
@@ -53,12 +55,12 @@ async function paginate(
 
   if (isDefined(paid)) {
     const isPaid = parseInt(`${paid || 0}`) || 0
-    where.AND = { ...where.AND, paid: !!(isPaid === 3) }
+    where.AND = { ...where.AND, paid: !!(isPaid === 2) }
   }
 
   if (isDefined(done)) {
     const isDone = parseInt(`${done || 0}`) || 0
-    where.AND = { ...where.AND, done: !!(isDone === 3) }
+    where.AND = { ...where.AND, done: !!(isDone === 2) }
   }
 
   const allowedFields: (keyof Purchase)[] = [
