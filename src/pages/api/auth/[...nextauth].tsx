@@ -23,7 +23,7 @@ const options: NextAuthOptions = {
     },
     async jwt(token) {
       const id = parseInt(`${token.sub || 0}`)
-      const result = { ...token }
+      const result = { ...token, id }
 
       if (id) {
         const user = await UserService.findOne({ id })
