@@ -4,6 +4,7 @@ import { Prisma } from 'next-auth/adapters'
 import Providers from 'next-auth/providers'
 
 import prisma from '~/serverSide/database/prisma'
+import { UserService } from '~/serverSide/users/user.service'
 
 const secret = process?.env?.NEXTAUTH_SECRET || process?.env?.SECRET
 const maxAge = 30 * 24 * 60 * 60 // 30 days
@@ -16,6 +17,19 @@ const options: NextAuthOptions = {
     async session(session, token) {
       const result: any = { ...session }
       result.user.userId = parseInt(`${token.sub || 0}`)
+      result.user.level = parseInt(`${token.level || 1}`)
+
+      return result
+    },
+    async jwt(token) {
+      const id = parseInt(`${token.sub || 0}`)
+      const result = { ...token }
+
+      if (id) {
+        const user = await UserService.findOne({ id })
+        result.level = user?.level
+      }
+
       return result
     }
   },

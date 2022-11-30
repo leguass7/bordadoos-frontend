@@ -8,6 +8,7 @@ export interface IAuthorizedUser {
   userId: number
   name: string
   email?: string
+  level: number
 }
 
 export interface AuthorizedApiRequest extends NextApiRequest {
@@ -18,7 +19,8 @@ function authorizedDto(data: JWT): IAuthorizedUser {
   return {
     userId: (data?.sub && parseInt(data?.sub, 10)) || 0,
     name: data?.name || '',
-    email: data?.email || ''
+    email: data?.email || '',
+    level: data?.level || 0
   }
 }
 
