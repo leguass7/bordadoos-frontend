@@ -198,7 +198,7 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
               <Switch disabled={!clientId} label="pago" name="paid" />
               <Switch disabled={!clientId} label="finalizado" name="done" />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} pt={2}>
               <Button variant="contained" type="submit" disabled={!clientId}>
                 Salvar
               </Button>
