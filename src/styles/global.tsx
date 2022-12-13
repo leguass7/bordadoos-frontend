@@ -1,4 +1,5 @@
 import { memo } from 'react'
+
 import { createGlobalStyle } from 'styled-components'
 
 // import { renderToStaticMarkup } from 'react-dom/server'
@@ -16,7 +17,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
   }
-  
+
   html {
     height: 100%;
     margin: 0 auto;
