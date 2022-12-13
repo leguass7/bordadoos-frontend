@@ -1,25 +1,19 @@
 import { useState } from 'react'
 
-import { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import { GetServerSideProps, NextPage } from 'next'
+import { getSession } from 'next-auth/client'
 
-import { Container, Divider, Typography } from '@mui/material'
+import { Divider, Typography } from '@mui/material'
 
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
 import { PurchaseSettings } from '~/components/Settings/PurchaseSettings'
 import { SettingsChips } from '~/components/Settings/SettingsChips'
-import { useHasAccess } from '~/hooks/useHasAccess'
 import { Content } from '~/styles/common'
 
 interface Props {}
 
 const Settings: NextPage<Props> = () => {
   const [selected, setSelected] = useState(1)
-
-  const { back } = useRouter()
-  const hasAccess = useHasAccess(7)
-
-  if (!hasAccess()) back()
 
   return (
     <LayoutAdmin>
@@ -31,6 +25,18 @@ const Settings: NextPage<Props> = () => {
       <Content>{selected === 1 ? <PurchaseSettings /> : null}</Content>
     </LayoutAdmin>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req })
+
+  const hasAccess = session?.user?.level > 7
+
+  const result = { props: {} }
+
+  if (!hasAccess) return { ...result, notFound: true }
+
+  return result
 }
 
 export default Settings
