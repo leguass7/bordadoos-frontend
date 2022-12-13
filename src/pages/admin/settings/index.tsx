@@ -1,44 +1,31 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useState } from 'react'
 
 import { NextPage } from 'next'
-import { useSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
 
-import { Button, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 
-import { LayoutCenter } from '~/components/layouts/LayoutCenter'
+import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
+import { SettingsChips } from '~/components/Settings/SettingsChips'
+import { useHasAccess } from '~/hooks/useHasAccess'
 
 interface Props {}
 
 const Settings: NextPage<Props> = () => {
+  const [selected, setSelected] = useState(1)
+
   const { back } = useRouter()
+  const hasAccess = useHasAccess(7)
 
-  const [session] = useSession()
-
-  const isAdmin = useMemo(() => {
-    return !!(session?.user?.level > 7)
-  }, [session])
-
-  const checkAccess = useCallback(() => {
-    if (!isAdmin) back()
-  }, [isAdmin, back])
-
-  useEffect(() => {
-    checkAccess()
-  }, [checkAccess])
-
-  if (!isAdmin) return null
+  if (!hasAccess()) back()
 
   return (
-    <LayoutCenter>
-      <Typography variant="h3">Configurações</Typography>
-      <br />
-      <div style={{ textAlign: 'center' }}>
-        <Button color="info" onClick={() => back()}>
-          Voltar
-        </Button>
-      </div>
-    </LayoutCenter>
+    <LayoutAdmin>
+      <Typography align="center" variant="h4" py={3}>
+        Configurações
+      </Typography>
+      <SettingsChips selected={selected} setSelected={setSelected} />
+    </LayoutAdmin>
   )
 }
 
