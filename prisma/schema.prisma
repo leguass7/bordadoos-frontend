@@ -20,6 +20,8 @@ model Configuration {
 
   createdAt DateTime? @default(now()) @db.Timestamp(0)
   updatedAt DateTime? @updatedAt
+
+  @@map(name: "configuration")
 }
 
 model User {
