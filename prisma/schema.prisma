@@ -11,7 +11,7 @@ datasource db {
 model Configuration {
   id Int @id @default(autoincrement())
 
-  key  String
+  key  String @unique
   meta Json?
 
   actived Boolean? @default(false)
