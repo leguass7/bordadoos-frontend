@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { InputLabel } from '@mui/material'
 import TextField, { StandardTextFieldProps, TextFieldProps } from '@mui/material/TextField'
 import { useField } from '@unform/core'
 
