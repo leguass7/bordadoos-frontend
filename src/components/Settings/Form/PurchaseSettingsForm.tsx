@@ -9,6 +9,7 @@ import { CircleLoading } from '~/components/CircleLoading'
 import { Field } from '~/components/Form/Field'
 import { validateFormData } from '~/helpers/form'
 import { useIsMounted } from '~/hooks/useIsMounted'
+import { IConfigPurchaseRules } from '~/serverSide/config/config.dto'
 import { getConfig, saveConfig } from '~/services/api/config'
 
 interface Props {
@@ -44,7 +45,7 @@ const configKey = 'purchaseRules'
 
 export const PurchaseSettingsForm: React.FC<Props> = () => {
   const formRef = useRef<FormHandles>(null)
-  const [maxQtd, setmaxQtd] = useState(0)
+  const [maxQtd, setMaxQtd] = useState(0)
 
   const [loading, setLoading] = useState(false)
   const isMounted = useIsMounted()
@@ -54,6 +55,8 @@ export const PurchaseSettingsForm: React.FC<Props> = () => {
     const response = await getConfig(configKey)
     if (isMounted()) {
       setLoading(false)
+      const data = response?.data?.meta as unknown as IConfigPurchaseRules
+      setMaxQtd(data?.retail?.maxQtd || 0)
       formRef.current?.setData?.(response?.data?.meta as any)
     }
   }, [isMounted])
@@ -71,7 +74,7 @@ export const PurchaseSettingsForm: React.FC<Props> = () => {
 
   const updateMaxQtd = useCallback(e => {
     const value = e.target?.value || 0
-    setmaxQtd(value)
+    setMaxQtd(value)
   }, [])
 
   return (
