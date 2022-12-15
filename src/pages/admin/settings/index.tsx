@@ -1,45 +1,42 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useState } from 'react'
 
-import { NextPage } from 'next'
-import { useSession } from 'next-auth/client'
-import { useRouter } from 'next/router'
+import { GetServerSideProps, NextPage } from 'next'
+import { getSession } from 'next-auth/client'
 
-import { Button, Typography } from '@mui/material'
+import { Divider, Typography } from '@mui/material'
 
-import { LayoutCenter } from '~/components/layouts/LayoutCenter'
+import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
+import { PurchaseSettings } from '~/components/Settings/PurchaseSettings'
+import { SettingsChips } from '~/components/Settings/SettingsChips'
+import { Content } from '~/styles/common'
 
 interface Props {}
 
 const Settings: NextPage<Props> = () => {
-  const { back } = useRouter()
-
-  const [session] = useSession()
-
-  const isAdmin = useMemo(() => {
-    return !!(session?.user?.level > 7)
-  }, [session])
-
-  const checkAccess = useCallback(() => {
-    if (!isAdmin) back()
-  }, [isAdmin, back])
-
-  useEffect(() => {
-    checkAccess()
-  }, [checkAccess])
-
-  if (!isAdmin) return null
+  const [selected, setSelected] = useState(1)
 
   return (
-    <LayoutCenter>
-      <Typography variant="h3">Configurações</Typography>
-      <br />
-      <div style={{ textAlign: 'center' }}>
-        <Button color="info" onClick={() => back()}>
-          Voltar
-        </Button>
-      </div>
-    </LayoutCenter>
+    <LayoutAdmin>
+      <Typography align="center" variant="h4" py={3}>
+        Configurações
+      </Typography>
+      <SettingsChips selected={selected} setSelected={setSelected} />
+      <Divider sx={{ py: 2, width: '80%', mx: 'auto', mb: 2 }} />
+      <Content>{selected === 1 ? <PurchaseSettings /> : null}</Content>
+    </LayoutAdmin>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req })
+
+  const hasAccess = session?.user?.level > 7
+
+  const result = { props: {} }
+
+  if (!hasAccess) return { ...result, notFound: true }
+
+  return result
 }
 
 export default Settings

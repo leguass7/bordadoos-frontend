@@ -8,6 +8,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Configuration {
+  id Int @id @default(autoincrement())
+
+  key  String @unique
+  meta Json?
+
+  actived Boolean? @default(false)
+
+  updatedBy Int?
+
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @updatedAt
+
+  @@map(name: "configuration")
+}
+
 model User {
   id            Int       @id @default(autoincrement())
   name          String?
