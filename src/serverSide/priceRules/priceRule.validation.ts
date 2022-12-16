@@ -14,6 +14,6 @@ export const bulkCreatePriceRuleSchema = celebrate({
     modality: Joi.valid(...Object.values(PriceRuleModality)),
     type: Joi.valid(...Object.values(PriceRuleType)),
     value: Joi.number(),
-    id: Joi.string().allow('', null).optional()
+    id: Joi.number().allow('')
   })
 })
