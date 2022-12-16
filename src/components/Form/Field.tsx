@@ -74,6 +74,7 @@ export const Field: React.FC<Props> = ({ name, type = 'text', id, label, number,
         inputProps={{ id }}
         name={name}
         label={label}
+        style={{ display: !!rest?.hidden ? 'none' : 'block' }}
         onChange={handleChange}
         defaultValue={defaultValue}
         InputLabelProps={{ shrink }}
