@@ -198,9 +198,10 @@ enum PriceRuleModality {
 model PriceRules {
   id Int @id @default(autoincrement())
 
-  label String
-  type  PriceRuleType
+  label   String
+  actived Boolean @default(true)
 
+  type     PriceRuleType
   modality PriceRuleModality
   value    Float             @default(0)
 
