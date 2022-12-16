@@ -1,4 +1,4 @@
-import { memo, MutableRefObject } from 'react'
+import { memo, MutableRefObject, useMemo } from 'react'
 
 import { Close } from '@mui/icons-material'
 import { Grid, IconButton, Tooltip } from '@mui/material'
@@ -10,7 +10,7 @@ import Select, { SelectItem } from '~/components/Form/Select'
 
 interface Props {
   index: number
-  formRef: MutableRefObject<FormHandles>
+  id: number
   onRemove?: (id: number, index: number) => void
 }
 
@@ -32,9 +32,7 @@ export interface PurchaseSettingsPriceFormData {
   index?: number
 }
 
-const PurchaseSettingsPriceFieldsComponent: React.FC<Props> = ({ index, onRemove, formRef }) => {
-  const id = formRef?.current?.getFieldValue?.(`scopes[${index}].id`)
-
+const PurchaseSettingsPriceFieldsComponent: React.FC<Props> = ({ index, onRemove, id }) => {
   return (
     <Grid container>
       <Grid item flex={1}>

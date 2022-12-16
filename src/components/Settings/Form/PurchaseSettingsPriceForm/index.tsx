@@ -9,7 +9,7 @@ import * as Yup from 'yup'
 import { CircleLoading } from '~/components/CircleLoading'
 import { validateFormData } from '~/helpers/form'
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { savePriceRules, deletePriceRule, listPriceRules } from '~/services/api/priceRules'
+import { savePriceRules, listPriceRules } from '~/services/api/priceRules'
 
 import { PurchaseSettingsPriceFields, PurchaseSettingsPriceFormData } from './PurchaseSettingsPriceFields'
 import { RemovePriceRuleModal } from './RemovePriceRuleModal'
@@ -50,7 +50,7 @@ export const PurchaseSettingsPriceForm: React.FC<Props> = () => {
 
   const handleAddScope = useCallback(() => {
     setScopes(old => {
-      return [...old, old.length]
+      return [...old, [, old.length]]
     })
   }, [])
 
@@ -59,8 +59,10 @@ export const PurchaseSettingsPriceForm: React.FC<Props> = () => {
     const response = await listPriceRules()
 
     const data = response?.data || []
+    const newScopes = data.map(({ id }, index) => [id, index])
+
     if (!data?.length) handleAddScope()
-    else setScopes(data.map(d => d.id))
+    else setScopes(newScopes)
 
     if (isMounted()) {
       setLoading(false)
@@ -85,7 +87,7 @@ export const PurchaseSettingsPriceForm: React.FC<Props> = () => {
   const handleToggleRemoveModal = () => setOpenRemoveModal(old => !old)
 
   const handleRemove = useCallback((id: number, index: number) => {
-    if (!id) return setScopes(old => old.filter(i => i !== index))
+    if (!id) return setScopes(old => old.filter(([, i]) => i !== index))
 
     setRemoveId(id)
     handleToggleRemoveModal()
@@ -93,19 +95,18 @@ export const PurchaseSettingsPriceForm: React.FC<Props> = () => {
 
   return (
     <>
+      <RemovePriceRuleModal
+        id={removeId}
+        onRemoveSuccess={fetchData}
+        open={openRemoveModal}
+        onToggle={handleToggleRemoveModal}
+      />
       <Form ref={formRef} onSubmit={handleSubmit}>
-        {scopes?.map(scope => {
-          return (
-            <PurchaseSettingsPriceFields
-              formRef={formRef}
-              onRemove={handleRemove}
-              key={`scope-${scope}`}
-              index={scope}
-            />
-          )
+        {scopes?.map(([id, index]) => {
+          return <PurchaseSettingsPriceFields id={id} onRemove={handleRemove} key={`scope-${index}`} index={index} />
         })}
         <Grid container p={2}>
-          <Button onClick={handleAddScope} fullWidth variant="outlined">
+          <Button type="button" onClick={handleAddScope} fullWidth variant="outlined">
             Adicionar mais regras
           </Button>
         </Grid>
@@ -116,12 +117,6 @@ export const PurchaseSettingsPriceForm: React.FC<Props> = () => {
         </Grid>
       </Form>
 
-      <RemovePriceRuleModal
-        id={removeId}
-        onRemoveSuccess={fetchData}
-        open={openRemoveModal}
-        onToggle={handleToggleRemoveModal}
-      />
       {loading ? <CircleLoading /> : null}
     </>
   )
