@@ -1,45 +1,109 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Button, Grid } from '@mui/material'
+import { PriceRuleModality, PriceRuleType } from '@prisma/client'
 import { FormHandles } from '@unform/core'
 import { Form } from '@unform/web'
+import * as Yup from 'yup'
 
 import { CircleLoading } from '~/components/CircleLoading'
+import { validateFormData } from '~/helpers/form'
+import { useIsMounted } from '~/hooks/useIsMounted'
+import { savePriceRules, deletePriceRule, listPriceRules } from '~/services/api/priceRules'
 
-import { PurchaseSettingsPriceFields } from './PurchaseSettingsPriceFields'
+import { PurchaseSettingsPriceFields, PurchaseSettingsPriceFormData } from './PurchaseSettingsPriceFields'
+import { RemovePriceRuleModal } from './RemovePriceRuleModal'
 
 interface Props {
   children?: React.ReactNode
 }
 
+interface FormData {
+  scopes: PurchaseSettingsPriceFormData[]
+}
+
+const schema = Yup.object({
+  scopes: Yup.array().of(
+    Yup.object({
+      id: Yup.string().optional(),
+      label: Yup.string().required('O nome da regra é obrigatório'),
+      modality: Yup.string()
+        .oneOf([...Object.values(PriceRuleModality)], 'A modalidade da regra inválida')
+        .required('A modalidade é obrigatória'),
+      type: Yup.string()
+        .oneOf([...Object.values(PriceRuleType)], 'O tipo da regra é inválido')
+        .required('O tipo é obrigatório'),
+      value: Yup.number().required('O valor é obrigatório')
+    })
+  )
+})
+
 export const PurchaseSettingsPriceForm: React.FC<Props> = () => {
   const formRef = useRef<FormHandles>(null)
-  const [scopes, setScopes] = useState([0])
+  const [scopes, setScopes] = useState([])
+
+  const [removeId, setRemoveId] = useState(null)
+  const [openRemoveModal, setOpenRemoveModal] = useState(false)
 
   const [loading, setLoading] = useState(false)
-
-  const handleSubmit = useCallback(async (data: FormData) => {
-    console.log(data)
-  }, [])
+  const isMounted = useIsMounted()
 
   const handleAddScope = useCallback(() => {
-    setScopes(old => [...old, old.length])
-  }, [])
-
-  const handleRemove = useCallback((id: number) => {
-    setScopes(old => old.filter(i => i !== id))
-  }, [])
-
-  const handleRenderScopes = useCallback(() => {
-    return scopes?.map(scope => {
-      return <PurchaseSettingsPriceFields onRemove={handleRemove} key={`scope-${scope}`} index={scope} />
+    setScopes(old => {
+      return [...old, old.length]
     })
-  }, [scopes, handleRemove])
+  }, [])
+
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    const response = await listPriceRules()
+
+    const data = response?.data || []
+    if (!data?.length) handleAddScope()
+    else setScopes(data.map(d => d.id))
+
+    if (isMounted()) {
+      setLoading(false)
+      formRef.current?.setData?.({ scopes: data })
+    }
+  }, [isMounted, handleAddScope])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  const handleSubmit = useCallback(
+    async (data: FormData) => {
+      const isInvalid = await validateFormData(schema, data, formRef.current)
+      if (isInvalid) return null
+
+      await savePriceRules(data.scopes)
+      fetchData()
+    },
+    [fetchData]
+  )
+  const handleToggleRemoveModal = () => setOpenRemoveModal(old => !old)
+
+  const handleRemove = useCallback((id: number, index: number) => {
+    if (!id) return setScopes(old => old.filter(i => i !== index))
+
+    setRemoveId(id)
+    handleToggleRemoveModal()
+  }, [])
 
   return (
     <>
       <Form ref={formRef} onSubmit={handleSubmit}>
-        {handleRenderScopes()}
+        {scopes?.map(scope => {
+          return (
+            <PurchaseSettingsPriceFields
+              formRef={formRef}
+              onRemove={handleRemove}
+              key={`scope-${scope}`}
+              index={scope}
+            />
+          )
+        })}
         <Grid container p={2}>
           <Button onClick={handleAddScope} fullWidth variant="outlined">
             Adicionar mais regras
@@ -51,6 +115,13 @@ export const PurchaseSettingsPriceForm: React.FC<Props> = () => {
           </Button>
         </Grid>
       </Form>
+
+      <RemovePriceRuleModal
+        id={removeId}
+        onRemoveSuccess={fetchData}
+        open={openRemoveModal}
+        onToggle={handleToggleRemoveModal}
+      />
       {loading ? <CircleLoading /> : null}
     </>
   )
