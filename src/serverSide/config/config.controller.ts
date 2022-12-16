@@ -8,7 +8,7 @@ function findOne(configService: IConfigService) {
     const { key } = req.query
     const data = await configService.getOne(key)
 
-    return res.status(201).json({ success: true, data })
+    return res.status(200).json({ success: true, data })
   }
 }
 

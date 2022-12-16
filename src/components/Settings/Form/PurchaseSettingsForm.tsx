@@ -82,7 +82,9 @@ export const PurchaseSettingsForm: React.FC<Props> = () => {
       <Form ref={formRef} onSubmit={handleSubmit}>
         <Grid container pb={2}>
           <Scope path="retail">
-            <Typography variant="h5">Varejo</Typography>
+            <Typography pl={2} pb={1} variant="h5">
+              Varejo
+            </Typography>
             <Grid container>
               <Grid item xs={12} sm={6} md={6} lg={4}>
                 <Field label="Quantidade máxima para varejo" onChange={updateMaxQtd} name="maxQtd" number int />
@@ -97,7 +99,7 @@ export const PurchaseSettingsForm: React.FC<Props> = () => {
           </Scope>
         </Grid>
         <Scope path="wholesale">
-          <Typography variant="h5">
+          <Typography pl={2} pb={1} variant="h5">
             Atacado
             <Typography variant="caption">
               {' '}

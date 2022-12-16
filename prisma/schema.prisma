@@ -46,6 +46,9 @@ model User {
   updatedClients   Client[]   @relation(name: "clientUpdatedUser")
   createdPurchases Purchase[] @relation(name: "purchaseCreatedUser")
 
+  createdPriceRules PriceRules[] @relation(name: "priceRuleCreator")
+  updatedPriceRules PriceRules[] @relation(name: "priceRuleUpdater")
+
   @@map(name: "users")
 }
 
@@ -180,4 +183,36 @@ model Purchase {
   createdUser User                @relation(name: "purchaseCreatedUser", fields: [createdBy], references: [id])
 
   @@map(name: "purchases")
+}
+
+enum PriceRuleType {
+  PERC
+  FIXED
+}
+
+enum PriceRuleModality {
+  QUANTITY
+  PRICE
+}
+
+model PriceRules {
+  id Int @id @default(autoincrement())
+
+  label   String
+  actived Boolean @default(true)
+
+  type     PriceRuleType
+  modality PriceRuleModality
+  value    Float             @default(0)
+
+  createdBy Int
+  creator   User @relation(fields: [createdBy], references: [id], name: "priceRuleCreator")
+
+  updatedBy Int
+  updated   User @relation(fields: [updatedBy], references: [id], name: "priceRuleUpdater")
+
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @updatedAt
+
+  @@map(name: "price_rules")
 }
