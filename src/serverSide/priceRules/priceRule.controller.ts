@@ -25,7 +25,7 @@ function deletePriceRule(priceRuleService: IPriceRuleService) {
     const { userId } = req.auth
     const data = await priceRuleService.deleteRule(req.query?.id, userId)
 
-    return res.status(201).json({ success: true, data })
+    return res.status(202).json({ success: true, data })
   }
 }
 
