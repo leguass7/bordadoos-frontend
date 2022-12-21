@@ -182,7 +182,7 @@ model Purchase {
   client      Client              @relation(fields: [clientId], references: [id])
   createdUser User                @relation(name: "purchaseCreatedUser", fields: [createdBy], references: [id])
 
-  PurchaseItem PurchaseItem[]
+  PurchaseItem PurchaseConfig[]
 
   @@map(name: "purchases")
 }
@@ -219,7 +219,7 @@ model PriceRules {
   @@map(name: "price_rules")
 }
 
-model PurchaseItem {
+model PurchaseConfig {
   id         String   @id @default(uuid()) @db.VarChar(36)
   purchase   Purchase @relation(fields: [purchaseId], references: [id])
   purchaseId Int
@@ -233,5 +233,5 @@ model PurchaseItem {
   createdAt DateTime? @db.Timestamp(0)
   updatedAt DateTime? @updatedAt
 
-  @@map(name: "purchase_items")
+  @@map(name: "purchase_configs")
 }
