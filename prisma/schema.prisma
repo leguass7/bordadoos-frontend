@@ -220,15 +220,16 @@ model PriceRules {
 }
 
 model PurchaseConfig {
-  id         String   @id @default(uuid()) @db.VarChar(36)
-  purchase   Purchase @relation(fields: [purchaseId], references: [id])
-  purchaseId Int
+  id String @id @default(uuid()) @db.VarChar(36)
 
   originalValue Float @default(0)
   totalValue    Float @default(0)
 
   rules          Json
   purchaseConfig Json
+
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+  purchaseId Int      @unique
 
   createdAt DateTime? @db.Timestamp(0)
   updatedAt DateTime? @updatedAt
