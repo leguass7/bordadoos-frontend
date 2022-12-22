@@ -50,7 +50,7 @@ function selectItemsDto(data: EmbroideryPosition[] | EmbroideryType[]): SelectIt
 
 export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0, onSubmit }) => {
   const formRef = useRef<FormHandles>(null)
-  const { clientId, updatePurchase } = usePurchase()
+  const { clientId, updatePurchase, ruleIds } = usePurchase()
 
   const [typeItems, setTypeItems] = useState<SelectItem[]>([])
   const [positionItems, setPositionItems] = useState<SelectItem[]>([])
@@ -109,7 +109,7 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
       if (isInvalid) return
 
       setLoading(true)
-      if (onSubmit) await onSubmit(removeInvalidValues({ ...data, clientId }), !purchaseId)
+      if (onSubmit) await onSubmit(removeInvalidValues({ ...data, clientId, rules: ruleIds }), !purchaseId)
 
       if (!!isMounted()) {
         setLoading(false)
@@ -121,7 +121,7 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
         }
       }
     },
-    [isMounted, purchaseId, onSubmit, clientId]
+    [isMounted, purchaseId, onSubmit, clientId, ruleIds]
   )
 
   return (

@@ -3,18 +3,23 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { IResponseApi } from '../api.interface'
 import ErrorApi from '../ErrorApi'
 import { PaginationQueryDto } from '../pagination/pagination.dto'
+import { IPurchaseConfigService, PurchaseConfigService } from './purchase-configs/purchase-config.service'
 import type { IRequestFilter, IResponsePaginatePurchaseDto, IResponsePurchase } from './purchase.dto'
 import type { IPurchaseService } from './purchase.service'
 
-function create(purchaseService: IPurchaseService) {
-  return async (req: IRequestFilter, res: NextApiResponse<IResponsePurchase>) => {
+function create(purchaseService: IPurchaseService, purchaseConfigService: IPurchaseConfigService) {
+  return async (req: IRequestFilter, res: NextApiResponse) => {
     const { userId } = req.auth
-    const data: any = { ...req.body, updatedBy: userId, createdBy: userId }
+    const data: any = { ...req.body, updatedBy: userId, createdBy: userId, rules: undefined }
 
-    const purchase = await purchaseService.create(data)
-    if (!purchase) throw ErrorApi({ status: 500, message: 'error while creating purchase' })
+    const rules = req.body.rules
 
-    return res.status(201).json({ purchase })
+    const config = await purchaseConfigService.save(data, rules)
+
+    // const purchase = await purchaseService.create(data)
+    // if (!purchase) throw ErrorApi({ status: 500, message: 'error while creating purchase' })
+
+    return res.status(201).json({ purchase: {} })
   }
 }
 
@@ -66,7 +71,7 @@ function remove(purchaseService: IPurchaseService) {
 
 export function factoryPurchaseController(purchaseService: IPurchaseService) {
   return {
-    create: create(purchaseService),
+    create: create(purchaseService, PurchaseConfigService),
     paginate: paginate(purchaseService),
     update: update(purchaseService),
     findById: findById(purchaseService),

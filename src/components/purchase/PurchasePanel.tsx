@@ -9,6 +9,7 @@ import { postDefault, putDefault } from '~/services/api'
 
 import { Container } from '../CardTitle'
 import { ErrorMessage } from '../Form/styles'
+import { PurchaseConfig } from './PurchaseConfig'
 import { PurchaseForm } from './PurchaseForm'
 import { usePurchase } from './PurchaseProvider'
 import { SelectCustomer } from './SelectCustomer'
@@ -33,9 +34,12 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
   return (
     <>
       <PanelWrapper>
-        <Grid container>
-          <Grid item xs={12} sm={6} md={4} position="relative">
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
             <SelectCustomer />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <PurchaseConfig />
           </Grid>
         </Grid>
       </PanelWrapper>

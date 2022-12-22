@@ -5,7 +5,9 @@ import ErrorApi from '../ErrorApi'
 import { PriceRuleFilter } from './priceRule.dto'
 
 async function listRules(filter: PriceRuleFilter) {
-  const where: Prisma.PriceRulesWhereInput = { ...filter, actived: true }
+  const id = Array.isArray(filter?.id) ? { in: filter.id } : filter?.id
+
+  const where: Prisma.PriceRulesWhereInput = { ...filter, actived: true, id }
   const rules = await prisma.priceRules.findMany({ where })
   return rules
 }
