@@ -12,14 +12,21 @@ function create(purchaseService: IPurchaseService, purchaseConfigService: IPurch
     const { userId } = req.auth
     const data: any = { ...req.body, updatedBy: userId, createdBy: userId, rules: undefined }
 
+    const createdPurchase = await purchaseService.create(data)
+    if (!createdPurchase) throw ErrorApi({ status: 500, message: 'error while creating purchase' })
+
     const rules = req.body.rules
 
-    const config = await purchaseConfigService.save(data, rules)
+    let value = createdPurchase?.value
+    if (rules?.length && !value) {
+      const config = await purchaseConfigService.save(createdPurchase, rules)
+      if (config?.totalValue) value = config.totalValue
+    }
 
-    // const purchase = await purchaseService.create(data)
-    // if (!purchase) throw ErrorApi({ status: 500, message: 'error while creating purchase' })
+    const purchase =
+      value !== createdPurchase?.value ? await purchaseService.update(createdPurchase.id, { value }) : createdPurchase
 
-    return res.status(201).json({ purchase: {} })
+    return res.status(201).json({ purchase })
   }
 }
 
