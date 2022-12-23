@@ -5,12 +5,13 @@ import { configService } from '~/serverSide/config/config.service'
 import prisma from '~/serverSide/database/prisma'
 import { priceRuleService } from '~/serverSide/priceRules/priceRule.service'
 
+import { IPurchaseConfigFilter } from './purchase-config.dto'
 import { calculatePurchaseOriginalValue, calculatePurchaseTotalValue } from './purchase-config.helper'
 
 async function save(purchase: Purchase, ruleIds: number) {
   const { qtd, points, id } = purchase
 
-  const config = await configService.getOne<{ meta?: IConfigPurchaseRules }>('purchaseRules')
+  const config = await configService.getOne<IConfigPurchaseRules>('purchaseRules')
   if (!config) return null
 
   const originalValue = calculatePurchaseOriginalValue(qtd, points, config?.meta)
@@ -34,8 +35,14 @@ async function save(purchase: Purchase, ruleIds: number) {
   return purchaseConfig
 }
 
+export async function getPurchaseConfig({ purchaseId }: IPurchaseConfigFilter) {
+  const purchaseConfig = await prisma.purchaseConfig.findUnique({ where: { purchaseId } })
+  return purchaseConfig
+}
+
 export const PurchaseConfigService = {
-  save
+  save,
+  getPurchaseConfig
 }
 
 export type IPurchaseConfigService = typeof PurchaseConfigService

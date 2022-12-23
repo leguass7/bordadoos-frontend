@@ -10,14 +10,19 @@ function calculateRetailPrice(points: number, retail: IConfigRetailPurchaseRules
   const { priceBelowJokerPoints, pricePerThousandPoints } = retail
   const jokerPoints = 10000
 
-  return points <= jokerPoints ? priceBelowJokerPoints : ((points - jokerPoints) / 1000) * pricePerThousandPoints
+  if (!points) return 0
+
+  return points <= jokerPoints
+    ? priceBelowJokerPoints
+    : priceBelowJokerPoints + ((points - jokerPoints) / 1000) * pricePerThousandPoints
 }
 
 function calculateWholesalePrice(points: number, { pricePerThousandPoints }: IConfigWholesalePurchaseRules) {
   return (points / 1000) * pricePerThousandPoints
 }
 
-export function calculatePurchaseOriginalValue(qtd: number, points: number, config: IConfigPurchaseRules) {
+export function calculatePurchaseOriginalValue(qtd: number, points: number, config?: IConfigPurchaseRules) {
+  if (!config.retail || !config.wholesale) return 0
   const isRetail = !!(qtd <= config?.retail?.maxQtd)
 
   const unityValue = isRetail
@@ -28,6 +33,7 @@ export function calculatePurchaseOriginalValue(qtd: number, points: number, conf
 }
 
 export function calculatePurchaseTotalValue(originalValue: number, qtd: number, rules: PriceRules[]) {
+  if (!rules?.length) return originalValue
   const unityValue = originalValue / qtd
 
   const totalValue = rules.reduce((ac, at) => {
