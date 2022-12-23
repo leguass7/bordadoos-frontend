@@ -1,11 +1,11 @@
 import prisma from '../database/prisma'
 import ErrorApi from '../ErrorApi'
-import { CreateConfigDTO } from './config.dto'
+import { ConfigWithMeta, CreateConfigDTO } from './config.dto'
 
-async function getOne<T>(key: string): Promise<T> {
+async function getOne<T>(key: string) {
   const config = await prisma.configuration.findUnique({ where: { key } })
 
-  return config as T
+  return config as ConfigWithMeta<T>
 }
 
 async function create(key: string, createConfigDTO: CreateConfigDTO) {
