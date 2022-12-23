@@ -28,8 +28,8 @@ export const PurchaseConfig: React.FC<Props> = ({ purchaseId }) => {
     if (!purchaseId) return null
 
     setLoading(true)
-    const { data } = await getPurchaseConfig({ purchaseId })
-    const responseRules = JSON.parse(data?.rules)
+    const response = await getPurchaseConfig({ purchaseId })
+    const responseRules = JSON.parse(response?.data?.rules)
     if (isMounted()) {
       setLoading(false)
       if (responseRules?.length) setRulesSelected(responseRules)
@@ -56,7 +56,7 @@ export const PurchaseConfig: React.FC<Props> = ({ purchaseId }) => {
 
   const hasInSelected = useCallback(
     (id: number) => {
-      const found = rulesSelected.find(s => s?.id === id)
+      const found = rulesSelected?.find?.(s => s?.id === id)
       return found
     },
     [rulesSelected]
@@ -99,12 +99,14 @@ export const PurchaseConfig: React.FC<Props> = ({ purchaseId }) => {
               <InputLabel id="add-rules">Adições</InputLabel>
               <Select
                 labelId="add-rules"
+                defaultValue=""
                 label="Adicionar regras"
                 onChange={e => handleAddRule(e.target?.value as string)}
               >
                 {rules?.length
                   ? rules.map(({ id, label }) => {
                       const isSelected = hasInSelected(id)
+
                       return (
                         <MenuItem key={id} value={id} disabled={!!isSelected}>
                           {label}
@@ -117,7 +119,7 @@ export const PurchaseConfig: React.FC<Props> = ({ purchaseId }) => {
           </Grid>
           <Grid item>
             {rulesSelected?.length
-              ? rulesSelected.map(({ id, label }) => {
+              ? rulesSelected?.map?.(({ id, label }) => {
                   return (
                     <Chip sx={{ ml: 1, mb: 1 }} onDelete={handleDelete(id)} color="primary" key={id} label={label} />
                   )

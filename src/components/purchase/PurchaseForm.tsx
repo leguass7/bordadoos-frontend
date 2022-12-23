@@ -27,7 +27,7 @@ import { usePurchase, usePurchaseRules } from './PurchaseProvider'
 
 const schema = Yup.object().shape({
   qtd: Yup.string().required('A quantidade de bordados é obrigatória'),
-  // value: Yup.string().required('O valor do pedido é obrigatório'),
+  value: Yup.string(),
   paid: Yup.bool(),
   typeId: Yup.string().required('O tipo do bordado é obrigatório'),
   label: Yup.string(),
@@ -41,7 +41,7 @@ const schema = Yup.object().shape({
 
 interface FormData {
   qtd: number
-  // value: number
+  value: number
   paid?: boolean
   typeId: string
   label?: string
@@ -84,22 +84,31 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
   const [loading, setLoading] = useState(false)
 
   const updateTotalPrice = useCallback(() => {
-    if (purchaseRules) {
-      const { qtd = 0, points } = formRef.current?.getData() as FormData
+    if (!purchaseRules) return 0
 
-      const originalPrice = calculatePurchaseOriginalValue(qtd, points, purchaseRules)
-      if (originalPrice && !unityValue) setUnityValue(originalPrice / qtd)
-      const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, rulesSelected)
+    const data = formRef.current?.getData() as FormData
+    const qtd = Number(data?.qtd) || 0
+    const points = Number(data?.points) || 0
 
-      setTotalPrice(formatPrice(totalPrice))
-    }
+    const originalPrice = calculatePurchaseOriginalValue(qtd, points, purchaseRules)
+    if (originalPrice && !unityValue) setUnityValue(originalPrice / qtd)
+    const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, rulesSelected)
+
+    setTotalPrice(formatPrice(totalPrice))
+    formRef.current.setFieldValue('value', totalPrice)
   }, [purchaseRules, rulesSelected, unityValue])
 
   useEffect(() => {
-    fetchPurchaseRules()
-  }, [fetchPurchaseRules])
+    updateTotalPrice()
+  }, [rulesSelected?.length, updateTotalPrice])
+
+  useEffect(() => {
+    if (!purchaseRules) fetchPurchaseRules()
+  }, [fetchPurchaseRules, purchaseRules])
 
   const fetchData = useCallback(async () => {
+    if (typeItems?.length) return null
+
     setLoading(true)
     const { purchase, categories, types } = await findPurchaseWithItems(purchaseId)
     if (isMounted()) {
@@ -108,11 +117,11 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
       if (types) setTypeItems(selectItemsDto(types))
       if (categories) setPositionItems(selectItemsDto(categories))
 
-      formRef?.current?.setData?.(purchase)
+      if (purchase) formRef?.current?.setData?.(purchase)
       updateTotalPrice()
-      updatePurchase({ clientId: purchase?.clientId })
+      if (purchase?.clientId) updatePurchase({ clientId: purchase?.clientId })
     }
-  }, [isMounted, purchaseId, updatePurchase, updateTotalPrice])
+  }, [isMounted, purchaseId, updateTotalPrice, typeItems, updatePurchase])
 
   useEffect(() => {
     fetchData()
@@ -134,7 +143,7 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
   )
 
   const handleSubmit = useCallback(
-    async data => {
+    async (data: FormData) => {
       const isInvalid = await validateFormData(schema, data, formRef.current)
       if (isInvalid) return
 
@@ -146,8 +155,8 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
 
         if (!purchaseId) {
           formRef?.current?.setData?.({})
-          formRef.current?.reset?.({})
           setTotalPrice(formatPrice(0))
+          setUnityValue(0)
         }
       }
     },
@@ -196,30 +205,9 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
                 label="Tipo de bordado"
                 name="typeId"
               />
-              <Select disabled={!clientId} items={positionItems} label="Categoria do bordado" name="categoryId" />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Field
-                disabled={!clientId}
-                number
-                int
-                name="qtd"
-                label="Quantidade"
-                autoComplete="off"
-                onChange={updateTotalPrice}
-              />
-              <div style={{ padding: 4 }}>
-                <TextField
-                  fullWidth
-                  disabled={!clientId || !isAdmin()}
-                  // name="value"
-                  // number
-                  value={unityValue}
-                  label="Valor unitário"
-                  autoComplete="off"
-                  onChange={changeUnityValue}
-                />
-              </div>
+              <Select disabled={!clientId} items={positionItems} label="Categoria do bordado" name="categoryId" />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Field
@@ -233,8 +221,35 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+              <Field
+                disabled={!clientId}
+                number
+                int
+                name="qtd"
+                label="Quantidade de bordados"
+                autoComplete="off"
+                onChange={updateTotalPrice}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <div style={{ padding: 4 }}>
-                <TextField value={totalPrice} disabled={true} label="total" fullWidth />
+                <TextField
+                  fullWidth
+                  disabled={true}
+                  value={unityValue}
+                  label="Valor unitário"
+                  autoComplete="off"
+                  onChange={changeUnityValue}
+                />
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <div style={{ padding: 4 }}>
+                {isAdmin() ? (
+                  <Field fullWidth disabled={!clientId} name="value" number label="Total" autoComplete="off" />
+                ) : (
+                  <TextField value={totalPrice} disabled={true} label="Total" fullWidth />
+                )}
               </div>
             </Grid>
             {/* <Divider sx={{ width: '100%', bgcolor: 'GrayText', opacity: 0.8, marginY: 2 }} /> */}

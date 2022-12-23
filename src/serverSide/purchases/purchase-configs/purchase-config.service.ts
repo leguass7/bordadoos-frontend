@@ -8,8 +8,8 @@ import { priceRuleService } from '~/serverSide/priceRules/priceRule.service'
 import { IPurchaseConfigFilter } from './purchase-config.dto'
 import { calculatePurchaseOriginalValue, calculatePurchaseTotalValue } from './purchase-config.helper'
 
-async function save(purchase: Purchase, ruleIds: number) {
-  const { qtd, points, id } = purchase
+async function save(purchase: Purchase, ruleIds: number[], isAdmin = false) {
+  const { qtd, points, id, value } = purchase
 
   const config = await configService.getOne<IConfigPurchaseRules>('purchaseRules')
   if (!config) return null
@@ -19,7 +19,8 @@ async function save(purchase: Purchase, ruleIds: number) {
   const rules = await priceRuleService.listRules({ id: ruleIds })
   if (!rules) return null
 
-  const totalValue = calculatePurchaseTotalValue(originalValue, qtd, rules)
+  const forceValue = !!(isAdmin && value)
+  const totalValue = forceValue ? value : calculatePurchaseTotalValue(originalValue, qtd, rules)
 
   const jsonFields = {
     purchaseConfig: JSON.stringify(config),
@@ -40,9 +41,9 @@ export async function getPurchaseConfig({ purchaseId }: IPurchaseConfigFilter) {
   return purchaseConfig
 }
 
-export const PurchaseConfigService = {
+export const purchaseConfigService = {
   save,
   getPurchaseConfig
 }
 
-export type IPurchaseConfigService = typeof PurchaseConfigService
+export type IPurchaseConfigService = typeof purchaseConfigService

@@ -16,8 +16,13 @@ async function create(data: Purchase): Promise<Purchase> {
 }
 
 async function update(purchaseId: number, data: Partial<Purchase>): Promise<Purchase> {
-  const purchase = await prisma.purchase.update({ data, where: { id: purchaseId } })
-  return purchase
+  try {
+    const purchase = await prisma.purchase.update({ data, where: { id: purchaseId } })
+    return purchase
+  } catch (err) {
+    console.log(err)
+    return null
+  }
 }
 
 async function findById(purchaseId: number): Promise<PurchaseWithItems> {

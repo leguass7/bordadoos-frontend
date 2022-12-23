@@ -18,7 +18,7 @@ export interface IContextPurchase {
   setPurchase: React.Dispatch<React.SetStateAction<IPurchaseData>>
   updatePurchase: (data: Partial<IPurchaseData>) => void
   purchaseRules: IConfigPurchaseRules
-  fetchPurchaseRules: () => void
+  setPurchaseRules: React.Dispatch<React.SetStateAction<IConfigPurchaseRules>>
 }
 
 export const PurchaseContext = createContext({} as IContextPurchase)
@@ -26,32 +26,23 @@ export const PurchaseContext = createContext({} as IContextPurchase)
 export const PurchaseProvider: React.FC = ({ children }) => {
   const [purchase, setPurchase] = useState<IPurchaseData>(null)
   const [rulesSelected, setRulesSelected] = useState<PriceRules[]>([])
-  const [purchaseRules, setPurchaseRules] = useState<IConfigPurchaseRules>({} as IConfigPurchaseRules)
-
-  const fetchPurchaseRules = useCallback(async () => {
-    const response = await getConfig('purchaseRules')
-    if (response?.data?.meta) setPurchaseRules(response.data.meta as any)
-  }, [])
+  const [purchaseRules, setPurchaseRules] = useState<IConfigPurchaseRules>(null as IConfigPurchaseRules)
 
   const updatePurchase = useCallback((data: Partial<IPurchaseData>) => {
     setPurchase(old => ({ ...old, ...data }))
   }, [])
 
-  return (
-    <PurchaseContext.Provider
-      value={{
-        purchase,
-        setPurchase,
-        updatePurchase,
-        rulesSelected,
-        setRulesSelected,
-        fetchPurchaseRules,
-        purchaseRules
-      }}
-    >
-      {children}
-    </PurchaseContext.Provider>
-  )
+  const value = {
+    purchase,
+    setPurchase,
+    updatePurchase,
+    rulesSelected,
+    setRulesSelected,
+    purchaseRules,
+    setPurchaseRules
+  }
+
+  return <PurchaseContext.Provider value={value}>{children}</PurchaseContext.Provider>
 }
 
 export function usePurchaseRules() {
@@ -60,13 +51,18 @@ export function usePurchaseRules() {
     ({ rulesSelected, setRulesSelected }) => [rulesSelected, setRulesSelected]
   )
 
-  const [purchaseRules, fetchPurchaseRules] = useContextSelector(
+  const [purchaseRules, setPurchaseRules] = useContextSelector(
     PurchaseContext,
-    ({ purchaseRules, fetchPurchaseRules }) => [purchaseRules, fetchPurchaseRules]
+    ({ purchaseRules, setPurchaseRules }) => [purchaseRules, setPurchaseRules]
   )
 
+  const fetchPurchaseRules = useCallback(async () => {
+    const response = await getConfig('purchaseRules')
+    if (response?.data?.meta) setPurchaseRules(response.data.meta as any)
+  }, [setPurchaseRules])
+
   const ruleIds = useMemo(() => {
-    return rulesSelected?.map(({ id }) => id) ?? []
+    return rulesSelected?.map?.(({ id }) => id) ?? []
   }, [rulesSelected])
 
   return { rulesSelected, setRulesSelected, purchaseRules, fetchPurchaseRules, ruleIds }

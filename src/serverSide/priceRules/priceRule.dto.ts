@@ -5,7 +5,7 @@ import { AuthorizedApiRequest } from '../auth/auth-protect.middleware'
 export interface PriceRuleFilter {
   label?: string
   actived?: boolean
-  id?: number
+  id?: number | number[]
 }
 
 export interface IRequestPriceRuleFilter extends Omit<AuthorizedApiRequest, 'query'> {

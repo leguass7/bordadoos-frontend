@@ -40,7 +40,8 @@ export const updatePurchasesSchema = celebrate({
     label: Joi.string().allow(''),
     description: Joi.string().allow(''),
     points: Joi.number().allow(''),
-    entryDate: Joi.date()
+    entryDate: Joi.date(),
+    rules: Joi.array().items(Joi.number())
   }
 })
 
