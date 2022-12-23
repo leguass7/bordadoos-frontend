@@ -20,31 +20,35 @@ const overflowTextProps = {
 }
 
 interface CollapsibleContentProps {
-  unityValue?: number
+  value?: number
   createdAt?: Date
   qtd?: number
 }
 
-const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ unityValue = 0, createdAt, qtd = 0 }) => (
-  <Row justify="space-between" align="stretch">
-    <Column align="flex-start">
-      <Typography variant="subtitle1" {...overflowTextProps}>
-        {qtd}x
-      </Typography>
-      <Typography variant="subtitle1" {...overflowTextProps}>
-        {toMoney(unityValue)}
-      </Typography>
-    </Column>
-    <Column align="flex-end">
-      <Typography variant="caption" color="GrayText" {...overflowTextProps}>
-        data de criação
-      </Typography>
-      <Typography variant="body1" {...overflowTextProps}>
-        {createdAt && formatDate(createdAt, 'dd/MM/yyyy')}
-      </Typography>
-    </Column>
-  </Row>
-)
+const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ value = 0, createdAt, qtd = 0 }) => {
+  const unityValue = value / qtd
+
+  return (
+    <Row justify="space-between" align="stretch">
+      <Column align="flex-start">
+        <Typography variant="subtitle1" {...overflowTextProps}>
+          {qtd}x
+        </Typography>
+        <Typography variant="subtitle1" {...overflowTextProps}>
+          {toMoney(unityValue)}
+        </Typography>
+      </Column>
+      <Column align="flex-end">
+        <Typography variant="caption" color="GrayText" {...overflowTextProps}>
+          data de criação
+        </Typography>
+        <Typography variant="body1" {...overflowTextProps}>
+          {createdAt && formatDate(createdAt, 'dd/MM/yyyy')}
+        </Typography>
+      </Column>
+    </Row>
+  )
+}
 
 interface Props extends PurchaseWithRelations {}
 
@@ -92,7 +96,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
         spacing={4}
         width="50%"
         expand={expand}
-        CollapsibleContent={<CollapsibleContent unityValue={value} createdAt={createdAt} qtd={qtd} />}
+        CollapsibleContent={<CollapsibleContent value={value} createdAt={createdAt} qtd={qtd} />}
       >
         <Row align="stretch">
           <Column align="flex-start">
@@ -122,7 +126,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
                 {deliveryDate && formatDate(deliveryDate, 'dd/MM/yyyy')}
               </Typography>
               <Typography variant="subtitle1" {...overflowTextProps}>
-                total: {toMoney(value * qtd)}
+                total: {toMoney(value)}
               </Typography>
             </Column>
             <Row align="flex-end" justify="flex-end">

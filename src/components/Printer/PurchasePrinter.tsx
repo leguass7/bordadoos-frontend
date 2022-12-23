@@ -25,7 +25,7 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase }) => {
             <Typography variant="h6" align="right">
               {formatDate(purchase.createdAt, 'dd/MM/yyyy HH:mm:ss')}
               <Typography variant="body1">
-                <b>Total: </b> {formatPrice(purchase.value * purchase.qtd)}
+                <b>Total: </b> {formatPrice(purchase.value)}
               </Typography>
             </Typography>
           </Grid>
@@ -38,7 +38,7 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase }) => {
               <Typography variant="h5">Status</Typography>
               <Typography variant="body1">
                 <b>Valor: </b>
-                {formatPrice(purchase.value)}
+                {formatPrice(purchase.value / purchase.qtd)}
               </Typography>
               <Typography variant="body1">
                 <b>Quantidade: </b>
