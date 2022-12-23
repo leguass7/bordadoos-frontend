@@ -9,20 +9,25 @@ import * as Yup from 'yup'
 import { formatPrice } from '~/helpers'
 import { validateFormData } from '~/helpers/form'
 import { removeInvalidValues } from '~/helpers/object'
+import { useHasAccess } from '~/hooks/useHasAccess'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { getPositionByType } from '~/services/api/embroidery'
 import { findPurchaseWithItems } from '~/services/api/purchase'
 
+import {
+  calculatePurchaseOriginalValue,
+  calculatePurchaseTotalValue
+} from '../../serverSide/purchases/purchase-configs/purchase-config.helper'
 import { CircleLoading } from '../CircleLoading'
 import { Datepicker } from '../Form/Datepicker'
 import { Field } from '../Form/Field'
 import Select, { SelectItem } from '../Form/Select'
 import { Switch } from '../Form/Switch'
-import { usePurchase } from './PurchaseProvider'
+import { usePurchase, usePurchaseRules } from './PurchaseProvider'
 
 const schema = Yup.object().shape({
   qtd: Yup.string().required('A quantidade de bordados é obrigatória'),
-  value: Yup.string().required('O valor do pedido é obrigatório'),
+  // value: Yup.string().required('O valor do pedido é obrigatório'),
   paid: Yup.bool(),
   typeId: Yup.string().required('O tipo do bordado é obrigatório'),
   label: Yup.string(),
@@ -33,6 +38,20 @@ const schema = Yup.object().shape({
   entryDate: Yup.string().nullable(),
   deliveryDate: Yup.string().nullable() // lembrete: Validar formato de data
 })
+
+interface FormData {
+  qtd: number
+  // value: number
+  paid?: boolean
+  typeId: string
+  label?: string
+  description?: string
+  points?: number
+  categoryId: string
+  done?: boolean
+  entryDate?: string
+  deliveryDate?: string
+}
 
 interface Props {
   purchaseId?: number
@@ -50,7 +69,11 @@ function selectItemsDto(data: EmbroideryPosition[] | EmbroideryType[]): SelectIt
 
 export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0, onSubmit }) => {
   const formRef = useRef<FormHandles>(null)
-  const { clientId, updatePurchase, ruleIds } = usePurchase()
+  const { clientId, updatePurchase } = usePurchase()
+  const { rulesSelected, fetchPurchaseRules, purchaseRules, ruleIds } = usePurchaseRules()
+  const isAdmin = useHasAccess(8)
+
+  const [unityValue, setUnityValue] = useState(0)
 
   const [typeItems, setTypeItems] = useState<SelectItem[]>([])
   const [positionItems, setPositionItems] = useState<SelectItem[]>([])
@@ -61,13 +84,20 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
   const [loading, setLoading] = useState(false)
 
   const updateTotalPrice = useCallback(() => {
-    const data = formRef.current?.getData()
+    if (purchaseRules) {
+      const { qtd = 0, points } = formRef.current?.getData() as FormData
 
-    const [qtd = 0, value = 0] = [data['qtd'], data['value']]
-    const total = qtd * value
+      const originalPrice = calculatePurchaseOriginalValue(qtd, points, purchaseRules)
+      if (originalPrice && !unityValue) setUnityValue(originalPrice / qtd)
+      const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, rulesSelected)
 
-    setTotalPrice(formatPrice(total))
-  }, [])
+      setTotalPrice(formatPrice(totalPrice))
+    }
+  }, [purchaseRules, rulesSelected, unityValue])
+
+  useEffect(() => {
+    fetchPurchaseRules()
+  }, [fetchPurchaseRules])
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -124,6 +154,8 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
     [isMounted, purchaseId, onSubmit, clientId, ruleIds]
   )
 
+  const changeUnityValue = useCallback(e => setUnityValue(e.target.value), [])
+
   return (
     <>
       <Grid container direction="column" flex={1}>
@@ -138,7 +170,7 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
             <Grid item xs={12}>
               <Grid container>
                 <Grid item xs={12} sm={6}>
-                  <Datepicker disabled={!clientId} label="data de entrada" name="entryDate" />
+                  <Datepicker disabled={!clientId || !isAdmin()} label="data de entrada" name="entryDate" />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Datepicker disabled={!clientId} name="deliveryDate" />
@@ -176,17 +208,29 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
                 autoComplete="off"
                 onChange={updateTotalPrice}
               />
-              <Field
-                disabled={!clientId}
-                number
-                name="value"
-                label="Valor unitário"
-                autoComplete="off"
-                onChange={updateTotalPrice}
-              />
+              <div style={{ padding: 4 }}>
+                <TextField
+                  fullWidth
+                  disabled={!clientId || !isAdmin()}
+                  // name="value"
+                  // number
+                  value={unityValue}
+                  label="Valor unitário"
+                  autoComplete="off"
+                  onChange={changeUnityValue}
+                />
+              </div>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Field disabled={!clientId} number int name="points" label="Quantidade de pontos" autoComplete="off" />
+              <Field
+                disabled={!clientId}
+                onChange={updateTotalPrice}
+                number
+                int
+                name="points"
+                label="Quantidade de pontos"
+                autoComplete="off"
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
               <div style={{ padding: 4 }}>

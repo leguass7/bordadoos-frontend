@@ -5,11 +5,12 @@ import { PriceRules } from '@prisma/client'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { listPriceRules } from '~/services/api/priceRules'
+import { getPurchaseConfig } from '~/services/api/purchase-config'
 
 import { CardTitle } from '../CardTitle'
 import { CircleLoading } from '../CircleLoading'
 import { SpacedContainer } from '../styled'
-import { usePurchase } from './PurchaseProvider'
+import { usePurchaseRules } from './PurchaseProvider'
 
 interface Props {
   children?: React.ReactNode
@@ -18,14 +19,30 @@ interface Props {
 
 export const PurchaseConfig: React.FC<Props> = ({ purchaseId }) => {
   const [rules, setRules] = useState<Partial<PriceRules>[]>([])
-  const { rulesSelected, setRulesSelected } = usePurchase()
+  const { rulesSelected, setRulesSelected } = usePurchaseRules()
 
   const [loading, setLoading] = useState(false)
   const isMounted = useIsMounted()
 
+  const fetchSelected = useCallback(async () => {
+    if (!purchaseId) return null
+
+    setLoading(true)
+    const { data } = await getPurchaseConfig({ purchaseId })
+    const responseRules = JSON.parse(data?.rules)
+    if (isMounted()) {
+      setLoading(false)
+      if (responseRules?.length) setRulesSelected(responseRules)
+    }
+  }, [purchaseId, isMounted, setRulesSelected])
+
+  useEffect(() => {
+    fetchSelected()
+  }, [fetchSelected])
+
   const fetchData = useCallback(async () => {
     setLoading(true)
-    const response = await listPriceRules()
+    const response = await listPriceRules({})
 
     if (isMounted()) {
       setLoading(false)
@@ -85,10 +102,11 @@ export const PurchaseConfig: React.FC<Props> = ({ purchaseId }) => {
                 label="Adicionar regras"
                 onChange={e => handleAddRule(e.target?.value as string)}
               >
-                {notAddedRules?.length
-                  ? notAddedRules.map(({ id, label }) => {
+                {rules?.length
+                  ? rules.map(({ id, label }) => {
+                      const isSelected = hasInSelected(id)
                       return (
-                        <MenuItem key={id} value={id}>
+                        <MenuItem key={id} value={id} disabled={!!isSelected}>
                           {label}
                         </MenuItem>
                       )

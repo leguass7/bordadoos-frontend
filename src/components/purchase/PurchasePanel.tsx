@@ -39,7 +39,7 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
             <SelectCustomer />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <PurchaseConfig />
+            <PurchaseConfig purchaseId={purchaseId} />
           </Grid>
         </Grid>
       </PanelWrapper>

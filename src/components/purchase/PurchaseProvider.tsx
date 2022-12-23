@@ -3,48 +3,83 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { PriceRules } from '@prisma/client'
 import { createContext, useContext, useContextSelector } from 'use-context-selector'
 
+import { IConfigPurchaseRules } from '~/serverSide/config/config.dto'
+import { getConfig } from '~/services/api/config'
+
 export interface IPurchaseData {
   // customerId?: number // for search
   clientId?: number
 }
 
 export interface IContextPurchase {
-  rulesSelected?: Partial<PriceRules>[]
+  rulesSelected?: PriceRules[]
   setRulesSelected?: React.Dispatch<React.SetStateAction<Partial<PriceRules>[]>>
   purchase: IPurchaseData | null
   setPurchase: React.Dispatch<React.SetStateAction<IPurchaseData>>
   updatePurchase: (data: Partial<IPurchaseData>) => void
+  purchaseRules: IConfigPurchaseRules
+  fetchPurchaseRules: () => void
 }
 
 export const PurchaseContext = createContext({} as IContextPurchase)
 
 export const PurchaseProvider: React.FC = ({ children }) => {
   const [purchase, setPurchase] = useState<IPurchaseData>(null)
-  const [rulesSelected, setRulesSelected] = useState<Partial<PriceRules>[]>([])
+  const [rulesSelected, setRulesSelected] = useState<PriceRules[]>([])
+  const [purchaseRules, setPurchaseRules] = useState<IConfigPurchaseRules>({} as IConfigPurchaseRules)
+
+  const fetchPurchaseRules = useCallback(async () => {
+    const response = await getConfig('purchaseRules')
+    if (response?.data?.meta) setPurchaseRules(response.data.meta as any)
+  }, [])
 
   const updatePurchase = useCallback((data: Partial<IPurchaseData>) => {
     setPurchase(old => ({ ...old, ...data }))
   }, [])
 
   return (
-    <PurchaseContext.Provider value={{ purchase, setPurchase, updatePurchase, rulesSelected, setRulesSelected }}>
+    <PurchaseContext.Provider
+      value={{
+        purchase,
+        setPurchase,
+        updatePurchase,
+        rulesSelected,
+        setRulesSelected,
+        fetchPurchaseRules,
+        purchaseRules
+      }}
+    >
       {children}
     </PurchaseContext.Provider>
   )
 }
 
-export function usePurchase() {
-  const { purchase, rulesSelected, ...context } = useContext(PurchaseContext)
+export function usePurchaseRules() {
+  const [rulesSelected, setRulesSelected] = useContextSelector(
+    PurchaseContext,
+    ({ rulesSelected, setRulesSelected }) => [rulesSelected, setRulesSelected]
+  )
 
-  const clientId = useMemo(() => {
-    return purchase?.clientId
-  }, [purchase])
+  const [purchaseRules, fetchPurchaseRules] = useContextSelector(
+    PurchaseContext,
+    ({ purchaseRules, fetchPurchaseRules }) => [purchaseRules, fetchPurchaseRules]
+  )
 
   const ruleIds = useMemo(() => {
     return rulesSelected?.map(({ id }) => id) ?? []
   }, [rulesSelected])
 
-  return { purchase, ruleIds, rulesSelected, ...context, clientId }
+  return { rulesSelected, setRulesSelected, purchaseRules, fetchPurchaseRules, ruleIds }
+}
+
+export function usePurchase() {
+  const { purchase, updatePurchase } = useContext(PurchaseContext)
+
+  const clientId = useMemo(() => {
+    return purchase?.clientId
+  }, [purchase])
+
+  return { purchase, clientId, updatePurchase }
 }
 
 // export function usePurchaseCustomer(): [number, (customerId?: number) => void] {
