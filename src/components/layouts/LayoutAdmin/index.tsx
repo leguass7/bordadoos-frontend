@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 
-import { useSession } from 'next-auth/client'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 
 import { CircleLoading } from '~/components/CircleLoading'
@@ -11,7 +11,7 @@ import { LayoutBar, LayoutContainer, LayoutContent, LayoutFooter } from './style
 
 export const LayoutAdmin: React.FC = ({ children }) => {
   const { replace } = useRouter()
-  const [session] = useSession()
+  const { data: session } = useSession()
   const { height } = useWindowDimensions()
   const [maxHeight, setMaxH] = useState(`${height ? `${height}px` : 'auto'}`)
   const refBar = useRef<HTMLDivElement>(null)

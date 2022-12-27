@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 
-import { useSession } from 'next-auth/client'
+import { useSession } from 'next-auth/react'
 
 import { Settings, ExitToApp, AccountCircle } from '@mui/icons-material'
 import { AppBar, Toolbar, Modal } from '@mui/material'
@@ -12,7 +12,7 @@ import { HeaderButton } from './HeaderButton'
 import { ToolButtonMenu } from './ToolButtonMenu'
 
 export const Header: React.FC = () => {
-  const [session] = useSession()
+  const { data: session } = useSession()
 
   const isAdmin = useMemo(() => {
     return !!(session?.user?.level > 7)

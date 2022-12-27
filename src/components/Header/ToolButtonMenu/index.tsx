@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
-import { useSession } from 'next-auth/client'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 
 import { Menu } from '@mui/icons-material'
@@ -25,7 +25,7 @@ interface Props {
 
 export const ToolButtonMenu: React.FC<Props> = ({ anchor }) => {
   const [open, setOpen] = useState(false)
-  const [session] = useSession()
+  const { data: session } = useSession()
   const { push, pathname } = useRouter()
 
   const redirectAccount = () => () => {

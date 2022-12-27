@@ -1,6 +1,6 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+  provider = "prisma-client-js"
+  // previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -53,12 +53,12 @@ model User {
 }
 
 model Account {
-  id                 Int       @id @default(autoincrement())
+  id                 String    @id @default(cuid())
   compoundId         String    @unique
   userId             Int
   providerType       String
   providerId         String
-  providerAccountId  String
+  providerAccountId  String    @unique
   refreshToken       String?
   accessToken        String?
   accessTokenExpires DateTime?
@@ -66,14 +66,14 @@ model Account {
   updatedAt          DateTime? @updatedAt
   user               User      @relation(fields: [userId], references: [id])
 
-  @@index([providerAccountId], name: "providerAccountId")
-  @@index([providerId], name: "providerId")
-  @@index([userId], name: "userId")
+  // @@index([providerAccountId], name: "providerAccountId")
+  // @@index([providerId], name: "providerId")
+  // @@index([userId], name: "userId")
   @@map(name: "accounts")
 }
 
 model Session {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(cuid())
   userId       Int
   expires      DateTime
   sessionToken String    @unique
@@ -87,7 +87,7 @@ model Session {
 
 model VerificationRequest {
   id         Int       @id @default(autoincrement())
-  identifier String
+  identifier String    @unique
   token      String    @unique
   expires    DateTime
   createdAt  DateTime? @default(now())
@@ -182,7 +182,7 @@ model Purchase {
   client      Client              @relation(fields: [clientId], references: [id])
   createdUser User                @relation(name: "purchaseCreatedUser", fields: [createdBy], references: [id])
 
-  PurchaseItem PurchaseConfig[]
+  purchaseItem PurchaseConfig[]
 
   @@map(name: "purchases")
 }

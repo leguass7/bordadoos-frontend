@@ -1,8 +1,11 @@
 import type { NextApiHandler } from 'next'
-import NextAuth, { NextAuthOptions } from 'next-auth'
-import { Prisma } from 'next-auth/adapters'
-import Providers from 'next-auth/providers'
+import NextAuth, { NextAuthOptions, Session } from 'next-auth'
+import GithubProvider from 'next-auth/providers/github'
+import GoogleProvider from 'next-auth/providers/google'
 
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+
+import { CustomAdapter } from '~/serverSide/auth/adapter'
 import prisma from '~/serverSide/database/prisma'
 import { UserService } from '~/serverSide/users/user.service'
 
@@ -12,16 +15,17 @@ const maxAge = 30 * 24 * 60 * 60 // 30 days
 const options: NextAuthOptions = {
   debug: process.env.NODE_ENV !== 'production',
   secret,
-  session: { maxAge, jwt: true },
+  session: { maxAge, strategy: 'jwt' },
   callbacks: {
-    async session(session, token) {
-      const result: any = { ...session }
+    async session({ session, token, user }) {
+      const result: Session = { ...session }
+      // @ts-ignore
       result.user.userId = parseInt(`${token.sub || 0}`)
       result.user.level = parseInt(`${token.level || 1}`)
 
       return result
     },
-    async jwt(token) {
+    async jwt({ token, account }) {
       const id = parseInt(`${token.sub || 0}`)
       const result = { ...token, id }
 
@@ -34,19 +38,28 @@ const options: NextAuthOptions = {
     }
   },
   jwt: { secret, maxAge },
-  adapter: Prisma.Adapter({ prisma }),
+  adapter: PrismaAdapter(prisma),
+  // @ts-ignore
+  // adapter: CustomAdapter(prisma),
   providers: [
-    Providers.Google({
+    GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code'
+        }
+      }
       // authorizationUrl força o google a perguntar "qual conta usar" e renovar token
-      authorizationUrl:
-        'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code'
+      // authorizationUrl:
+      //   'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code'
     }),
-    Providers.GitHub({
+    GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      scope: 'read:user user:email'
+      clientSecret: process.env.GITHUB_CLIENT_SECRET
+      // scope: 'read:user user:email'
     })
     // https://github.com/nextauthjs/next-auth/blob/main/src/providers/instagram.js
     // Providers.Instagram({
@@ -72,6 +85,7 @@ const options: NextAuthOptions = {
 
 const authHandler: NextApiHandler = (req, res) => {
   // console.log('secret', secret)
+  // console.log('\n', process.env.GOOGLE_ID, process.env.GOOGLE_SECRET, '\n')
   return NextAuth(req, res, options)
 }
 export default authHandler

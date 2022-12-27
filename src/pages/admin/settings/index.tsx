@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { GetServerSideProps, NextPage } from 'next'
-import { getSession } from 'next-auth/client'
+import { getSession } from 'next-auth/react'
 
 import { Divider, Typography } from '@mui/material'
 

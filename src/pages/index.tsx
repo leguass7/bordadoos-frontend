@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { NextPage } from 'next'
-import { useSession } from 'next-auth/client'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/dist/client/router'
 
 import { CircleLoading } from '~/components/CircleLoading'
@@ -14,7 +14,7 @@ const PageIndex: NextPage = () => {
   const [loaded, setLoaded] = useState(false)
   const [processing, setProcessing] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-  const [session] = useSession()
+  const { data: session } = useSession()
   const { replace, prefetch } = useRouter()
 
   const redirect = useCallback(async () => {

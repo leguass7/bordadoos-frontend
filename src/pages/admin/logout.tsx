@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 
 import type { NextPage } from 'next'
-import { signOut, useSession } from 'next-auth/client'
+import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 
 import { useAppTheme } from '~/components/AppThemeProvider/useAppTheme'
@@ -11,7 +11,7 @@ import { LayoutCenter } from '~/components/layouts/LayoutCenter'
 const PageAdminLogout: NextPage = () => {
   const { theme } = useAppTheme()
   const ref = useRef<HTMLDivElement>(null)
-  const [session] = useSession()
+  const { data: session } = useSession()
   const { replace } = useRouter()
 
   useEffect(() => {

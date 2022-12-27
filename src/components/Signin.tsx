@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { FaGoogle, FaGithub } from 'react-icons/fa'
 
-import { useSession, signIn, signOut } from 'next-auth/client'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 import { Button } from '@mui/material'
 import styled from 'styled-components'
@@ -16,7 +16,7 @@ const providers = [
 ]
 
 export const Signin: React.FC<Props> = ({ processing }) => {
-  const [session] = useSession()
+  const { data: session } = useSession()
 
   const items = useMemo(() => {
     return providers.map(({ name, label, Icon }) => ({
