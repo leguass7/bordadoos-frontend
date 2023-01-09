@@ -277,6 +277,9 @@ model PriceRules {
   modality PriceRuleModality
   value    Float             @default(0)
 
+  purchaseConfig   PurchaseConfig? @relation(fields: [purchaseConfigId], references: [id])
+  purchaseConfigId String?         @db.VarChar(36)
+
   createdBy Int
   creator   User @relation(fields: [createdBy], references: [id], name: "priceRuleCreator")
 
@@ -289,14 +292,19 @@ model PriceRules {
   @@map(name: "price_rules")
 }
 
+enum PurchaseRules {
+  RETAIL
+  WHOLESALE
+}
+
 model PurchaseConfig {
   id String @id @default(uuid()) @db.VarChar(36)
 
   originalValue Float @default(0)
   totalValue    Float @default(0)
 
-  rules          Json
-  purchaseConfig Json
+  priceRules   PriceRules[]
+  purchaseRule PurchaseRules
 
   purchase   Purchase @relation(fields: [purchaseId], references: [id])
   purchaseId Int      @unique
