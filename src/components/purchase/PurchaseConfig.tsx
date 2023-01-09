@@ -29,7 +29,7 @@ export const PurchaseConfig: React.FC<Props> = ({ purchaseId }) => {
 
     setLoading(true)
     const response = await getPurchaseConfig({ purchaseId })
-    const responseRules = JSON.parse(response?.data?.rules)
+    const responseRules = response?.data?.priceRules
     if (isMounted()) {
       setLoading(false)
       if (responseRules?.length) setRulesSelected(responseRules)

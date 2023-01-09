@@ -34,22 +34,21 @@ export function calculatePurchaseOriginalValue(qtd = 0, points = 0, config?: ICo
 
 export function calculatePurchaseTotalValue(originalValue: number, qtd: number, rules: PriceRules[] = []) {
   if (!rules?.length) return originalValue
-  const unityValue = originalValue / qtd
 
   const totalValue = rules.reduce((ac, at) => {
     const { modality, type, value } = at
 
     const percValue = value / 100 + 1
 
-    if (modality === PriceRuleModality.QUANTITY)
-      ac += type === PriceRuleType.FIXED ? (unityValue + value) * qtd : originalValue * percValue
+    // Percentual só funciona porque todas as peças têm o mesmo valor, assim, se todas dobrarem de valor, o total também dobra por exemplo
+    if (type === PriceRuleType.PERC) ac *= percValue
     else {
-      if (type === PriceRuleType.FIXED) ac += originalValue + value
-      else ac *= percValue
+      ac += value
+      if (modality === PriceRuleModality.QUANTITY) ac *= qtd
     }
 
     return ac
-  }, 0)
+  }, originalValue)
 
   return totalValue
 }

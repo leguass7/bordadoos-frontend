@@ -4,7 +4,8 @@ import { celebrate, Joi } from 'celebrate'
 export const filterPriceRuleSchema = celebrate({
   query: {
     label: Joi.string().allow(''),
-    id: Joi.number().allow('')
+    id: Joi.number().allow(''),
+    purchaseConfigId: Joi.string().uuid().allow('')
   }
 })
 
