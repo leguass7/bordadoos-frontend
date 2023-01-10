@@ -278,7 +278,7 @@ model PriceRules {
   value    Float             @default(0)
 
   purchaseConfig   PurchaseConfig? @relation(fields: [purchaseConfigId], references: [id])
-  purchaseConfigId String?         @db.VarChar(36)
+  purchaseConfigId Int?            @db.UnsignedInt
 
   createdBy Int
   creator   User @relation(fields: [createdBy], references: [id], name: "priceRuleCreator")
@@ -298,7 +298,7 @@ enum PurchaseRules {
 }
 
 model PurchaseConfig {
-  id String @id @default(uuid()) @db.VarChar(36)
+  id Int @id @default(autoincrement()) @db.UnsignedInt
 
   originalValue Float @default(0)
   totalValue    Float @default(0)
@@ -309,7 +309,7 @@ model PurchaseConfig {
   purchase   Purchase @relation(fields: [purchaseId], references: [id])
   purchaseId Int      @unique
 
-  createdAt DateTime? @db.Timestamp(0)
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
   updatedAt DateTime? @updatedAt
 
   @@map(name: "purchase_configs")

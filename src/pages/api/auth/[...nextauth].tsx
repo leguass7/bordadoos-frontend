@@ -5,7 +5,6 @@ import GoogleProvider from 'next-auth/providers/google'
 
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 
-import { CustomAdapter } from '~/serverSide/auth/adapter'
 import prisma from '~/serverSide/database/prisma'
 import { UserService } from '~/serverSide/users/user.service'
 
