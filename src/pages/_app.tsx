@@ -2,7 +2,7 @@ import '../styles/globals.css'
 import 'react-toastify/dist/ReactToastify.min.css'
 import { ToastContainer } from 'react-toastify'
 
-import { Provider as ProviderAuth } from 'next-auth/client'
+import { SessionProvider } from 'next-auth/react'
 import type { AppProps } from 'next/app'
 
 import { CacheProvider, EmotionCache } from '@emotion/react'
@@ -22,14 +22,14 @@ interface MyAppProps extends AppProps {
 function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) {
   return (
     <CacheProvider value={emotionCache}>
-      <ProviderAuth session={pageProps.session}>
+      <SessionProvider session={pageProps?.session}>
         <LocalizationProvider dateAdapter={AdapterDateFns} locale={ptBr}>
           <AppThemeProvider>
             <Component {...pageProps} />
           </AppThemeProvider>
           <ToastContainer />
         </LocalizationProvider>
-      </ProviderAuth>
+      </SessionProvider>
     </CacheProvider>
   )
 }

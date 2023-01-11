@@ -1,4 +1,4 @@
-import { Configuration } from '@prisma/client'
+import { Configuration, Prisma } from '@prisma/client'
 
 import { AuthorizedApiRequest } from '../auth/auth-protect.middleware'
 
@@ -21,6 +21,8 @@ interface IConfigFilter {
   key?: string
   [x: string]: string | string[]
 }
+
+export type ConfigWithMeta<T> = Configuration & { meta: T }
 
 export interface IRequestConfigFilter extends AuthorizedApiRequest {
   query: IConfigFilter

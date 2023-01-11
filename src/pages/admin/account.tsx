@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 
 import type { NextPage } from 'next'
-import { useSession } from 'next-auth/client'
+import { useSession } from 'next-auth/react'
 
 import { Box, Button, Container, Typography } from '@mui/material'
 
@@ -9,7 +9,7 @@ import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
 import { UserForm } from '~/components/Users/UserForm'
 
 const PageAdminAccount: NextPage = () => {
-  const [session] = useSession()
+  const { data: session } = useSession()
 
   const [disable, setDisable] = useState(true)
 

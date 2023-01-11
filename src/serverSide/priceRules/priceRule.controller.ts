@@ -23,7 +23,7 @@ function bulkCreatePriceRules(priceRuleService: IPriceRuleService) {
 function deletePriceRule(priceRuleService: IPriceRuleService) {
   return async (req: IRequestPriceRuleFilter, res: NextApiResponse) => {
     const { userId } = req.auth
-    const data = await priceRuleService.deleteRule(req.query?.id, userId)
+    const data = await priceRuleService.deleteRule(req.query?.id as any, userId)
 
     return res.status(202).json({ success: true, data })
   }

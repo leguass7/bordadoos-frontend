@@ -3,30 +3,53 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { IResponseApi } from '../api.interface'
 import ErrorApi from '../ErrorApi'
 import { PaginationQueryDto } from '../pagination/pagination.dto'
+import { IPurchaseConfigService, purchaseConfigService } from './purchase-configs/purchase-config.service'
 import type { IRequestFilter, IResponsePaginatePurchaseDto, IResponsePurchase } from './purchase.dto'
 import type { IPurchaseService } from './purchase.service'
 
-function create(purchaseService: IPurchaseService) {
-  return async (req: IRequestFilter, res: NextApiResponse<IResponsePurchase>) => {
-    const { userId } = req.auth
-    const data: any = { ...req.body, updatedBy: userId, createdBy: userId }
+function create(purchaseService: IPurchaseService, purchaseConfigService: IPurchaseConfigService) {
+  return async (req: IRequestFilter, res: NextApiResponse) => {
+    const { userId, level } = req.auth
+    const data: any = { ...req.body, updatedBy: userId, createdBy: userId, rules: undefined }
+    const isAdmin = level >= 8
 
-    const purchase = await purchaseService.create(data)
-    if (!purchase) throw ErrorApi({ status: 500, message: 'error while creating purchase' })
+    const createdPurchase = await purchaseService.create(data)
+    if (!createdPurchase) throw ErrorApi({ status: 500, message: 'error while creating purchase' })
+
+    const rules = req.body.rules
+
+    const config = await purchaseConfigService.save(createdPurchase, rules, isAdmin)
+
+    const diffValues = config?.totalValue !== createdPurchase?.value
+    const value = diffValues ? config.totalValue : createdPurchase?.value
+
+    const purchase =
+      diffValues && !isAdmin ? await purchaseService.update(createdPurchase.id, { value }) : createdPurchase
 
     return res.status(201).json({ purchase })
   }
 }
 
-function update(purchaseService: IPurchaseService) {
+function update(purchaseService: IPurchaseService, purchaseConfigService: IPurchaseConfigService) {
   return async (req: IRequestFilter, res: NextApiResponse<IResponsePurchase>) => {
-    const { userId } = req.auth
+    const { userId, level } = req.auth
     const { purchaseId } = req.query
 
     if (!userId) throw ErrorApi({ status: 401, message: 'User not logged' })
-    const data = { ...req.body, updatedBy: userId }
+    const data = { ...req.body, updatedBy: userId, rules: undefined }
+    const isAdmin = level >= 8
 
-    const purchase = await purchaseService.update(purchaseId, data)
+    const updatedPurchase = await purchaseService.update(purchaseId, data)
+
+    const rules = req.body.rules
+
+    const config = await purchaseConfigService.save(updatedPurchase, rules, isAdmin)
+    const diffValues = config?.totalValue !== updatedPurchase?.value
+    const value = diffValues ? config.totalValue : updatedPurchase?.value
+
+    const purchase =
+      diffValues && !isAdmin ? await purchaseService.update(updatedPurchase.id, { value }) : updatedPurchase
+
     return res.status(201).json({ purchase })
   }
 }
@@ -66,9 +89,9 @@ function remove(purchaseService: IPurchaseService) {
 
 export function factoryPurchaseController(purchaseService: IPurchaseService) {
   return {
-    create: create(purchaseService),
+    create: create(purchaseService, purchaseConfigService),
     paginate: paginate(purchaseService),
-    update: update(purchaseService),
+    update: update(purchaseService, purchaseConfigService),
     findById: findById(purchaseService),
     remove: remove(purchaseService)
   }

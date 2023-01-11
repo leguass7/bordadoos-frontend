@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: mysql_bordados
+    image: mysql:8
+    cap_add:
+      - SYS_NICE # CAP_SYS_NICE
+      - SYS_PTRACE
+      - SYS_RESOURCE
+    command: [
+        #--innodb-dedicated-server=ON,
+        --default-authentication-plugin=mysql_native_password
+        ]
+    ports:
+      - 3306:3306
+
+    volumes:
+      - mysql8_data:/var/lib/mysql
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: bordadoos
+      MYSQL_USER: bordadoos
+      MYSQL_PASSWORD: 123456
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '10'
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_container
+    restart: always
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: 123456
+      UPLOAD_LIMIT: 4000M
+    ports:
+      - 8080:80
+    volumes:
+      - /sessions
+
+volumes:
+  mysql8_data:

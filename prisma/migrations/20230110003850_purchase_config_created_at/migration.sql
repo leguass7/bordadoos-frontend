@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `purchase_configs` MODIFY `createdAt` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0);

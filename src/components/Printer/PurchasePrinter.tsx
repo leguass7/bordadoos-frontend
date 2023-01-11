@@ -1,4 +1,7 @@
-import { Grid, Typography } from '@mui/material'
+import { Fragment } from 'react'
+
+import { Grid, Table, TableHead, TableRow, Typography, TableCell, TableBody } from '@mui/material'
+import { PriceRules } from '@prisma/client'
 import styled from 'styled-components'
 
 import { formatPrice } from '~/helpers'
@@ -7,9 +10,10 @@ import { PurchaseWithItems } from '~/services/api/purchase'
 
 interface Props {
   purchase: PurchaseWithItems
+  rules?: PriceRules[]
 }
 
-export const PurchasePrinter: React.FC<Props> = ({ purchase }) => {
+export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
   return (
     <Content>
       {purchase?.id ? (
@@ -25,7 +29,7 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase }) => {
             <Typography variant="h6" align="right">
               {formatDate(purchase.createdAt, 'dd/MM/yyyy HH:mm:ss')}
               <Typography variant="body1">
-                <b>Total: </b> {formatPrice(purchase.value * purchase.qtd)}
+                <b>Total: </b> {formatPrice(purchase.value)}
               </Typography>
             </Typography>
           </Grid>
@@ -38,7 +42,7 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase }) => {
               <Typography variant="h5">Status</Typography>
               <Typography variant="body1">
                 <b>Valor: </b>
-                {formatPrice(purchase.value)}
+                {formatPrice(purchase.value / purchase.qtd)}
               </Typography>
               <Typography variant="body1">
                 <b>Quantidade: </b>
@@ -55,6 +59,35 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase }) => {
               </Typography>
             </Grid>
           </Grid>
+          {rules?.length ? (
+            <Grid container pt={6} alignItems="stretch">
+              <Grid item xs={12}>
+                <Typography align="center" variant="h5">
+                  Adicionais
+                </Typography>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Nome</TableCell>
+                      <TableCell>Tipo</TableCell>
+                      <TableCell>Valor</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rules?.map?.(({ id, label, value, type }) => {
+                      return (
+                        <Fragment key={`rule-${id}`}>
+                          <TableCell>{label}</TableCell>
+                          <TableCell>{type === 'FIXED' ? 'Fixo' : 'Percentual'}</TableCell>
+                          <TableCell>{type === 'FIXED' ? formatPrice(value) : `${value}`.concat('%')}</TableCell>
+                        </Fragment>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </Grid>
+            </Grid>
+          ) : null}
         </>
       ) : null}
     </Content>
