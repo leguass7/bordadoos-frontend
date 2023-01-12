@@ -42,15 +42,15 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!purchaseId) return { props: { purchase: {} } }
   const purchase = await PurchaseService.findById(purchaseId)
 
-  purchase.category = serializedDto(purchase.category)
-  purchase.type = serializedDto(purchase.type)
-  purchase.client = serializedDto(purchase.client)
+  if (purchase?.category) purchase.category = serializedDto(purchase.category)
+  if (purchase?.type) purchase.type = serializedDto(purchase.type)
+  if (purchase?.client) purchase.client = serializedDto(purchase.client)
 
   const purchaseConfig = await purchaseConfigService.getPurchaseConfig({ purchaseId })
-  const rules = serializedDto(purchaseConfig.priceRules)
+  const rules = purchaseConfig?.priceRules ? serializedDto(purchaseConfig?.priceRules) : []
 
   return {
-    props: { purchase: serializedDto(purchase), rules: serializedDto(rules) }
+    props: { purchase: serializedDto(purchase || {}), rules: serializedDto(rules || {}) }
   }
 }
 

@@ -103,17 +103,19 @@ export const PurchaseConfig: React.FC<Props> = ({ purchaseId }) => {
                 label="Adicionar regras"
                 onChange={e => handleAddRule(e.target?.value as string)}
               >
-                {rules?.length
-                  ? rules.map(({ id, label }) => {
-                      const isSelected = hasInSelected(id)
+                {rules?.length ? (
+                  rules.map(({ id, label }) => {
+                    const isSelected = hasInSelected(id)
 
-                      return (
-                        <MenuItem key={id} value={id} disabled={!!isSelected}>
-                          {label}
-                        </MenuItem>
-                      )
-                    })
-                  : null}
+                    return (
+                      <MenuItem key={id} value={id} disabled={!!isSelected}>
+                        {label}
+                      </MenuItem>
+                    )
+                  })
+                ) : (
+                  <MenuItem disabled>Nenhuma regra cadastrada</MenuItem>
+                )}
               </Select>
             </FormControl>
           </Grid>
