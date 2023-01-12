@@ -14,7 +14,7 @@ CREATE TABLE `configuration` (
 
 -- CreateTable
 CREATE TABLE `accounts` (
-    `id` VARCHAR(191) NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `user_id` INTEGER NOT NULL,
     `type` VARCHAR(191) NOT NULL,
     `provider` VARCHAR(191) NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE `users` (
     `cpf` VARCHAR(15) NULL,
     `cnpj` VARCHAR(18) NULL,
     `cellPhone` VARCHAR(20) NULL,
-    `level` INTEGER NULL,
+    `level` INTEGER NULL DEFAULT 1,
     `meta` JSON NULL,
     `actived` BOOLEAN NULL DEFAULT false,
     `createdAt` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
@@ -154,6 +154,7 @@ CREATE TABLE `price_rules` (
     `type` ENUM('PERC', 'FIXED') NOT NULL,
     `modality` ENUM('QUANTITY', 'PRICE') NOT NULL,
     `value` DOUBLE NOT NULL DEFAULT 0,
+    `purchaseConfigId` INTEGER UNSIGNED NULL,
     `createdBy` INTEGER NOT NULL,
     `updatedBy` INTEGER NOT NULL,
     `createdAt` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
@@ -164,13 +165,12 @@ CREATE TABLE `price_rules` (
 
 -- CreateTable
 CREATE TABLE `purchase_configs` (
-    `id` VARCHAR(36) NOT NULL,
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `originalValue` DOUBLE NOT NULL DEFAULT 0,
     `totalValue` DOUBLE NOT NULL DEFAULT 0,
-    `rules` JSON NOT NULL,
-    `purchaseConfig` JSON NOT NULL,
+    `purchaseRule` ENUM('RETAIL', 'WHOLESALE') NOT NULL,
     `purchaseId` INTEGER NOT NULL,
-    `createdAt` TIMESTAMP(0) NULL,
+    `createdAt` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updatedAt` DATETIME(3) NULL,
 
     UNIQUE INDEX `purchase_configs_purchaseId_key`(`purchaseId`),
@@ -203,6 +203,9 @@ ALTER TABLE `purchases` ADD CONSTRAINT `purchases_clientId_fkey` FOREIGN KEY (`c
 
 -- AddForeignKey
 ALTER TABLE `purchases` ADD CONSTRAINT `purchases_createdBy_fkey` FOREIGN KEY (`createdBy`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `price_rules` ADD CONSTRAINT `price_rules_purchaseConfigId_fkey` FOREIGN KEY (`purchaseConfigId`) REFERENCES `purchase_configs`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `price_rules` ADD CONSTRAINT `price_rules_createdBy_fkey` FOREIGN KEY (`createdBy`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -8,7 +8,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import prisma from '~/serverSide/database/prisma'
 import { UserService } from '~/serverSide/users/user.service'
 
-const secret = process?.env?.NEXTAUTH_SECRET || process?.env?.SECRET
+const secret = process?.env?.NEXTAUTH_SECRET
 const maxAge = 30 * 24 * 60 * 60 // 30 days
 
 const options: NextAuthOptions = {
