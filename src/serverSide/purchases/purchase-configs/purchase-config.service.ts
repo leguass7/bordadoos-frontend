@@ -26,7 +26,7 @@ async function save(purchase: Purchase, ruleIds: number[], isAdmin = false) {
   const purchaseRule: PurchaseRules = isRetail ? 'RETAIL' : 'WHOLESALE'
 
   const data = { originalValue, totalValue, purchaseRule }
-  const priceRules = ruleIds.map(id => ({ id }))
+  const priceRules = ruleIds?.map?.(id => ({ id })) ?? []
 
   const purchaseConfig = await prisma.purchaseConfig.upsert({
     create: { purchaseId: id, ...data, priceRules: { connect: priceRules } },
