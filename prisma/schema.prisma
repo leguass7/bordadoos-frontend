@@ -1,6 +1,6 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+  provider = "prisma-client-js"
+  // previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -8,76 +8,163 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Configuration {
+  id Int @id @default(autoincrement())
+
+  key  String @unique
+  meta Json?
+
+  actived Boolean? @default(false)
+
+  updatedBy Int?
+
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @updatedAt
+
+  @@map(name: "configuration")
+}
+
+model Account {
+  id                       String  @id @default(cuid())
+  userId                   Int     @map("user_id")
+  type                     String
+  provider                 String
+  providerAccountId        String  @map("provider_account_id")
+  refresh_token            String? @db.Text
+  access_token             String? @db.Text
+  expires_at               Int?
+  refresh_token_expires_in Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       Int      @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
 model User {
   id            Int       @id @default(autoincrement())
   name          String?
   email         String?   @unique
-  emailVerified DateTime?
+  emailVerified DateTime? @map("email_verified")
+  image         String?
   password      String?   @db.VarChar(64)
   cpf           String?   @db.VarChar(15)
   cnpj          String?   @db.VarChar(18)
   cellPhone     String?   @db.VarChar(20)
   level         Int? // @db.UnsignedInt
   meta          Json?
-  image         String?   @db.Text
   actived       Boolean?  @default(false)
-  createdAt     DateTime? @default(now()) @db.Timestamp(0)
-  updatedAt     DateTime? @updatedAt
-  accounts      Account[]
-  sessions      Session[]
+
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @updatedAt
+
+  accounts Account[]
+  sessions Session[]
 
   createdClients   Client[]   @relation(name: "clientCreatedUser")
   updatedClients   Client[]   @relation(name: "clientUpdatedUser")
   createdPurchases Purchase[] @relation(name: "purchaseCreatedUser")
 
+  createdPriceRules PriceRules[] @relation(name: "priceRuleCreator")
+  updatedPriceRules PriceRules[] @relation(name: "priceRuleUpdater")
 
-  @@map(name: "users")
+  @@map("users")
 }
 
-model Account {
-  id                 Int       @id @default(autoincrement())
-  compoundId         String    @unique
-  userId             Int
-  providerType       String
-  providerId         String
-  providerAccountId  String
-  refreshToken       String?
-  accessToken        String?
-  accessTokenExpires DateTime?
-  createdAt          DateTime? @default(now()) @db.Timestamp(0)
-  updatedAt          DateTime? @updatedAt
-  user               User      @relation(fields: [userId], references: [id])
-
-
-  @@index([providerAccountId], name: "providerAccountId")
-  @@index([providerId], name: "providerId")
-  @@index([userId], name: "userId")
-  @@map(name: "accounts")
-}
-
-model Session {
-  id           Int       @id @default(autoincrement())
-  userId       Int
-  expires      DateTime
-  sessionToken String    @unique
-  accessToken  String    @unique
-  createdAt    DateTime? @default(now()) @db.Timestamp(0)
-  updatedAt    DateTime? @updatedAt
-  user         User      @relation(fields: [userId], references: [id])
-
-  @@map(name: "sessions")
-}
-
-model VerificationRequest {
-  id         Int       @id @default(autoincrement())
+model VerificationToken {
   identifier String
-  token      String    @unique
+  token      String   @unique
   expires    DateTime
-  createdAt  DateTime? @default(now())
-  updatedAt  DateTime? @updatedAt
 
-  @@map(name: "verification_requests")
+  @@unique([identifier, token])
+  @@map("verificationtokens")
 }
+
+// model User {
+//   id            Int       @id @default(autoincrement())
+//   name          String?
+//   email         String?   @unique
+//   emailVerified DateTime?
+//   password      String?   @db.VarChar(64)
+//   cpf           String?   @db.VarChar(15)
+//   cnpj          String?   @db.VarChar(18)
+//   cellPhone     String?   @db.VarChar(20)
+//   level         Int? // @db.UnsignedInt
+//   meta          Json?
+//   image         String?   @db.Text
+//   actived       Boolean?  @default(false)
+//   createdAt     DateTime? @default(now()) @db.Timestamp(0)
+//   updatedAt     DateTime? @updatedAt
+//   accounts      Account[]
+//   sessions      Session[]
+
+//   createdClients   Client[]   @relation(name: "clientCreatedUser")
+//   updatedClients   Client[]   @relation(name: "clientUpdatedUser")
+//   createdPurchases Purchase[] @relation(name: "purchaseCreatedUser")
+
+//   createdPriceRules PriceRules[] @relation(name: "priceRuleCreator")
+//   updatedPriceRules PriceRules[] @relation(name: "priceRuleUpdater")
+
+//   @@map(name: "users")
+// }
+
+// model Account {
+//   id                 String    @id @default(cuid())
+//   compoundId         String    @unique
+//   userId             Int
+//   providerType       String
+//   providerId         String
+//   providerAccountId  String    @unique
+//   refreshToken       String?
+//   accessToken        String?
+//   accessTokenExpires DateTime?
+//   createdAt          DateTime? @default(now()) @db.Timestamp(0)
+//   updatedAt          DateTime? @updatedAt
+//   user               User      @relation(fields: [userId], references: [id])
+
+//   // @@index([providerAccountId], name: "providerAccountId")
+//   // @@index([providerId], name: "providerId")
+//   // @@index([userId], name: "userId")
+//   @@map(name: "accounts")
+// }
+
+// model Session {
+//   id           String    @id @default(cuid())
+//   userId       Int
+//   expires      DateTime
+//   sessionToken String    @unique
+//   accessToken  String    @unique
+//   createdAt    DateTime? @default(now()) @db.Timestamp(0)
+//   updatedAt    DateTime? @updatedAt
+//   user         User      @relation(fields: [userId], references: [id])
+
+//   @@map(name: "sessions")
+// }
+
+// model VerificationRequest {
+//   id         Int       @id @default(autoincrement())
+//   identifier String    @unique
+//   token      String    @unique
+//   expires    DateTime
+//   createdAt  DateTime? @default(now())
+//   updatedAt  DateTime? @updatedAt
+
+//   @@map(name: "verification_requests")
+// }
 
 model Client {
   id        Int       @id @default(autoincrement())
@@ -133,25 +220,97 @@ model EmbroideryPosition {
 }
 
 model Purchase {
-  id           Int       @id @default(autoincrement())
-  value        Float     @default(0)
-  clientId     Int
-  typeId       Int? // EmbroideryTypeId
-  categoryId   Int? // EmbroideryPositionId
-  qtd          Int?      @default(0)
-  createdBy    Int
-  updatedBy    Int
-  actived      Boolean?  @default(true)
-  done         Boolean?  @default(false)
-  paid         Boolean?  @default(false)
+  id Int @id @default(autoincrement())
+
+  value Float @default(0)
+  qtd   Int?  @default(0)
+
+  clientId   Int
+  typeId     Int? // EmbroideryTypeId
+  categoryId Int? // EmbroideryPositionId
+
+  createdBy Int
+  updatedBy Int
+
+  label       String? @db.VarChar(100)
+  description String? @db.Text
+
+  points Int?
+
+  actived Boolean? @default(true)
+  done    Boolean? @default(false)
+  paid    Boolean? @default(false)
+
+  entryDate    DateTime?
   deliveryDate DateTime? @db.Date
-  createdAt    DateTime? @default(now()) @db.Timestamp(0)
-  updatedAt    DateTime? @updatedAt
+
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @updatedAt
 
   type        EmbroideryType?     @relation(fields: [typeId], references: [id])
   category    EmbroideryPosition? @relation(fields: [categoryId], references: [id])
   client      Client              @relation(fields: [clientId], references: [id])
   createdUser User                @relation(name: "purchaseCreatedUser", fields: [createdBy], references: [id])
 
+  purchaseItem PurchaseConfig[]
+
   @@map(name: "purchases")
+}
+
+enum PriceRuleType {
+  PERC
+  FIXED
+}
+
+enum PriceRuleModality {
+  QUANTITY
+  PRICE
+}
+
+model PriceRules {
+  id Int @id @default(autoincrement())
+
+  label   String
+  actived Boolean @default(true)
+
+  type     PriceRuleType
+  modality PriceRuleModality
+  value    Float             @default(0)
+
+  purchaseConfig   PurchaseConfig? @relation(fields: [purchaseConfigId], references: [id])
+  purchaseConfigId Int?            @db.UnsignedInt
+
+  createdBy Int
+  creator   User @relation(fields: [createdBy], references: [id], name: "priceRuleCreator")
+
+  updatedBy Int
+  updated   User @relation(fields: [updatedBy], references: [id], name: "priceRuleUpdater")
+
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @updatedAt
+
+  @@map(name: "price_rules")
+}
+
+enum PurchaseRules {
+  RETAIL
+  WHOLESALE
+}
+
+model PurchaseConfig {
+  id Int @id @default(autoincrement()) @db.UnsignedInt
+
+  originalValue Float @default(0)
+  totalValue    Float @default(0)
+
+  priceRules   PriceRules[]
+  purchaseRule PurchaseRules
+
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+  purchaseId Int      @unique
+
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @updatedAt
+
+  @@map(name: "purchase_configs")
 }

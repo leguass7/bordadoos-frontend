@@ -1,6 +1,7 @@
-import { celebrate, Joi, Segments } from 'celebrate'
 import { NextApiResponse } from 'next'
 import { NextHandler } from 'next-connect'
+
+import { celebrate, Joi, Segments } from 'celebrate'
 
 import { isDefined } from '~/helpers/variables'
 

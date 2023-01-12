@@ -6,6 +6,9 @@ const nextConfig = {
     disableStaticImages: true, // para funcionar o plugin `next-fonts`
     domains: ['sistema.jrbordados.com.br', 'jrbordados.com.br', 'www.jrbordados.com.br']
   },
+  experimental: {
+    styledComponents: true
+  },
   api: {
     bodyParser: {
       sizeLimit: '500kb'

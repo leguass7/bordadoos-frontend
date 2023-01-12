@@ -1,4 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
+
+import { useSession } from 'next-auth/react'
 
 import { Settings, ExitToApp, AccountCircle } from '@mui/icons-material'
 import { AppBar, Toolbar, Modal } from '@mui/material'
@@ -10,9 +12,11 @@ import { HeaderButton } from './HeaderButton'
 import { ToolButtonMenu } from './ToolButtonMenu'
 
 export const Header: React.FC = () => {
-  const [configOpened, setConfigOpened] = useState(false)
+  const { data: session } = useSession()
 
-  const handleConfig = useCallback(() => setConfigOpened(true), [])
+  const isAdmin = useMemo(() => {
+    return !!(session?.user?.level > 7)
+  }, [session])
 
   return (
     <>
@@ -22,17 +26,11 @@ export const Header: React.FC = () => {
             <ToolButtonMenu anchor="left" />
             <div style={{ flexGrow: 1 }} />
             <HeaderButton Icon={AccountCircle} path="/admin/account" />
-            <HeaderButton Icon={Settings} onClick={handleConfig} />
+            {isAdmin ? <HeaderButton Icon={Settings} path="/admin/settings" /> : null}
             <HeaderButton Icon={ExitToApp} path="/admin/logout" />
           </Toolbar>
         </Container>
       </AppBar>
-      <Modal open={configOpened} onClose={() => setConfigOpened(false)}>
-        <div>
-          {/* <FormConfig /> */}
-          CONFIG
-        </div>
-      </Modal>
     </>
   )
 }

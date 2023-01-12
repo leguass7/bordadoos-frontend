@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { Input as MuiInput, InputProps, Typography } from '@mui/material'
 import { useField } from '@unform/core'
 
+import { masks } from '~/helpers/masks'
 import { addSeparatorsToNumberString, validNumber } from '~/helpers/string'
 
 import { ErrorMessage } from './styles'
@@ -11,9 +12,10 @@ interface Props extends InputProps {
   label?: string
   number?: boolean
   int?: boolean
+  mask?: keyof typeof masks
 }
 
-export const Input: React.FC<Props> = ({ name, type = 'text', id, label, number, onChange, int, ...rest }) => {
+export const Input: React.FC<Props> = ({ name, type = 'text', id, label, number, onChange, int, mask, ...rest }) => {
   const ref = useRef<HTMLInputElement>(null)
   const { defaultValue, fieldName, registerField, error } = useField(name)
 
@@ -22,10 +24,10 @@ export const Input: React.FC<Props> = ({ name, type = 'text', id, label, number,
       name: fieldName,
       ref: ref.current,
       getValue(input) {
-        const value = number ? validNumber(input.value) : input.value
-        return value
+        const value = number ? validNumber(input.value) : input?.value
+        return value || null
       },
-      setValue(input, value) {
+      setValue(input, value = null) {
         input.value = value
       },
       clearValue() {
@@ -37,18 +39,18 @@ export const Input: React.FC<Props> = ({ name, type = 'text', id, label, number,
   const handleChange = useCallback(
     e => {
       let value: string = e.target.value
+
+      if (value && mask) e.target.value = masks[mask](value)
+
       if (number) {
         value = addSeparatorsToNumberString(value, ['.', ','])
+
         if (int) value = value.replaceAll(/[,.]/g, '')
-        // if (value.includes('.')) {
-        //   // Only lets value have 1 dot
-        //   value = `${value.split('.')[0]}.${value.split('.')[1].replace(/\./, '')}`
-        // }
         ref.current.value = value.replace(/[^0-9.,]/g, '')
       }
       if (onChange) onChange(e)
     },
-    [number, onChange, int]
+    [number, onChange, int, mask]
   )
 
   return (

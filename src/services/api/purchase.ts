@@ -4,7 +4,9 @@ import { IResponsePurchase } from '~/serverSide/purchases/purchase.dto'
 
 import { getDefault } from '.'
 
-export type PurchaseWithItems = Prisma.PurchaseGetPayload<{ include: { client: true; category: true; type: true } }>
+export type PurchaseWithItems = Prisma.PurchaseGetPayload<{
+  include: { client: true; category: true; type: true }
+}>
 
 type FindResponse = {
   purchase?: PurchaseWithItems

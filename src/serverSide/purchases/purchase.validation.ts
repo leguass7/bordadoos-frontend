@@ -1,5 +1,9 @@
+import { PriceRuleModality, PriceRuleType } from '@prisma/client'
 import { Segments, celebrate, Joi } from 'celebrate'
-
+// categoryId43
+// clientId32
+// deliveryDate"2022-11-30T20:34:30.000Z"
+// description"Descrição de teste"
 export const createPurchasesSchema = celebrate({
   [Segments.BODY]: {
     actived: Joi.boolean(),
@@ -10,7 +14,12 @@ export const createPurchasesSchema = celebrate({
     clientId: Joi.number().required(),
     qtd: Joi.number().required(),
     value: Joi.number().allow(''),
-    deliveryDate: Joi.date()
+    deliveryDate: Joi.date(),
+    label: Joi.string().allow(''),
+    description: Joi.string().allow(''),
+    points: Joi.number().allow(''),
+    entryDate: Joi.date(),
+    rules: Joi.array().items(Joi.number())
   }
 })
 
@@ -27,7 +36,12 @@ export const updatePurchasesSchema = celebrate({
     clientId: Joi.number(),
     qtd: Joi.number(),
     value: Joi.number(),
-    deliveryDate: Joi.date()
+    deliveryDate: Joi.date(),
+    label: Joi.string().allow(''),
+    description: Joi.string().allow(''),
+    points: Joi.number().allow(''),
+    entryDate: Joi.date(),
+    rules: Joi.array().items(Joi.number())
   }
 })
 
@@ -45,6 +59,7 @@ export const listPurchasesSchema = celebrate({
     size: Joi.number(),
     page: Joi.number(),
     paid: Joi.number(),
+    clientId: Joi.number(),
     done: Joi.number()
   }
 })
