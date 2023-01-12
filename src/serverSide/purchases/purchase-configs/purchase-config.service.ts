@@ -25,28 +25,6 @@ async function save(purchase: Purchase, ruleIds: number[], isAdmin = false) {
 
   const purchaseRule: PurchaseRules = isRetail ? 'RETAIL' : 'WHOLESALE'
 
-  // const found = await prisma.purchaseConfig.findUnique({
-  //   where: { purchaseId: id },
-  //   select: { priceRules: { select: { id: true } } }
-  // })
-
-  // if (!found) {
-  //   const purchaseConfig = await prisma.purchaseConfig.create({
-  //     data: {
-  //       ...data,
-  //       purchaseId: id,
-  //       priceRules: { connect: ruleIds.map(id => ({ id })) }
-  //     }
-  //   })
-  //   return purchaseConfig
-  // }
-
-  // const disconnectedPrices = ruleIds.filter(id => {
-  //   const has = found.priceRules?.find?.(rule => rule?.id === id)
-  //   if (!has) return { id }
-  // })
-
-  // const purchaseConfig = await prisma.purchaseConfig.update({ where: { purchaseId: id }, data: { ...data, priceRules } })
   const data = { originalValue, totalValue, purchaseRule }
   const priceRules = ruleIds.map(id => ({ id }))
 

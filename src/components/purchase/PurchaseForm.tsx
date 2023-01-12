@@ -70,10 +70,10 @@ function selectItemsDto(data: EmbroideryPosition[] | EmbroideryType[]): SelectIt
 export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0, onSubmit }) => {
   const formRef = useRef<FormHandles>(null)
   const { clientId, updatePurchase } = usePurchase()
-  const { rulesSelected, fetchPurchaseRules, purchaseRules, ruleIds } = usePurchaseRules()
+  const { rulesSelected, fetchPurchaseRules, purchaseRules, ruleIds, setRulesSelected } = usePurchaseRules()
   const isAdmin = useHasAccess(8)
 
-  const [unityValue, setUnityValue] = useState(0)
+  const [unityValue, setUnityValue] = useState(formatPrice(0))
 
   const [typeItems, setTypeItems] = useState<SelectItem[]>([])
   const [positionItems, setPositionItems] = useState<SelectItem[]>([])
@@ -91,12 +91,12 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
     const points = Number(data?.points) || 0
 
     const originalPrice = calculatePurchaseOriginalValue(qtd, points, purchaseRules)
-    if (originalPrice && !unityValue) setUnityValue(originalPrice / qtd)
+    if (originalPrice) setUnityValue(formatPrice(originalPrice / qtd))
     const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, rulesSelected)
 
     setTotalPrice(formatPrice(totalPrice))
-    formRef.current.setFieldValue('value', totalPrice)
-  }, [purchaseRules, rulesSelected, unityValue])
+    formRef.current.setFieldValue('value', Number(totalPrice.toFixed(2)))
+  }, [purchaseRules, rulesSelected])
 
   useEffect(() => {
     updateTotalPrice()
@@ -150,17 +150,18 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
       setLoading(true)
       if (onSubmit) await onSubmit(removeInvalidValues({ ...data, clientId, rules: ruleIds }), !purchaseId)
 
-      if (!!isMounted()) {
+      if (isMounted()) {
         setLoading(false)
 
+        setRulesSelected([])
         if (!purchaseId) {
           formRef?.current?.setData?.({})
           setTotalPrice(formatPrice(0))
-          setUnityValue(0)
+          setUnityValue(formatPrice(0))
         }
       }
     },
-    [isMounted, purchaseId, onSubmit, clientId, ruleIds]
+    [isMounted, purchaseId, onSubmit, clientId, ruleIds, setRulesSelected]
   )
 
   const changeUnityValue = useCallback(e => setUnityValue(e.target.value), [])

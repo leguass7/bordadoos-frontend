@@ -43,8 +43,8 @@ export function calculatePurchaseTotalValue(originalValue: number, qtd: number, 
     // Percentual só funciona porque todas as peças têm o mesmo valor, assim, se todas dobrarem de valor, o total também dobra por exemplo
     if (type === PriceRuleType.PERC) ac *= percValue
     else {
-      ac += value
-      if (modality === PriceRuleModality.QUANTITY) ac *= qtd
+      if (modality === PriceRuleModality.QUANTITY) ac += value * qtd
+      else ac += value
     }
 
     return ac
