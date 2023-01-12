@@ -25,7 +25,7 @@ model Configuration {
 }
 
 model Account {
-  id                       String  @id @default(cuid())
+  id                       Int     @id @default(autoincrement())
   userId                   Int     @map("user_id")
   type                     String
   provider                 String
