@@ -21,7 +21,7 @@ const Print: NextPage<Props> = ({ purchase, rules }) => {
   return (
     <Container>
       <HeaderContainer>
-        <Image src="/logo.png" width={100} height={100} alt="logo" />
+        <Image priority src="/logo.webp" width={100} height={100} alt="logo" />
         <Typography variant="h4" flex={10} align="center">
           Pedido {purchase?.id}
         </Typography>
