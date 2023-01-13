@@ -9,7 +9,7 @@ async function paginate(
   pagination: PaginationQueryDto,
   filter: IEmbroideryTypeFilter = {}
 ): Promise<PaginationDto<EmbroideryType>> {
-  const { search, actived } = filter
+  const { search, actived, positions } = filter
   const where: PrismaTypes.EmbroideryTypeWhereInput = { id: { not: 0 }, actived }
 
   if (search)
@@ -17,9 +17,13 @@ async function paginate(
       OR: [{ label: { contains: `${search}` } }, { description: { contains: `${search}` } }]
     }
 
+  let include: PrismaTypes.EmbroideryTypeInclude
+  if (positions) include = { positions: true }
+
   const embTypes = await PrismaService.paginate<EmbroideryType>({
     model: 'EmbroideryType',
     ...pagination,
+    include,
     where
   })
   return embTypes

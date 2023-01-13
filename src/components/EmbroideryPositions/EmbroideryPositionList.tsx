@@ -9,10 +9,12 @@ import { CircleLoading } from '../CircleLoading'
 import { Container } from '../Container'
 import { EmbroideryPositionItemMemo } from './EmbroideryPositionItem'
 
-import { Modal } from '@mui/material'
+import { Grid, Modal, Typography } from '@mui/material'
 
 import { ModalForm } from '../ModalForm'
 import { EmbroideryPositionForm } from './EmbroideryPositionForm'
+
+import { EmbTypeWithEmbPos } from '~/serverSide/embroideryTypes/embroideryType.dto'
 
 interface Props {
   toggleModal: (id?: number) => void
@@ -20,7 +22,7 @@ interface Props {
 }
 
 export const EmbroideryPositionList: React.FC<Props> = ({ toggleModal, modal }) => {
-  const { pagination, data, fetchMoreData, hasMore, refreshData } = usePagination<EmbroideryPosition>()
+  const { pagination, data, fetchMoreData, hasMore, refreshData } = usePagination<EmbTypeWithEmbPos>()
 
   const handleEdit = useCallback(
     (id = 0) => {
@@ -30,13 +32,23 @@ export const EmbroideryPositionList: React.FC<Props> = ({ toggleModal, modal }) 
     [toggleModal, refreshData]
   )
 
-  // const renderMessage = useCallback((text: string) => {
-  //   return (
-  //     <Paragraph align="center" themeColor="textDark">
-  //       {text}
-  //     </Paragraph>
-  //   )
-  // }, [])
+  const renderPositions = useCallback(
+    (positions: EmbroideryPosition[]) => {
+      if (!positions?.length) return '---'
+
+      return positions.map(position => {
+        return (
+          <EmbroideryPositionItemMemo
+            key={`embroidery-position-${position.id}`}
+            {...position}
+            showModal={modal.show}
+            toggleModal={handleEdit}
+          />
+        )
+      })
+    },
+    [handleEdit, modal?.show]
+  )
 
   return (
     <div>
@@ -51,15 +63,15 @@ export const EmbroideryPositionList: React.FC<Props> = ({ toggleModal, modal }) 
           </Container>
         }
       >
-        <div style={{ display: 'flex', flexFlow: 'row wrap', padding: 4 }}>
-          {data?.map?.(item => {
+        <div>
+          {data?.map?.(({ label, positions, id }) => {
             return (
-              <EmbroideryPositionItemMemo
-                key={`${item.id}`}
-                {...item}
-                showModal={modal.show}
-                toggleModal={handleEdit}
-              />
+              <div style={{ padding: '4px 0' }} key={`embroidery-type-${id}`}>
+                <Typography variant="h5" pl={2}>
+                  {label}
+                </Typography>
+                <div style={{ display: 'flex', flexFlow: 'row wrap', padding: 4 }}>{renderPositions(positions)}</div>
+              </div>
             )
           })}
         </div>
