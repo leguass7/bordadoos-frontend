@@ -76,7 +76,9 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
   const [unityValue, setUnityValue] = useState(formatPrice(0))
 
   const [typeItems, setTypeItems] = useState<SelectItem[]>([])
-  const [positionItems, setPositionItems] = useState<SelectItem[]>([])
+  const [positionItems, setPositionItems] = useState<SelectItem[]>([
+    { label: 'Selecione um tipo de bordado primeiro', value: '', disabled: true }
+  ])
 
   const [totalPrice, setTotalPrice] = useState(formatPrice(0))
 
