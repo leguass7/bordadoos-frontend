@@ -245,11 +245,11 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
               </div>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <div style={{ padding: 4 }}>
+              <div>
                 {isAdmin() ? (
                   <Field fullWidth disabled={!clientId} name="value" number label="Total" autoComplete="off" />
                 ) : (
-                  <TextField value={totalPrice} disabled={true} label="Total" fullWidth />
+                  <TextField style={{ padding: 4 }} value={totalPrice} disabled={true} label="Total" fullWidth />
                 )}
               </div>
             </Grid>
