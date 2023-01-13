@@ -7,6 +7,7 @@ import * as Yup from 'yup'
 
 import { CircleLoading } from '~/components/CircleLoading'
 import { Field } from '~/components/Form/Field'
+import { defaultPurchaseRules } from '~/config/constants'
 import { validateFormData } from '~/helpers/form'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { IConfigPurchaseRules } from '~/serverSide/config/config.dto'
@@ -55,9 +56,10 @@ export const PurchaseSettingsForm: React.FC<Props> = () => {
     const response = await getConfig(configKey)
     if (isMounted()) {
       setLoading(false)
-      const data = response?.data?.meta as unknown as IConfigPurchaseRules
+      const meta = response?.data?.meta as unknown as IConfigPurchaseRules
+      const data = meta || defaultPurchaseRules
       setMaxQtd(data?.retail?.maxQtd || 0)
-      formRef.current?.setData?.(response?.data?.meta as any)
+      formRef.current?.setData?.(data)
     }
   }, [isMounted])
 
