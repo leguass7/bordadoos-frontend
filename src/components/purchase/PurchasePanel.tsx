@@ -70,14 +70,14 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
                 {!clientId ? <ErrorMessage>Selecione um cliente para prosseguir</ErrorMessage> : null}
               </Container>
               <Grid container justifyContent="space-between">
-                <Grid item xs={12} md={9}>
+                <Grid item xs={12}>
                   <PurchaseForm onSubmit={handleSubmit} purchaseId={purchaseId} />
                 </Grid>
-                <Grid item xs={6} sm={4} md={3} margin="0 auto">
+                {/* <Grid item xs={6} sm={4} md={3} margin="0 auto">
                   <Grid container height="100%" alignItems="center">
                     <Image src="/camisa.png" alt="Camisa" />
                   </Grid>
-                </Grid>
+                </Grid> */}
               </Grid>
             </Paper>
           </PanelWrapper>
