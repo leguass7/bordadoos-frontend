@@ -10,7 +10,11 @@ async function getOne<T>(key: string) {
 
 async function create(key: string, createConfigDTO: CreateConfigDTO) {
   const data = { ...createConfigDTO } as any
-  const config = await prisma.configuration.upsert({ where: { key }, create: { key, ...data }, update: data })
+  const config = await prisma.configuration.upsert({
+    where: { key },
+    create: { key, ...data, actived: true },
+    update: data
+  })
 
   if (!config) throw ErrorApi('Error on create config')
 

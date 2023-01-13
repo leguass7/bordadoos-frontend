@@ -2,13 +2,22 @@ import { useState } from 'react'
 
 import { GetServerSideProps, NextPage } from 'next'
 import { getSession } from 'next-auth/react'
+import dynamic from 'next/dynamic'
 
 import { Divider, Typography } from '@mui/material'
 
+import { CircleLoading } from '~/components/CircleLoading'
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
-import { PurchaseSettings } from '~/components/Settings/PurchaseSettings'
 import { SettingsChips } from '~/components/Settings/SettingsChips'
 import { Content } from '~/styles/common'
+
+const DynamicPurchaseSettings = dynamic(
+  () => import('~/components/Settings/PurchaseSettings').then(({ PurchaseSettings }) => PurchaseSettings),
+  {
+    loading: () => <CircleLoading />,
+    ssr: false
+  }
+)
 
 interface Props {}
 
@@ -22,7 +31,7 @@ const Settings: NextPage<Props> = () => {
       </Typography>
       <SettingsChips selected={selected} setSelected={setSelected} />
       <Divider sx={{ py: 2, width: '80%', mx: 'auto', mb: 2 }} />
-      <Content>{selected === 1 ? <PurchaseSettings /> : null}</Content>
+      <Content>{selected === 1 ? <DynamicPurchaseSettings /> : null}</Content>
     </LayoutAdmin>
   )
 }
