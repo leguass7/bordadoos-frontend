@@ -76,7 +76,9 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
   const [unityValue, setUnityValue] = useState(formatPrice(0))
 
   const [typeItems, setTypeItems] = useState<SelectItem[]>([])
-  const [positionItems, setPositionItems] = useState<SelectItem[]>([])
+  const [positionItems, setPositionItems] = useState<SelectItem[]>([
+    { label: 'Selecione um tipo de bordado primeiro', value: '', disabled: true }
+  ])
 
   const [totalPrice, setTotalPrice] = useState(formatPrice(0))
 
@@ -245,11 +247,11 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
               </div>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <div style={{ padding: 4 }}>
+              <div>
                 {isAdmin() ? (
                   <Field fullWidth disabled={!clientId} name="value" number label="Total" autoComplete="off" />
                 ) : (
-                  <TextField value={totalPrice} disabled={true} label="Total" fullWidth />
+                  <TextField style={{ padding: 4 }} value={totalPrice} disabled={true} label="Total" fullWidth />
                 )}
               </div>
             </Grid>

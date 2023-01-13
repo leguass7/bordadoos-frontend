@@ -1,4 +1,4 @@
-import { EmbroideryType } from '@prisma/client'
+import { EmbroideryType, Prisma } from '@prisma/client'
 
 import { IResponseApi } from '../api.interface'
 import { AuthorizedApiRequest } from '../auth/auth-protect.middleware'
@@ -7,6 +7,7 @@ import { PaginationQueryDto } from '../pagination/pagination.dto'
 export interface IEmbroideryTypeFilter {
   search?: string
   actived?: boolean
+  positions?: boolean
 }
 
 export type IPaginateEmbroideryTypeDTO = PaginationQueryDto & IEmbroideryTypeFilter
@@ -45,3 +46,5 @@ export interface IResponsePaginateEmbroideryTypeDto extends IResponseApi {
 export interface IResponseEmbroideryDTO extends IResponseApi {
   data: EmbroideryType
 }
+
+export type EmbTypeWithEmbPos = Prisma.EmbroideryTypeGetPayload<{ include: { positions: true } }>

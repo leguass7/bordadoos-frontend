@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Button, ButtonGroup } from '@mui/material'
 import { EmbroideryPosition, EmbroideryType } from '@prisma/client'
+import { FormHandles } from '@unform/core'
 import { Form } from '@unform/web'
 import styled from 'styled-components'
 
@@ -20,8 +21,8 @@ interface Props {
 
 export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, onSuccess }) => {
   const [loading, setLoading] = useState(false)
-  const [data, setData] = useState<Partial<EmbroideryPosition>>({})
   const [embTypes, setEmbTypes] = useState<EmbroideryType[]>([])
+  const formRef = useRef<FormHandles>(null)
 
   const isMounted = useIsMounted()
 
@@ -38,16 +39,15 @@ export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, on
   }, [isMounted, embTypes.length])
 
   const fetchData = useCallback(async () => {
-    if (embPosId && embPosId !== data.id) {
-      setLoading(true)
+    if (!embPosId) return null
+    setLoading(true)
 
-      const { success = false, data: apiData } = await getDefault(`/embroidery/positions/${embPosId}`)
-      if (isMounted()) {
-        setLoading(false)
-        if (success) setData(apiData)
-      }
+    const { success = false, data } = await getDefault(`/embroidery/positions/${embPosId}`)
+    if (isMounted()) {
+      setLoading(false)
+      if (success) formRef.current.setData(data)
     }
-  }, [isMounted, embPosId, data.id])
+  }, [isMounted, embPosId])
 
   useEffect(() => {
     fetchData()
@@ -59,7 +59,7 @@ export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, on
       const url = embPosId ? `/embroidery/positions/${embPosId}` : '/embroidery/positions'
       const { data: response } = await api[embPosId ? 'put' : 'post'](url, values)
       if (response && response.success) {
-        setData({})
+        formRef.current.setData({})
         if (onSuccess) onSuccess()
       }
     },
@@ -70,7 +70,7 @@ export const EmbroideryPositionForm: React.FC<Props> = ({ embPosId, onCancel, on
 
   return (
     <>
-      <Form onSubmit={handleSubmit} initialData={data} key={data.id}>
+      <Form ref={formRef} onSubmit={handleSubmit}>
         <FormContainer>
           <FieldContainer>
             <Input name="label" label="Posição do bordado: " required autoComplete="off" />

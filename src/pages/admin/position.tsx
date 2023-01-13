@@ -18,7 +18,7 @@ const PageAdminPosition: NextPage = () => {
 
   return (
     <LayoutAdmin>
-      <PaginationProvider url="/embroidery/positions">
+      <PaginationProvider url="/embroidery/types" initialFilter={{ positions: true }}>
         <Container>
           <PageTitle
             spotlight="Posições"
