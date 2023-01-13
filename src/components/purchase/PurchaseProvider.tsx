@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { PriceRules } from '@prisma/client'
 import { createContext, useContext, useContextSelector } from 'use-context-selector'
 
+import { defaultPurchaseRules } from '~/config/constants'
 import { IConfigPurchaseRules } from '~/serverSide/config/config.dto'
 import { getConfig } from '~/services/api/config'
 
@@ -26,7 +27,7 @@ export const PurchaseContext = createContext({} as IContextPurchase)
 export const PurchaseProvider: React.FC = ({ children }) => {
   const [purchase, setPurchase] = useState<IPurchaseData>(null)
   const [rulesSelected, setRulesSelected] = useState<PriceRules[]>([])
-  const [purchaseRules, setPurchaseRules] = useState<IConfigPurchaseRules>(null as IConfigPurchaseRules)
+  const [purchaseRules, setPurchaseRules] = useState<IConfigPurchaseRules>(defaultPurchaseRules)
 
   const updatePurchase = useCallback((data: Partial<IPurchaseData>) => {
     setPurchase(old => ({ ...old, ...data }))
