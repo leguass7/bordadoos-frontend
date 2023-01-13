@@ -36,12 +36,18 @@ export default class MyDocument extends Document {
     return (
       <Html lang="pt-br">
         <Head>
-          <link rel="icon" href={`/favicon.png`} />
+          <link rel="icon" href={`favicon.png`} />
           <link rel="manifest" href="manifest.json" />
           <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
           <meta name="theme-color" content={appThemeDark.colors.primary} />
           <meta name="google-site-verification" content="ABCDEF" />
           <meta name="msvalidate.01" content="ABCDEF" />
+          <meta property="og:image:type" content="image/jpeg" />
+          <meta property="og:image:width" content="640" />
+          <meta property="og:image:height" content="640" />
+          <meta property="og:image" content="ogimg.jpg" />
+          <meta property="og:site_name" content="JR Bordados Computadorizados e Corte Laser" />
+
           <script async {...scriptProps} />
           <script dangerouslySetInnerHTML={{ __html: preInnerHtml }} />
         </Head>
