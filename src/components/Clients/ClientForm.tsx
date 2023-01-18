@@ -18,9 +18,9 @@ import { Input } from '../Form/Input'
 const schema = Yup.object({
   name: Yup.string().required('O nome do cliente é obrigatório'),
   phone: Yup.string(),
-  doc: Yup.string().test('doc', 'CPF/CNPJ inválido', value =>
-    value ? cpf.isValid(value) || cnpj.isValid(value) : true
-  )
+  doc: Yup.string()
+    .test('doc', 'CPF/CNPJ inválido', value => (value ? cpf.isValid(value) || cnpj.isValid(value) : true))
+    .nullable()
 })
 
 export type FormCustomerSuccessHandler = (clientId?: number) => void
