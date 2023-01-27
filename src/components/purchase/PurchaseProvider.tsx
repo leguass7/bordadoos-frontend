@@ -4,6 +4,7 @@ import { PriceRules } from '@prisma/client'
 import { createContext, useContext, useContextSelector } from 'use-context-selector'
 
 import { defaultPurchaseRules } from '~/config/constants'
+import { useIsMounted } from '~/hooks/useIsMounted'
 import { IConfigPurchaseRules } from '~/serverSide/config/config.dto'
 import { getConfig } from '~/services/api/config'
 
@@ -47,6 +48,8 @@ export const PurchaseProvider: React.FC = ({ children }) => {
 }
 
 export function usePurchaseRules() {
+  const isMounted = useIsMounted()
+
   const [rulesSelected, setRulesSelected] = useContextSelector(
     PurchaseContext,
     ({ rulesSelected, setRulesSelected }) => [rulesSelected, setRulesSelected]
@@ -59,8 +62,8 @@ export function usePurchaseRules() {
 
   const fetchPurchaseRules = useCallback(async () => {
     const response = await getConfig('purchaseRules')
-    if (response?.data?.meta) setPurchaseRules(response.data.meta as any)
-  }, [setPurchaseRules])
+    if (isMounted() && response?.data?.meta) setPurchaseRules(response.data.meta as any)
+  }, [setPurchaseRules, isMounted])
 
   const ruleIds = useMemo(() => {
     return rulesSelected?.map?.(({ id }) => id) ?? []

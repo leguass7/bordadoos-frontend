@@ -105,8 +105,8 @@ export const PurchaseForm: React.FC<Props> = ({ initialData = {}, purchaseId = 0
   }, [rulesSelected?.length, updateTotalPrice])
 
   useEffect(() => {
-    if (!purchaseRules) fetchPurchaseRules()
-  }, [fetchPurchaseRules, purchaseRules])
+    fetchPurchaseRules()
+  }, [fetchPurchaseRules])
 
   const fetchData = useCallback(async () => {
     if (typeItems?.length) return null
