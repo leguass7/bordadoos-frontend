@@ -45,6 +45,8 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (purchase?.category) purchase.category = serializedDto(purchase.category)
   if (purchase?.type) purchase.type = serializedDto(purchase.type)
   if (purchase?.client) purchase.client = serializedDto(purchase.client)
+  if (purchase?.createdUser) purchase.createdUser = serializedDto(purchase.createdUser)
+  if (purchase?.purchaseItem) purchase.purchaseItem = serializedDto(purchase?.purchaseItem)
 
   const purchaseConfig = await purchaseConfigService.getPurchaseConfig({ purchaseId })
   const rules = purchaseConfig?.priceRules ? serializedDto(purchaseConfig?.priceRules) : []

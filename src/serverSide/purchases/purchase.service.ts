@@ -28,7 +28,7 @@ async function update(purchaseId: number, data: Partial<Purchase>): Promise<Purc
 async function findById(purchaseId: number): Promise<PurchaseWithItems> {
   const purchase = await prisma.purchase.findFirst({
     where: { id: purchaseId },
-    include: { client: true, category: true, type: true }
+    include: { client: true, category: true, type: true, createdUser: true, purchaseItem: true }
   })
   return purchase
 }
@@ -106,6 +106,11 @@ async function paginate(
       type: {
         select: {
           label: true
+        }
+      },
+      purchaseItem: {
+        select: {
+          originalValue: true
         }
       }
     }
