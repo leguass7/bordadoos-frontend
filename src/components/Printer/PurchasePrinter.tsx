@@ -14,6 +14,8 @@ interface Props {
 }
 
 export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
+  const originalValue = purchase?.purchaseItem?.[0].originalValue || 0
+
   return (
     <Content>
       {purchase?.id ? (
@@ -23,7 +25,7 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
               {purchase.category.label} {'>'} {purchase.type.label}
               <br />
               <Typography component="span" variant="h4">
-                {purchase.client.name}
+                {purchase.label}
               </Typography>
             </Typography>
             <Typography variant="h6" align="right">
@@ -33,16 +35,49 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
               </Typography>
             </Typography>
           </Grid>
-          <Grid container pt={6} direction="column">
-            <Typography variant="h5">Contato</Typography>
-            <Typography variant="body1">{purchase.client.phone}</Typography>
+
+          <Grid container py={2} direction="column">
+            <Typography variant="h5">Descrição</Typography>
+            <Typography component="span" align="justify" variant="caption">
+              {purchase.description || '---'}
+            </Typography>
           </Grid>
-          <Grid container pt={6} alignItems="stretch">
+
+          <Grid container>
+            <Grid item xs={6}>
+              <Typography variant="h5">Contato do Cliente</Typography>
+              <Typography variant="body1">
+                <b>Nome: </b>
+                {purchase.client.name}
+              </Typography>
+              <Typography variant="body1">
+                <b>Telefone: </b>
+                {purchase.client.phone}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Grid container alignItems="flex-end" direction="column">
+                <div>
+                  <Typography variant="h5">Vendedor</Typography>
+                  <Typography variant="body1">
+                    <b>Nome: </b>
+                    {purchase.createdUser.name}
+                  </Typography>
+                  <Typography variant="body1">
+                    <b>Código: </b>
+                    {purchase.createdUser.id}
+                  </Typography>
+                </div>
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid container pt={3} alignItems="stretch">
             <Grid item xs={9}>
               <Typography variant="h5">Status</Typography>
               <Typography variant="body1">
                 <b>Valor: </b>
-                {formatPrice(purchase.value / purchase.qtd)}
+                {formatPrice(originalValue / purchase.qtd)}
               </Typography>
               <Typography variant="body1">
                 <b>Quantidade: </b>
@@ -59,6 +94,7 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
               </Typography>
             </Grid>
           </Grid>
+
           {rules?.length ? (
             <Grid container pt={6} alignItems="stretch">
               <Grid item xs={12}>
@@ -76,11 +112,11 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
                   <TableBody>
                     {rules?.map?.(({ id, label, value, type }) => {
                       return (
-                        <Fragment key={`rule-${id}`}>
+                        <TableRow key={`rule-${id}`}>
                           <TableCell>{label}</TableCell>
                           <TableCell>{type === 'FIXED' ? 'Fixo' : 'Percentual'}</TableCell>
                           <TableCell>{type === 'FIXED' ? formatPrice(value) : `${value}`.concat('%')}</TableCell>
-                        </Fragment>
+                        </TableRow>
                       )
                     })}
                   </TableBody>

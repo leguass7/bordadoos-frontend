@@ -53,10 +53,12 @@ const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ value = 0, crea
 interface Props extends PurchaseWithRelations {}
 
 const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
-  const { value = 0, qtd = 0, done = false, id, category, client, type, createdAt, deliveryDate } = props
+  const { value = 0, qtd = 0, done = false, id, category, client, type, createdAt, deliveryDate, purchaseItem } = props
   const hasLabel = !!(type?.label || category?.label)
   const [itemDone, setItemDone] = useState(done)
   const { push } = useRouter()
+
+  const originalValue = purchaseItem?.[0]?.originalValue || value
 
   const [expand, setExpand] = useState(false)
 
@@ -96,7 +98,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
         spacing={4}
         width="50%"
         expand={expand}
-        CollapsibleContent={<CollapsibleContent value={value} createdAt={createdAt} qtd={qtd} />}
+        CollapsibleContent={<CollapsibleContent value={originalValue} createdAt={createdAt} qtd={qtd} />}
       >
         <Row align="stretch">
           <Column align="flex-start">
