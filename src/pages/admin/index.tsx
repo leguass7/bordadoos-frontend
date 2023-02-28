@@ -7,7 +7,7 @@ import { Container } from '@mui/material'
 
 import { LayoutAdmin } from '~/components/layouts/LayoutAdmin'
 import { PageTitle } from '~/components/PageTitle'
-import { PurchasePanel } from '~/components/purchase/PurchasePanel'
+import { PurchasePanel } from '~/components/purchase/PurchasePanel/index'
 import { PurchaseProvider } from '~/components/purchase/PurchaseProvider'
 
 const PageAdminIndex: NextPage = () => {
