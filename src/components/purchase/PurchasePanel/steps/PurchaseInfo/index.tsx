@@ -1,14 +1,12 @@
 import { useMemo } from 'react'
 
 import { ArrowRightAlt } from '@mui/icons-material'
-import { Button, Card, Grid, Tooltip } from '@mui/material'
-
-import { CardTitle } from '~/components/CardTitle'
+import { Button, Grid, Tooltip } from '@mui/material'
 
 import { PanelWrapper } from '../../../styles'
 import { usePurchasePanelContext } from '../../PurchasePanelProvider'
-import { PurchaseInfoForm } from './PurchaseInfoForm'
-import { SelectCustomer } from './SelectCustomer'
+import { PurchaseInfoCard } from './PurchaseInfoCard'
+import { SelectCustomerCard } from './SelectCustomerCard'
 
 interface Props {
   onNext?: () => void
@@ -27,16 +25,11 @@ export const PurchaseInfo: React.FC<Props> = ({ onNext, onSuccess }) => {
       <Grid item xs={12}>
         <PanelWrapper>
           <Grid item xs={12} sm={6}>
-            <SelectCustomer />
+            <SelectCustomerCard />
           </Grid>
         </PanelWrapper>
         <PanelWrapper>
-          <Card>
-            <CardTitle title="Dados do pedido" divider />
-            <Grid item p={2} xs={12}>
-              <PurchaseInfoForm onSuccess={onSuccess} />
-            </Grid>
-          </Card>
+          <PurchaseInfoCard onSuccess={onSuccess} />
         </PanelWrapper>
         <PanelWrapper>
           <Grid container justifyContent="center" alignItems="center" py={2}>

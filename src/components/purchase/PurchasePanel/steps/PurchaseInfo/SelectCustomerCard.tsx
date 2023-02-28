@@ -13,7 +13,7 @@ import { usePurchasePanelContext } from '../../PurchasePanelProvider'
 
 interface Props {}
 
-export const SelectCustomer: React.FC<Props> = () => {
+export const SelectCustomerCard: React.FC<Props> = () => {
   const [openSearch, setOpenSearch] = useState(false)
   const [openNew, setOpenNew] = useState(false)
 

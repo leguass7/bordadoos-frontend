@@ -1,10 +1,9 @@
 import { ArrowRightAlt } from '@mui/icons-material'
-import { Button, ButtonGroup, Card, Grid } from '@mui/material'
+import { Button, ButtonGroup, Grid } from '@mui/material'
 
-import { CardTitle } from '~/components/CardTitle'
 import { PanelWrapper } from '~/components/purchase/styles'
 
-import { PurchaseEmbroideryForm } from './PurchaseEmbroideryForm'
+import { PurchaseEmbroideryCard } from './PurchaseEmbroideryCard'
 
 interface Props {
   onNext?: () => void
@@ -17,12 +16,7 @@ export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev, onSuccess 
     <Grid container>
       <Grid item xs={12}>
         <PanelWrapper>
-          <Card>
-            <CardTitle title="Dados do bordado" divider />
-            <Grid item p={2} xs={12}>
-              <PurchaseEmbroideryForm onSuccess={onSuccess} />
-            </Grid>
-          </Card>
+          <PurchaseEmbroideryCard onSuccess={onSuccess} />
         </PanelWrapper>
         <PanelWrapper>
           <Grid container justifyContent="center" alignItems="center" py={2}>
