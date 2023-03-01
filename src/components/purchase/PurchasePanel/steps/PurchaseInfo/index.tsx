@@ -35,13 +35,9 @@ export const PurchaseInfo: React.FC<Props> = ({ onNext, onSuccess }) => {
           <Grid container>
             <Grid item xs={12}>
               <Grid container justifyContent="center" alignItems="center" py={2}>
-                <Tooltip title="Selecione um cliente para prosseguir" PopperProps={{ hidden: !disableNext }}>
-                  <div>
-                    <Button onClick={onNext} disabled={disableNext} variant="contained" endIcon={<ArrowRightAlt />}>
-                      Avançar
-                    </Button>
-                  </div>
-                </Tooltip>
+                <Button onClick={onNext} disabled={disableNext} variant="contained" endIcon={<ArrowRightAlt />}>
+                  Avançar
+                </Button>
               </Grid>
             </Grid>
             <Grid item xs={12}>

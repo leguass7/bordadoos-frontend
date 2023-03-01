@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Button, Grid } from '@mui/material'
 import { FormHandles } from '@unform/core'
@@ -21,7 +21,19 @@ export const PurchaseInfoForm: React.FC<Props> = ({ onSuccess }) => {
   const formRef = useRef<FormHandles>(null)
   const { info, changeInfo } = usePurchasePanelContext()
 
+  const [localInfo] = useState(info)
+
   const clientId = useMemo(() => info?.clientId, [info])
+
+  const autoUpdate = useCallback(() => {
+    const data = { ...initialData, ...localInfo }
+    changeInfo(data)
+    formRef.current.setData(data)
+  }, [changeInfo, localInfo])
+
+  useEffect(() => {
+    autoUpdate()
+  }, [autoUpdate])
 
   const handleSubmit = useCallback(
     (data: PurchasePanelInfo) => {
@@ -40,8 +52,11 @@ export const PurchaseInfoForm: React.FC<Props> = ({ onSuccess }) => {
         <Grid item xs={12} sm={6}>
           <Datepicker disabled={!clientId} name="deliveryDate" />
         </Grid>
-        <Grid item xs={12}>
-          <Field multiline minRows={4} disabled={!clientId} label="Observações para o cliente" name="clientObs" />
+        <Grid item xs={12} sm={6}>
+          <Field multiline disabled={!clientId} label="Observações para o cliente" name="clientObs" />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Field multiline disabled={!clientId} label="Observações internas" name="employeeObs" />
         </Grid>
         <Grid item xs={12} p={1}>
           <Grid container justifyContent="flex-end" alignItems="center">
