@@ -41,11 +41,11 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
 
   const fetchUser = useCallback(async () => {
     const userId = parseInt(`${data.user?.userId}`)
-    if (!userId || !purchaseId) return null
+    if (!userId || initialPurchaseId) return null
 
     const { success, user } = await getUserForPurchase(userId)
     if (isMounted() && success) setUser(user)
-  }, [isMounted, data?.user, purchaseId])
+  }, [isMounted, data?.user, initialPurchaseId])
 
   useEffect(() => {
     fetchUser()
@@ -58,14 +58,14 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
     const counter = user?._count?.createdPurchases || 1
 
     return `${stringAvatar(name)}${counter}`
-  }, [user])
+  }, [user?.name, user?._count])
 
   const purchase = useMemo(() => {
     const optional: Partial<Purchase> = {}
-    if (!purchaseId && purchaseCod) optional.name = purchaseCod
+    if (!initialPurchaseId && purchaseCod) optional.name = purchaseCod
 
     return { ...additionals, ...info, ...embroidery, rules: ruleIds, ...optional }
-  }, [additionals, info, embroidery, ruleIds, purchaseId, purchaseCod])
+  }, [additionals, info, embroidery, ruleIds, initialPurchaseId, purchaseCod])
 
   const handleSave = useCallback(async () => {
     const route = initialPurchaseId ? `/purchases/${initialPurchaseId}` : `/purchases`
