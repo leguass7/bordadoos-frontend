@@ -19,7 +19,17 @@ export const createPurchasesSchema = celebrate({
     description: Joi.string().allow(''),
     points: Joi.number().allow(''),
     entryDate: Joi.date(),
-    rules: Joi.array().items(Joi.number())
+    rules: Joi.array().items(Joi.number()),
+    colors: Joi.array().items(
+      Joi.object({
+        id: Joi.number(),
+        label: Joi.string(),
+        colors: Joi.string()
+      })
+    ),
+    employeeObs: Joi.string().allow(''),
+    clientObs: Joi.string().allow(''),
+    name: Joi.string()
   }
 })
 
@@ -41,7 +51,17 @@ export const updatePurchasesSchema = celebrate({
     description: Joi.string().allow(''),
     points: Joi.number().allow(''),
     entryDate: Joi.date(),
-    rules: Joi.array().items(Joi.number())
+    rules: Joi.array().items(Joi.number()),
+    colors: Joi.array().items(
+      Joi.object({
+        id: Joi.number(),
+        label: Joi.string(),
+        colors: Joi.string()
+      })
+    ),
+    employeeObs: Joi.string().allow(''),
+    clientObs: Joi.string().allow(''),
+    name: Joi.string()
   }
 })
 

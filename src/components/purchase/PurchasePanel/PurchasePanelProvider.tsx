@@ -1,6 +1,6 @@
-import { createContext, useCallback, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
-import { PriceRules } from '@prisma/client'
+import { PriceRules, Purchase } from '@prisma/client'
 
 export interface PurchasePanelInfo {
   entryDate?: Date
@@ -35,12 +35,12 @@ export interface PurchaseEmbroidery {
 interface PurchaseContext {
   info: PurchasePanelInfo
   embroidery: PurchaseEmbroidery
-  changeInfo: (info: PurchasePanelInfo) => void
-  changeEmbroidery: (embroidery: PurchaseEmbroidery) => void
+  changeInfo: (info: PurchasePanelInfo | Purchase) => void
+  changeEmbroidery: (embroidery: PurchaseEmbroidery | Purchase) => void
   priceRules?: PriceRules[]
   setPriceRules?: React.Dispatch<React.SetStateAction<Partial<PriceRules>[]>>
   additionals: PurchaseAdditionals
-  changeAdditionals: (additionals: PurchaseAdditionals) => void
+  changeAdditionals: (additionals: PurchaseAdditionals | Purchase) => void
 }
 
 export const PurchasePanelContext = createContext({} as PurchaseContext)
@@ -51,16 +51,19 @@ export const PurchasePanelProvider: React.FC = ({ children }) => {
   const [priceRules, setPriceRules] = useState<PriceRules[]>([])
   const [additionals, setAdditionals] = useState({})
 
-  const changeInfo = useCallback((info: PurchasePanelInfo) => {
-    setInfo(old => ({ ...old, ...info }))
+  const changeInfo = useCallback((info: Purchase) => {
+    const { clientId, clientObs, deliveryDate, employeeObs, entryDate } = info
+    setInfo(old => ({ ...old, clientId, clientObs, deliveryDate, employeeObs, entryDate }))
   }, [])
 
-  const changeEmbroidery = useCallback((embroidery: PurchaseEmbroidery) => {
-    setEmbroidery(old => ({ ...old, ...embroidery }))
+  const changeEmbroidery = useCallback((embroidery: Purchase) => {
+    const { categoryId, colors, description, label, typeId } = embroidery
+    setEmbroidery(old => ({ ...old, categoryId, colors, description, label, typeId }))
   }, [])
 
-  const changeAdditionals = useCallback((additionals: PurchaseAdditionals) => {
-    setAdditionals(old => ({ ...old, ...additionals }))
+  const changeAdditionals = useCallback((additionals: Purchase) => {
+    const { done, paid, points, qtd, value } = additionals
+    setAdditionals(old => ({ ...old, done, paid, points, qtd, value }))
   }, [])
 
   return (
@@ -82,5 +85,11 @@ export const PurchasePanelProvider: React.FC = ({ children }) => {
 }
 
 export function usePurchasePanelContext() {
-  return useContext(PurchasePanelContext)
+  const { priceRules, ...context } = useContext(PurchasePanelContext)
+
+  const ruleIds = useMemo(() => {
+    return priceRules?.map?.(({ id }) => id) ?? []
+  }, [priceRules])
+
+  return { priceRules, ...context, ruleIds }
 }

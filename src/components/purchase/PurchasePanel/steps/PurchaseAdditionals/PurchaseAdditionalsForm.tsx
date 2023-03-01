@@ -17,7 +17,9 @@ import { getConfig } from '~/services/api/config'
 
 import { usePurchasePanelContext } from '../../PurchasePanelProvider'
 
-interface Props {}
+interface Props {
+  onSuccess?: () => void
+}
 
 interface FormData {
   qtd?: number
@@ -25,7 +27,7 @@ interface FormData {
   points?: number
 }
 
-export const PurchaseAdditionalsForm: React.FC<Props> = () => {
+export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
   const { additionals, changeAdditionals, priceRules } = usePurchasePanelContext()
   const isAdmin = useHasAccess(8)
 
@@ -80,8 +82,9 @@ export const PurchaseAdditionalsForm: React.FC<Props> = () => {
   const handleSubmit = useCallback(
     (data: FormData) => {
       changeAdditionals(data)
+      onSuccess?.()
     },
-    [changeAdditionals]
+    [changeAdditionals, onSuccess]
   )
 
   return (

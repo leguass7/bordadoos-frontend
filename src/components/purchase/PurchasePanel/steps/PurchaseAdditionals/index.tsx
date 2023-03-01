@@ -13,9 +13,10 @@ interface Props {
   onPrev?: () => void
   onNext?: () => void
   purchaseId?: number
+  onSuccess?: () => void
 }
 
-export const PurchaseAdditionals: React.FC<Props> = ({ onNext, onPrev, purchaseId }) => {
+export const PurchaseAdditionals: React.FC<Props> = ({ onNext, onPrev, purchaseId, onSuccess }) => {
   const { additionals } = usePurchasePanelContext()
 
   const disableNext = useMemo(() => {
@@ -31,7 +32,7 @@ export const PurchaseAdditionals: React.FC<Props> = ({ onNext, onPrev, purchaseI
           </Grid>
         </PanelWrapper>
         <PanelWrapper>
-          <PurchaseAdditionalFormCard />
+          <PurchaseAdditionalFormCard onSuccess={onSuccess} />
         </PanelWrapper>
         <PanelWrapper>
           <Grid container>
