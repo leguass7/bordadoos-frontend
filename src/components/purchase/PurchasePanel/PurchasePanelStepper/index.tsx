@@ -4,7 +4,7 @@ import Stepper from '@mui/material/Stepper'
 
 import { QontoConnector, QontoStepIcon } from './utils'
 
-const steps = ['Informações do pedido', 'Informações do bordado', 'Informações adicionais', 'Resumo da compra']
+const steps = ['Informações do pedido', 'Informações do bordado', 'Informações adicionais', 'Resumo do pedido']
 
 interface Props {
   step?: number

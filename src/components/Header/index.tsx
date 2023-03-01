@@ -1,9 +1,9 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 
 import { useSession } from 'next-auth/react'
 
 import { Settings, ExitToApp, AccountCircle } from '@mui/icons-material'
-import { AppBar, Toolbar, Modal } from '@mui/material'
+import { AppBar, Toolbar } from '@mui/material'
 
 import { Container } from '~/components/Container'
 

@@ -40,6 +40,15 @@ function findOne(userService: IUserService) {
   }
 }
 
+function getUserForPurchase(userService: IUserService) {
+  return async (req: IRequestUserDto, res: NextApiResponse) => {
+    const { userId, ...query } = req.query
+    const user = await userService.findOneFromPurchase({ id: userId, ...query })
+
+    return res.status(200).json({ success: true, user })
+  }
+}
+
 function paginate(userService: IUserService) {
   return async (req: NextApiRequest, res: NextApiResponse<IResponsePaginateUserDto>) => {
     const { page, size, orderBy, order, ...filter } = req.query as PaginationQueryDto
@@ -65,6 +74,7 @@ export function factoryUserController(userService: IUserService) {
   return {
     create: create(userService),
     findOne: findOne(userService),
+    getUserForPurchase: getUserForPurchase(userService),
     paginate: paginate(userService),
     update: update(userService),
     remove: remove(userService)

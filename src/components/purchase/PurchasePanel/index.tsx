@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
+import { useRouter } from 'next/router'
+
 import { Divider, Grid } from '@mui/material'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
@@ -21,11 +23,16 @@ interface Props {
 export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
   const { changeAdditionals, changeEmbroidery, changeInfo } = usePurchasePanelContext()
   const [step, setStep] = useState(0)
+  const { replace } = useRouter()
 
   const isMounted = useIsMounted()
 
   const handleNext = useCallback(() => setStep(old => old + 1), [])
   const handlePrev = useCallback(() => setStep(old => old - 1), [])
+  const restart = useCallback(() => {
+    replace('/admin')
+    setStep(0)
+  }, [replace])
 
   const updatePurchaseData = useCallback(async () => {
     if (!purchaseId) return null
@@ -52,12 +59,20 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
         <PurchasePanelStepper step={step} />
         <Divider sx={{ py: 1, mb: 2 }} />
         {step === 0 ? <PurchaseInfo onSuccess={showSuccessMessage} onNext={handleNext} /> : null}
+
         {step === 1 ? (
           <PurchaseEmbroidery onSuccess={showSuccessMessage} onPrev={handlePrev} onNext={handleNext} />
         ) : null}
+
         {step === 2 ? <PurchaseAdditionals purchaseId={purchaseId} onPrev={handlePrev} onNext={handleNext} /> : null}
+
         {step === 3 ? (
-          <PurchaseSummary purchaseId={purchaseId} onSuccess={showSuccessMessage} onPrev={handlePrev} />
+          <PurchaseSummary
+            restart={restart}
+            initialPurchaseId={purchaseId}
+            onSuccess={showSuccessMessage}
+            onPrev={handlePrev}
+          />
         ) : null}
       </Grid>
     </Grid>

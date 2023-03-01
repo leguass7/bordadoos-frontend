@@ -6,10 +6,10 @@ import { Button, ButtonGroup, Card, Fade, IconButton, Stack } from '@mui/materia
 import { CardTitle } from '~/components/CardTitle'
 import { DrawerCustomer, SearchCustomerSelectHandler } from '~/components/Drawers/DrawerCustomer'
 import { FormCustomerSuccessHandler, ModalCustomer } from '~/components/ModalCustomer'
-import { SelectedCustomer } from '~/components/purchase/SelectedCustomer'
 import { SpacedContainer } from '~/components/styled'
 
 import { usePurchasePanelContext } from '../../PurchasePanelProvider'
+import { SelectedCustomer } from './SelectedCustomer'
 
 interface Props {}
 

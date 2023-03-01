@@ -4,10 +4,11 @@ import { PriceRules, Purchase } from '@prisma/client'
 
 export interface PurchasePanelInfo {
   entryDate?: Date
-  deliveryDate?: string
+  deliveryDate?: Date
   clientId?: number
   clientObs?: string
   employeeObs?: string
+  name?: string
 }
 
 export interface PurchaseAdditionals {
@@ -25,8 +26,8 @@ export interface PurchaseEmbroideryColor {
 }
 
 export interface PurchaseEmbroidery {
-  categoryId?: string
-  typeId?: string
+  categoryId?: number
+  typeId?: number
   label?: string
   description?: string
   colors?: PurchaseEmbroideryColor[]
@@ -41,29 +42,59 @@ interface PurchaseContext {
   setPriceRules?: React.Dispatch<React.SetStateAction<Partial<PriceRules>[]>>
   additionals: PurchaseAdditionals
   changeAdditionals: (additionals: PurchaseAdditionals | Purchase) => void
+  clearAll?: () => void
 }
 
 export const PurchasePanelContext = createContext({} as PurchaseContext)
 
 export const PurchasePanelProvider: React.FC = ({ children }) => {
-  const [info, setInfo] = useState({})
-  const [embroidery, setEmbroidery] = useState({})
+  const [info, setInfo] = useState<PurchasePanelInfo>({})
+  const [embroidery, setEmbroidery] = useState<PurchaseEmbroidery>({})
   const [priceRules, setPriceRules] = useState<PriceRules[]>([])
-  const [additionals, setAdditionals] = useState({})
+  const [additionals, setAdditionals] = useState<PurchaseAdditionals>({})
+
+  const clearAll = useCallback(() => {
+    setEmbroidery({})
+    setInfo({})
+    setAdditionals({})
+    setPriceRules([])
+  }, [])
 
   const changeInfo = useCallback((info: Purchase) => {
-    const { clientId, clientObs, deliveryDate, employeeObs, entryDate } = info
-    setInfo(old => ({ ...old, clientId, clientObs, deliveryDate, employeeObs, entryDate }))
+    setInfo(old => {
+      const clientId = info?.clientId || old?.clientId
+      const clientObs = info?.clientObs || old?.clientObs
+      const employeeObs = info?.employeeObs || old?.employeeObs
+      const entryDate = info?.entryDate || old?.entryDate
+      const deliveryDate = info?.deliveryDate || old?.deliveryDate
+      const name = info?.name || old?.name
+
+      return { ...old, clientId, clientObs, deliveryDate, employeeObs, entryDate, name }
+    })
   }, [])
 
   const changeEmbroidery = useCallback((embroidery: Purchase) => {
-    const { categoryId, colors, description, label, typeId } = embroidery
-    setEmbroidery(old => ({ ...old, categoryId, colors, description, label, typeId }))
+    setEmbroidery(old => {
+      const categoryId = embroidery?.categoryId || old.categoryId
+      const colors = (embroidery?.colors as any) || old.colors
+      const description = embroidery?.description || old.description
+      const label = embroidery?.label || old.label
+      const typeId = embroidery?.typeId || old.typeId
+
+      return { ...old, categoryId, colors, description, label, typeId }
+    })
   }, [])
 
   const changeAdditionals = useCallback((additionals: Purchase) => {
-    const { done, paid, points, qtd, value } = additionals
-    setAdditionals(old => ({ ...old, done, paid, points, qtd, value }))
+    setAdditionals(old => {
+      const done = additionals?.done || old?.done
+      const paid = additionals?.paid || old?.paid
+      const points = additionals?.points || old?.points
+      const qtd = additionals?.qtd || old?.qtd
+      const value = additionals?.value || old?.value
+
+      return { ...old, done, paid, points, qtd, value }
+    })
   }, [])
 
   return (
@@ -76,7 +107,8 @@ export const PurchasePanelProvider: React.FC = ({ children }) => {
         priceRules,
         setPriceRules,
         additionals,
-        changeAdditionals
+        changeAdditionals,
+        clearAll
       }}
     >
       {children}

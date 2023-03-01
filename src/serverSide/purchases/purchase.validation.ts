@@ -54,14 +54,14 @@ export const updatePurchasesSchema = celebrate({
     rules: Joi.array().items(Joi.number()),
     colors: Joi.array().items(
       Joi.object({
-        id: Joi.number(),
-        label: Joi.string(),
-        colors: Joi.string()
+        id: Joi.number().allow(''),
+        label: Joi.string().allow(''),
+        colors: Joi.string().allow('')
       })
     ),
     employeeObs: Joi.string().allow(''),
     clientObs: Joi.string().allow(''),
-    name: Joi.string()
+    name: Joi.string().allow('')
   }
 })
 
