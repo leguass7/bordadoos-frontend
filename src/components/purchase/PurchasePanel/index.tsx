@@ -5,6 +5,7 @@ import { Divider, Grid } from '@mui/material'
 
 import { PurchasePanelProvider } from './PurchasePanelProvider'
 import { PurchasePanelStepper } from './PurchasePanelStepper'
+import { PurchaseAdditionals } from './steps/PurchaseAdditionals'
 import { PurchaseEmbroidery } from './steps/PurchaseEmbroidery'
 import { PurchaseInfo } from './steps/PurchaseInfo'
 
@@ -12,7 +13,7 @@ interface Props {
   purchaseId?: number
 }
 
-export const PurchasePanel: React.FC<Props> = () => {
+export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
   const [step, setStep] = useState(0)
 
   const handleNext = useCallback(() => setStep(old => old + 1), [])
@@ -32,6 +33,7 @@ export const PurchasePanel: React.FC<Props> = () => {
           {step === 1 ? (
             <PurchaseEmbroidery onSuccess={showSuccessMessage} onPrev={handlePrev} onNext={handleNext} />
           ) : null}
+          {step === 2 ? <PurchaseAdditionals purchaseId={purchaseId} onPrev={handlePrev} onNext={handleNext} /> : null}
         </Grid>
       </Grid>
     </PurchasePanelProvider>

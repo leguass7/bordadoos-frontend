@@ -1,14 +1,21 @@
 import { createContext, useCallback, useContext, useState } from 'react'
 
+import { PriceRules } from '@prisma/client'
+
 export interface PurchasePanelInfo {
   entryDate?: Date
   deliveryDate?: string
-  value?: number
-  paid?: boolean
-  done?: boolean
   clientId?: number
   clientObs?: string
   employeeObs?: string
+}
+
+export interface PurchaseAdditionals {
+  points?: number
+  value?: number
+  paid?: boolean
+  done?: boolean
+  qtd?: number
 }
 
 export interface PurchaseEmbroideryColor {
@@ -20,10 +27,8 @@ export interface PurchaseEmbroideryColor {
 export interface PurchaseEmbroidery {
   categoryId?: string
   typeId?: string
-  qtd?: number
   label?: string
   description?: string
-  points?: number
   colors?: PurchaseEmbroideryColor[]
 }
 
@@ -32,6 +37,10 @@ interface PurchaseContext {
   embroidery: PurchaseEmbroidery
   changeInfo: (info: PurchasePanelInfo) => void
   changeEmbroidery: (embroidery: PurchaseEmbroidery) => void
+  priceRules?: PriceRules[]
+  setPriceRules?: React.Dispatch<React.SetStateAction<Partial<PriceRules>[]>>
+  additionals: PurchaseAdditionals
+  changeAdditionals: (additionals: PurchaseAdditionals) => void
 }
 
 export const PurchasePanelContext = createContext({} as PurchaseContext)
@@ -39,6 +48,8 @@ export const PurchasePanelContext = createContext({} as PurchaseContext)
 export const PurchasePanelProvider: React.FC = ({ children }) => {
   const [info, setInfo] = useState({})
   const [embroidery, setEmbroidery] = useState({})
+  const [priceRules, setPriceRules] = useState<PriceRules[]>([])
+  const [additionals, setAdditionals] = useState({})
 
   const changeInfo = useCallback((info: PurchasePanelInfo) => {
     setInfo(old => ({ ...old, ...info }))
@@ -48,8 +59,23 @@ export const PurchasePanelProvider: React.FC = ({ children }) => {
     setEmbroidery(old => ({ ...old, ...embroidery }))
   }, [])
 
+  const changeAdditionals = useCallback((additionals: PurchaseAdditionals) => {
+    setAdditionals(old => ({ ...old, ...additionals }))
+  }, [])
+
   return (
-    <PurchasePanelContext.Provider value={{ info, embroidery, changeEmbroidery, changeInfo }}>
+    <PurchasePanelContext.Provider
+      value={{
+        info,
+        embroidery,
+        changeEmbroidery,
+        changeInfo,
+        priceRules,
+        setPriceRules,
+        additionals,
+        changeAdditionals
+      }}
+    >
       {children}
     </PurchasePanelContext.Provider>
   )
