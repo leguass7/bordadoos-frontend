@@ -23,7 +23,7 @@ const Print: NextPage<Props> = ({ purchase, rules }) => {
       <HeaderContainer>
         <Image priority src="/logo.webp" width={100} height={100} alt="logo" />
         <Typography variant="h4" flex={10} align="center">
-          Pedido {purchase?.id}
+          Pedido {purchase?.name}
         </Typography>
         <span style={{ flex: 1 }} />
       </HeaderContainer>
