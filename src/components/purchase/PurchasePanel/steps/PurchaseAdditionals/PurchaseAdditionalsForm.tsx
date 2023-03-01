@@ -31,6 +31,7 @@ export const PurchaseAdditionalsForm: React.FC<Props> = () => {
 
   const isMounted = useIsMounted()
   const formRef = useRef<FormHandles>(null)
+  const [updated, setUpdated] = useState(false)
 
   const [purchaseRules, setPurchaseRules] = useState()
 
@@ -66,6 +67,15 @@ export const PurchaseAdditionalsForm: React.FC<Props> = () => {
   }, [priceRules?.length, updateTotalPrice])
 
   const changeUnityValue = useCallback(e => setUnityValue(e.target.value), [])
+
+  const updateForm = useCallback(() => {
+    setUpdated(true)
+    formRef.current.setData(additionals)
+  }, [additionals])
+
+  useEffect(() => {
+    if (!updated) updateForm()
+  }, [updateForm, updated])
 
   const handleSubmit = useCallback(
     (data: FormData) => {
