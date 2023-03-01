@@ -11,6 +11,12 @@ export interface PurchasePanelInfo {
   employeeObs?: string
 }
 
+export interface PurchaseEmbroideryColor {
+  label?: string
+  colors?: string
+  id?: number
+}
+
 export interface PurchaseEmbroidery {
   categoryId?: string
   typeId?: string
@@ -18,7 +24,7 @@ export interface PurchaseEmbroidery {
   label?: string
   description?: string
   points?: number
-  colors?: string[]
+  colors?: PurchaseEmbroideryColor[]
 }
 
 interface PurchaseContext {

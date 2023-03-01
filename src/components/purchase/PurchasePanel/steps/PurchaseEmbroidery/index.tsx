@@ -4,6 +4,7 @@ import { Button, ButtonGroup, Grid } from '@mui/material'
 import { PanelWrapper } from '~/components/purchase/styles'
 
 import { PurchaseEmbroideryCard } from './PurchaseEmbroideryCard'
+import { PurchaseEmbroideryColorCard } from './PurchaseEmbroideryColorCard'
 
 interface Props {
   onNext?: () => void
@@ -18,6 +19,11 @@ export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev, onSuccess 
         <PanelWrapper>
           <PurchaseEmbroideryCard onSuccess={onSuccess} />
         </PanelWrapper>
+
+        <PanelWrapper>
+          <PurchaseEmbroideryColorCard />
+        </PanelWrapper>
+
         <PanelWrapper>
           <Grid container justifyContent="center" alignItems="center" py={2}>
             <ButtonGroup>
