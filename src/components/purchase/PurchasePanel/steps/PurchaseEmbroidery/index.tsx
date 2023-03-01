@@ -51,7 +51,7 @@ export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev, onSuccess 
               <Grid container justifyContent="center">
                 {disableNext ? (
                   <Typography align="center" variant="caption" color="red">
-                    Adicione nome, tipo e posição do bordado antes de prosseguir
+                    Adicione nome, tipo e posição do bordado para prosseguir
                   </Typography>
                 ) : null}
               </Grid>
