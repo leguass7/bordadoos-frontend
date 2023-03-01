@@ -10,9 +10,10 @@ interface Props {
   purchaseId: number
   goBack?: () => void
   edited?: boolean
+  name?: string
 }
 
-export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited }) => {
+export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited, name }) => {
   const status = useMemo(() => (edited ? 'editado' : 'criado'), [edited])
   const { clearAll } = usePurchasePanelContext()
 
@@ -31,6 +32,9 @@ export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited })
     <Grid container py={30} flexDirection="column" justifyContent="center" alignItems="center">
       <Typography variant="h5" align="center">
         Pedido {status} com sucesso
+      </Typography>
+      <Typography variant="caption" align="center">
+        Código do pedido: {name}
       </Typography>
       <BiLike size={50} />
       <br />

@@ -51,17 +51,21 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
     fetchUser()
   }, [fetchUser])
 
+  const purchaseCod = useMemo(() => {
+    if (!user?.name) return null
+
+    const name = user?.name
+    const counter = user?._count?.createdPurchases || 1
+
+    return `${stringAvatar(name)}${counter}`
+  }, [user])
+
   const purchase = useMemo(() => {
     const optional: Partial<Purchase> = {}
-    if (!purchaseId && user?.name) {
-      const name = user?.name
-      const counter = user?._count?.createdPurchases || 1
-
-      optional.name = `${stringAvatar(name)}${counter}`
-    }
+    if (!purchaseId && purchaseCod) optional.name = purchaseCod
 
     return { ...additionals, ...info, ...embroidery, rules: ruleIds, ...optional }
-  }, [additionals, info, embroidery, ruleIds, user, purchaseId])
+  }, [additionals, info, embroidery, ruleIds, purchaseId, purchaseCod])
 
   const handleSave = useCallback(async () => {
     const route = initialPurchaseId ? `/purchases/${initialPurchaseId}` : `/purchases`
@@ -81,7 +85,7 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
   }, [purchase, initialPurchaseId])
 
   return saved ? (
-    <PurchaseSuccess edited={!!initialPurchaseId} goBack={restart} purchaseId={purchaseId} />
+    <PurchaseSuccess name={purchaseCod} edited={!!initialPurchaseId} goBack={restart} purchaseId={purchaseId} />
   ) : (
     <Grid container>
       <Grid item xs={12}>
