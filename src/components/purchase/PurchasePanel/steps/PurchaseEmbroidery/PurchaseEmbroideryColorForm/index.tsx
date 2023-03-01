@@ -7,10 +7,6 @@ import { Form } from '@unform/web'
 import { PurchaseEmbroideryColor, usePurchasePanelContext } from '../../../PurchasePanelProvider'
 import { PurchaseEmbroideryColorFormScope } from './PurchaseEmbroideryColorFormScope'
 
-interface Props {
-  children?: React.ReactNode
-}
-
 interface FormData {
   colors: PurchaseEmbroideryColor[]
 }
@@ -18,7 +14,11 @@ interface FormData {
 const hasValues = ({ colors, label }: PurchaseEmbroideryColor) => !!(colors && label)
 const addIds = (color: PurchaseEmbroideryColor, index: number) => ({ ...color, id: index + 1 })
 
-export const PurchaseEmbroideryColorForm: React.FC<Props> = () => {
+interface Props {
+  onSuccess?: () => void
+}
+
+export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
   const { embroidery, changeEmbroidery } = usePurchasePanelContext()
 
   const formRef = useRef<FormHandles>(null)
@@ -61,6 +61,7 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = () => {
     const colors = data?.colors?.filter(hasValues).map(addIds) ?? []
 
     changeEmbroidery({ colors })
+    onSuccess?.()
   }
 
   return (
