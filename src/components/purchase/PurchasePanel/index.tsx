@@ -64,7 +64,14 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
           <PurchaseEmbroidery onSuccess={showSuccessMessage} onPrev={handlePrev} onNext={handleNext} />
         ) : null}
 
-        {step === 2 ? <PurchaseAdditionals purchaseId={purchaseId} onPrev={handlePrev} onNext={handleNext} /> : null}
+        {step === 2 ? (
+          <PurchaseAdditionals
+            purchaseId={purchaseId}
+            onSuccess={showSuccessMessage}
+            onPrev={handlePrev}
+            onNext={handleNext}
+          />
+        ) : null}
 
         {step === 3 ? (
           <PurchaseSummary
