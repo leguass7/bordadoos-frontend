@@ -34,7 +34,7 @@ export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited, n
         Pedido {status} com sucesso
       </Typography>
       <Typography variant="caption" align="center">
-        Código do pedido: {name}
+        Código do pedido: {name || purchaseId}
       </Typography>
       <BiLike size={50} />
       <br />

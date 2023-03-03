@@ -6,6 +6,7 @@ import { PriceRules } from '@prisma/client'
 import styled from 'styled-components'
 
 import { PurchasePrinter } from '~/components/Printer/PurchasePrinter'
+import { formatDate } from '~/helpers/string'
 import { purchaseConfigService } from '~/serverSide/purchases/purchase-configs/purchase-config.service'
 import { PurchaseService } from '~/serverSide/purchases/purchase.service'
 import { PurchaseWithItems } from '~/services/api/purchase'
@@ -24,10 +25,15 @@ const Print: NextPage<Props> = ({ purchase, rules }) => {
         <Grid item xs={6}>
           <HeaderContainer>
             <Image priority src="/logo.webp" width={100} height={100} alt="logo" />
-            <Typography variant="h4" flex={10} align="center">
-              Pedido {purchase?.name}
-            </Typography>
-            <span style={{ flex: 1 }} />
+            <Grid item flex={10} justifyContent="center" pl={3}>
+              <Typography variant="h4" lineHeight="0.8em">
+                Pedido {purchase?.name || purchase?.id}
+                <br />
+                <Typography variant="caption" component="p" align="left">
+                  {formatDate(purchase.createdAt, 'dd/MM/yyyy HH:mm:ss')}
+                </Typography>
+              </Typography>
+            </Grid>
           </HeaderContainer>
 
           <Divider sx={{ width: '100%' }} />
@@ -38,10 +44,15 @@ const Print: NextPage<Props> = ({ purchase, rules }) => {
         <Grid item xs={6}>
           <HeaderContainer>
             <Image priority src="/logo.webp" width={100} height={100} alt="logo" />
-            <Typography variant="h4" flex={10} align="center">
-              Pedido {purchase?.name}
-            </Typography>
-            <span style={{ flex: 1 }} />
+            <Grid item flex={10} justifyContent="center" pl={3}>
+              <Typography variant="h4" lineHeight="0.8em">
+                Pedido {purchase?.name}
+                <br />
+                <Typography variant="caption" component="p" align="left">
+                  {formatDate(purchase.createdAt, 'dd/MM/yyyy HH:mm:ss')}
+                </Typography>
+              </Typography>
+            </Grid>
           </HeaderContainer>
 
           <Divider sx={{ width: '100%' }} />

@@ -21,86 +21,121 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
       {purchase?.id ? (
         <>
           <Grid justifyContent="space-between" container>
-            <Typography variant="h6">
+            <Typography variant="h6" noWrap>
               {purchase.category.label} {'>'} {purchase.type.label}
               <br />
               <Typography component="span" variant="h5">
                 {purchase.label}
               </Typography>
             </Typography>
-            <Typography variant="caption" align="right">
-              {formatDate(purchase.createdAt, 'dd/MM/yyyy HH:mm:ss')}
-              <Typography variant="body1">
-                <b>Total: </b> {formatPrice(purchase.value)}
-              </Typography>
-            </Typography>
           </Grid>
 
-          <Grid container py={2} direction="column">
+          <Grid container py={1} direction="column">
             <Typography variant="h6">Descrição</Typography>
             <Typography component="span" align="justify" variant="caption">
               {purchase.description || '---'}
             </Typography>
           </Grid>
 
+          {/* {employee ? (
+            <Grid container py={1} direction="column">
+              <Typography variant="h6">Obs funcionário</Typography>
+              <Typography component="span" align="justify" variant="caption">
+                {purchase.employeeObs || '---'}
+              </Typography>
+            </Grid>
+          ) : null} */}
+
+          <Grid container py={1} direction="column">
+            <Typography variant="h6">Obs cliente</Typography>
+            <Typography component="span" align="justify" variant="caption">
+              {purchase.clientObs || '---'}
+            </Typography>
+          </Grid>
+
           <Grid container>
             <Grid item xs={12}>
               <Typography variant="h6">Cliente</Typography>
-              <Typography variant="body1">
-                <b>Nome: </b>
-                {purchase.client.name}
-              </Typography>
-              <Typography variant="body1">
-                <b>Telefone: </b>
-                {purchase.client.phone}
-              </Typography>
+              <Grid container justifyContent="space-between">
+                <Grid item xs={6}>
+                  <Typography variant="body1">Nome</Typography>
+                  <Typography variant="body1">Telefone</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography align="right" variant="body1">
+                    {purchase.client.name}
+                  </Typography>
+                  <Typography align="right" variant="body1">
+                    {purchase.client.phone}
+                  </Typography>
+                </Grid>
+              </Grid>
             </Grid>
-            <Grid item xs={12} pt={2}>
-              <Grid container direction="column">
-                <div>
-                  <Typography variant="h6">Vendedor</Typography>
-                  <Typography variant="body1">
-                    <b>Nome: </b>
+            <Grid item xs={12} pt={1}>
+              <Typography variant="h6">Vendedor</Typography>
+              <Grid container justifyContent="space-between">
+                <Grid item xs={6}>
+                  <Typography variant="body1">Nome</Typography>
+                  <Typography variant="body1">Código</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography align="right" variant="body1">
                     {purchase.createdUser.name}
                   </Typography>
-                  <Typography variant="body1">
-                    <b>Código: </b>
+                  <Typography align="right" variant="body1">
                     {purchase.createdUser.id}
                   </Typography>
-                </div>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
 
-          <Grid container pt={3} alignItems="stretch">
+          <Grid container pt={1} alignItems="flex-end">
             <Grid item xs={12}>
               <Typography variant="h6">Status</Typography>
-              <Typography variant="body1">
-                <b>Valor: </b>
-                {formatPrice(originalValue / purchase.qtd)}
-              </Typography>
-              <Typography variant="body1">
-                <b>Quantidade: </b>
-                {purchase.qtd}
-              </Typography>
-              <Typography variant="body1">
-                <b>Subtotal: </b>
-                {formatPrice((purchase.qtd * originalValue) / purchase.qtd)}
-              </Typography>
+              <Grid container>
+                <Grid item xs={6}>
+                  <Typography variant="body1">Valor:</Typography>
+                  <Typography variant="body1">Quantidade:</Typography>
+                  <Typography variant="body1">Subtotal:</Typography>
+                  <Typography variant="body1">Total:</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography align="right" variant="body1">
+                    {formatPrice(originalValue / purchase.qtd)}
+                  </Typography>
+                  <Typography align="right" variant="body1">
+                    {purchase.qtd}
+                  </Typography>
+                  <Typography align="right" variant="body1">
+                    {formatPrice(originalValue)}
+                  </Typography>
+                  <Typography align="right" variant="body1">
+                    {formatPrice(purchase.value)}
+                  </Typography>
+                </Grid>
+              </Grid>
             </Grid>
-            <Grid item xs={12} pt={2}>
-              <Typography variant="body1">
-                <b>Data de entrega: </b>
-                {formatDate(purchase.deliveryDate, 'dd/MM/yyyy HH:mm:ss') || '---'}
-              </Typography>
-              <Typography variant="body1">
-                <b>Pago: </b> {purchase?.paid ? 'Sim' : 'Não'}
-              </Typography>
+            <Grid item xs={12} pt={1}>
+              <Grid container>
+                <Grid item xs={6}>
+                  <Typography variant="body1">Data de entrega:</Typography>
+                  <Typography variant="body1">Pago:</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography align="right" variant="body1">
+                    {formatDate(purchase.deliveryDate, 'dd/MM/yyyy HH:mm:ss') || '---'}
+                  </Typography>
+                  <Typography align="right" variant="body1">
+                    {purchase?.paid ? 'Sim' : 'Não'}
+                  </Typography>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
 
           {rules?.length ? (
-            <Grid container pt={6} alignItems="stretch">
+            <Grid container pt={3} alignItems="stretch">
               <Grid item xs={12}>
                 <Typography align="center" variant="h6">
                   Adicionais
@@ -139,6 +174,7 @@ const Content = styled.div`
   margin: 0 auto;
   max-width: 910px;
   padding: 20px;
+  height: 100%;
   /* padding-top: 200px; */
   /* flex: 1; */
 `
