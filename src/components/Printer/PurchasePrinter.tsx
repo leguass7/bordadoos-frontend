@@ -11,35 +11,48 @@ import { PurchaseWithItems } from '~/services/api/purchase'
 interface Props {
   purchase: PurchaseWithItems
   rules?: PriceRules[]
+  employee?: boolean
 }
 
-export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
+export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [], employee }) => {
   const originalValue = purchase?.purchaseItem?.[0].originalValue || 0
+
+  console.log('purchase', purchase)
 
   return (
     <Content>
       {purchase?.id ? (
         <>
           <Grid justifyContent="space-between" container>
-            <Typography variant="h6">
+            <Typography variant="h6" noWrap>
               {purchase.category.label} {'>'} {purchase.type.label}
               <br />
               <Typography component="span" variant="h5">
                 {purchase.label}
               </Typography>
             </Typography>
-            <Typography variant="caption" align="right">
-              {formatDate(purchase.createdAt, 'dd/MM/yyyy HH:mm:ss')}
-              <Typography variant="body1">
-                <b>Total: </b> {formatPrice(purchase.value)}
-              </Typography>
-            </Typography>
           </Grid>
 
-          <Grid container py={2} direction="column">
+          <Grid container py={1} direction="column">
             <Typography variant="h6">Descrição</Typography>
             <Typography component="span" align="justify" variant="caption">
               {purchase.description || '---'}
+            </Typography>
+          </Grid>
+
+          {employee ? (
+            <Grid container py={1} direction="column">
+              <Typography variant="h6">Obs funcionário</Typography>
+              <Typography component="span" align="justify" variant="caption">
+                {purchase.employeeObs || '---'}
+              </Typography>
+            </Grid>
+          ) : null}
+
+          <Grid container py={1} direction="column">
+            <Typography variant="h6">Obs cliente</Typography>
+            <Typography component="span" align="justify" variant="caption">
+              {purchase.clientObs || '---'}
             </Typography>
           </Grid>
 
@@ -55,7 +68,7 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
                 {purchase.client.phone}
               </Typography>
             </Grid>
-            <Grid item xs={12} pt={2}>
+            <Grid item xs={12} pt={1}>
               <Grid container direction="column">
                 <div>
                   <Typography variant="h6">Vendedor</Typography>
@@ -72,7 +85,7 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
             </Grid>
           </Grid>
 
-          <Grid container pt={3} alignItems="stretch">
+          <Grid container pt={1} alignItems="stretch">
             <Grid item xs={12}>
               <Typography variant="h6">Status</Typography>
               <Typography variant="body1">
@@ -85,10 +98,13 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
               </Typography>
               <Typography variant="body1">
                 <b>Subtotal: </b>
-                {formatPrice((purchase.qtd * originalValue) / purchase.qtd)}
+                {formatPrice(originalValue)}
+              </Typography>
+              <Typography variant="body1">
+                <b>Total: </b> {formatPrice(purchase.value)}
               </Typography>
             </Grid>
-            <Grid item xs={12} pt={2}>
+            <Grid item xs={12} pt={1}>
               <Typography variant="body1">
                 <b>Data de entrega: </b>
                 {formatDate(purchase.deliveryDate, 'dd/MM/yyyy HH:mm:ss') || '---'}
@@ -100,7 +116,7 @@ export const PurchasePrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
           </Grid>
 
           {rules?.length ? (
-            <Grid container pt={6} alignItems="stretch">
+            <Grid container pt={3} alignItems="stretch">
               <Grid item xs={12}>
                 <Typography align="center" variant="h6">
                   Adicionais
