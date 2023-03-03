@@ -5,6 +5,7 @@
   "scripts": {
     "release": "standard-version --no-verify --skip.tag --release-as patch",
     "dev": "next dev",
+    "prebuild": "prisma generate",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
