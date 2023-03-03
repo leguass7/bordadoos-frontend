@@ -55,7 +55,9 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
     if (!user?.name) return null
 
     const name = user?.name
-    const counter = user?._count?.createdPurchases || 1
+    const purchaseQtd = user?._count?.createdPurchases
+
+    const counter = !!purchaseQtd ? purchaseQtd + 1 : 1
 
     return `${stringAvatar(name)}${counter}`
   }, [user?.name, user?._count])
@@ -72,11 +74,9 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
     const fetcher = initialPurchaseId ? putDefault : postDefault
     const data = { ...purchase }
 
-    const {
-      success,
-      message,
-      purchase: { id }
-    } = await fetcher<IResponsePurchase>(route, data)
+    const { success, message, purchase: foundPurchase } = await fetcher<IResponsePurchase>(route, data)
+
+    const id = foundPurchase?.id
 
     if (success) {
       setpurchaseId(id)
