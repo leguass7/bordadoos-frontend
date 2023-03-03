@@ -27,7 +27,7 @@ const Print: NextPage<Props> = ({ purchase, rules }) => {
             <Image priority src="/logo.webp" width={100} height={100} alt="logo" />
             <Grid item flex={10} justifyContent="center" pl={3}>
               <Typography variant="h4" lineHeight="0.8em">
-                Pedido {purchase?.name}
+                Pedido {purchase?.name || purchase?.id}
                 <br />
                 <Typography variant="caption" component="p" align="left">
                   {formatDate(purchase.createdAt, 'dd/MM/yyyy HH:mm:ss')}
@@ -38,7 +38,7 @@ const Print: NextPage<Props> = ({ purchase, rules }) => {
 
           <Divider sx={{ width: '100%' }} />
 
-          <PurchasePrinter employee purchase={purchase} rules={rules} />
+          <PurchasePrinter purchase={purchase} rules={rules} />
           <div style={{ flex: 1 }}></div>
         </Grid>
         <Grid item xs={6}>
