@@ -16,7 +16,7 @@ const options: NextAuthOptions = {
   secret,
   session: { maxAge, strategy: 'jwt' },
   callbacks: {
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       const result: Session = { ...session }
       // @ts-ignore
       result.user.userId = parseInt(`${token.sub || 0}`)
@@ -24,7 +24,7 @@ const options: NextAuthOptions = {
 
       return result
     },
-    async jwt({ token, account }) {
+    async jwt({ token }) {
       const id = parseInt(`${token.sub || 0}`)
       const result = { ...token, id }
 

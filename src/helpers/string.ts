@@ -69,6 +69,11 @@ export function formatDate(date: Date | string | number, formatString: string) {
   return null
 }
 
+export function stringAvatar(name?: string) {
+  const [n = '', s = ''] = `${name}`?.split(' ')
+  return `${n[0] || ''}${s[0] || ''}`.toUpperCase()
+}
+
 export function addSeparatorsToNumberString(value: string, separators: string[] = []) {
   separators.forEach(separator => {
     if (value.includes(separator)) {

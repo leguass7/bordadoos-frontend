@@ -5,7 +5,7 @@ import { removeInvalidValues } from '~/helpers/object'
 import prisma from '../database/prisma'
 import { PaginationDto, PaginationQueryDto } from '../pagination/pagination.dto'
 import { PrismaService } from '../pagination/pagination.service'
-import type { ICreateUserDto, IUserFilter } from './user.dto'
+import type { ICreateUserDto, IUserFilter, UserForPurchase } from './user.dto'
 
 async function create(data: ICreateUserDto): Promise<number> {
   const user = await prisma.user.create({ data })
@@ -19,8 +19,19 @@ async function update(userId: number, data: Partial<User>): Promise<number> {
 
 async function findOne(userData: Partial<User>): Promise<User> {
   const where: PrismaTypes.UserWhereInput = removeInvalidValues({ ...userData })
+
   const user = await prisma.user.findFirst({ where })
   return user
+}
+
+async function findOneFromPurchase(userData: Partial<User>): Promise<UserForPurchase> {
+  const where: PrismaTypes.UserWhereInput = removeInvalidValues({ ...userData })
+
+  const user = await prisma.user.findFirst({
+    where,
+    select: { name: true, _count: { select: { createdPurchases: true } } }
+  })
+  return user as UserForPurchase
 }
 
 async function paginate(pagination: PaginationQueryDto, filter: IUserFilter = {}): Promise<PaginationDto<User>> {
@@ -63,7 +74,8 @@ export const UserService = {
   update,
   findOne,
   paginate,
-  deleteUser
+  deleteUser,
+  findOneFromPurchase
 }
 
 export type IUserService = typeof UserService

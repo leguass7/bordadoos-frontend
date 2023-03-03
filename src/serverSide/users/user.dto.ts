@@ -1,4 +1,4 @@
-import { User } from '@prisma/client'
+import { User, Prisma as PrismaTypes } from '@prisma/client'
 
 import type { IResponseApi } from '../api.interface'
 import type { AuthorizedApiRequest } from '../auth/auth-protect.middleware'
@@ -38,3 +38,7 @@ export interface IRequestUpdateUserDto extends AuthorizedApiRequest {
 export interface IRequestUserDto extends Omit<AuthorizedApiRequest, 'query'> {
   query: Partial<User> & { userId: number }
 }
+
+export type UserForPurchase = PrismaTypes.UserGetPayload<{
+  select: { name: true; _count: { select: { createdPurchases: true } } }
+}>

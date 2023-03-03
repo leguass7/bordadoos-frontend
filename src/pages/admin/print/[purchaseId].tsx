@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next'
 import Image from 'next/image'
 
-import { Divider, Typography } from '@mui/material'
+import { Divider, Grid, Typography } from '@mui/material'
 import { PriceRules } from '@prisma/client'
 import styled from 'styled-components'
 
@@ -20,18 +20,36 @@ interface Props {
 const Print: NextPage<Props> = ({ purchase, rules }) => {
   return (
     <Container>
-      <HeaderContainer>
-        <Image priority src="/logo.webp" width={100} height={100} alt="logo" />
-        <Typography variant="h4" flex={10} align="center">
-          Pedido {purchase?.id}
-        </Typography>
-        <span style={{ flex: 1 }} />
-      </HeaderContainer>
+      <Grid container spacing={1}>
+        <Grid item xs={6}>
+          <HeaderContainer>
+            <Image priority src="/logo.webp" width={100} height={100} alt="logo" />
+            <Typography variant="h4" flex={10} align="center">
+              Pedido {purchase?.name}
+            </Typography>
+            <span style={{ flex: 1 }} />
+          </HeaderContainer>
 
-      <Divider sx={{ width: '100%' }} />
+          <Divider sx={{ width: '100%' }} />
 
-      <PurchasePrinter purchase={purchase} rules={rules} />
-      <div style={{ flex: 1 }}></div>
+          <PurchasePrinter purchase={purchase} rules={rules} />
+          <div style={{ flex: 1 }}></div>
+        </Grid>
+        <Grid item xs={6}>
+          <HeaderContainer>
+            <Image priority src="/logo.webp" width={100} height={100} alt="logo" />
+            <Typography variant="h4" flex={10} align="center">
+              Pedido {purchase?.name}
+            </Typography>
+            <span style={{ flex: 1 }} />
+          </HeaderContainer>
+
+          <Divider sx={{ width: '100%' }} />
+
+          <PurchasePrinter purchase={purchase} rules={rules} />
+          <div style={{ flex: 1 }}></div>
+        </Grid>
+      </Grid>
     </Container>
   )
 }

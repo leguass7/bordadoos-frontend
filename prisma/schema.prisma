@@ -232,8 +232,13 @@ model Purchase {
   createdBy Int
   updatedBy Int
 
+  name        String?
   label       String? @db.VarChar(100)
   description String? @db.Text
+
+  clientObs   String? @db.Text
+  employeeObs String? @db.Text
+  colors      Json?
 
   points Int?
 
