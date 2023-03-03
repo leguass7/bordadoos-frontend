@@ -26,22 +26,28 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
   const [scopes, setScopes] = useState([])
   const [updated, setUpdated] = useState(false)
 
-  const handleAddScope = useCallback(() => {
+  const handleAddScope = useCallback((colorQtd = 1) => {
+    const qtd = typeof colorQtd === 'number' ? colorQtd : 1
+
     setScopes(old => {
-      return [...old, [, old.length]]
+      return [...old, [, old.length, qtd]]
     })
   }, [])
 
   const updateForm = useCallback(() => {
     const colors = embroidery?.colors
 
+    if (!scopes?.length) handleAddScope()
+    if (!colors) return null
+
     const diffSize = colors?.length - scopes?.length
 
     if (diffSize > 0) {
-      for (let i = 0; i < diffSize; i++) handleAddScope()
+      for (let i = 0; i < diffSize; i++) {
+        const colorsQtd = colors?.[i]?.colors?.length || 1
+        handleAddScope(colorsQtd)
+      }
     }
-
-    if (!colors?.length && !scopes?.length) handleAddScope()
 
     if (!diffSize) {
       setUpdated(true)
@@ -52,6 +58,10 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
   useEffect(() => {
     if (!updated) updateForm()
   }, [updateForm, updated])
+
+  const forceUpdate = useCallback(() => {
+    setUpdated(false)
+  }, [])
 
   const handleRemove = useCallback((id: number, index: number) => {
     setScopes(old => old.filter(([, i]) => i !== index))
@@ -72,12 +82,14 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
         </Button>
         <br />
         <br />
-        {scopes?.map(([id, index]) => {
+        {scopes?.map(([id, index, colorQtd]) => {
           const itemId = id || index + 1
 
           return (
             <PurchaseEmbroideryColorFormScope
               id={id}
+              forceUpdate={forceUpdate}
+              colorQtd={colorQtd}
               onRemove={handleRemove}
               key={`scope-${index}-${itemId}`}
               index={index}

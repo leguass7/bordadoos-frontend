@@ -24,7 +24,7 @@ export const createPurchasesSchema = celebrate({
       Joi.object({
         id: Joi.number(),
         label: Joi.string(),
-        colors: Joi.string()
+        colors: Joi.array().items(Joi.string().allow(''))
       })
     ),
     employeeObs: Joi.string().allow(''),
@@ -56,7 +56,7 @@ export const updatePurchasesSchema = celebrate({
       Joi.object({
         id: Joi.number().allow(''),
         label: Joi.string().allow(''),
-        colors: Joi.string().allow('')
+        colors: Joi.array().items(Joi.string().allow(''))
       })
     ),
     employeeObs: Joi.string().allow(''),
@@ -73,7 +73,7 @@ export const findPurchasesSchema = celebrate({
 
 export const listPurchasesSchema = celebrate({
   [Segments.QUERY]: {
-    search: Joi.string(),
+    search: Joi.string().allow(''),
     startDate: Joi.date(),
     endDate: Joi.date(),
     size: Joi.number(),
