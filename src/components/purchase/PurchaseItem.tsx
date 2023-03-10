@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react'
+import { IframeHTMLAttributes, memo, useCallback, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
@@ -87,13 +87,29 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
   }, [push, id])
 
   const handlePrint = useCallback(() => {
-    const printablePage = window.open(`/admin/print/${id}`, '_blank')
-    printablePage.print()
-    printablePage.onafterprint = window.close
+    const frames = Array.from(document.getElementsByName('printFrame'))
+
+    const frame = frames.find((f: any) => {
+      const frameId = Number(f.title)
+      return frameId === id
+    }) as HTMLIFrameElement
+
+    if (frame) {
+      frame.focus()
+      frame.contentWindow.print()
+    }
   }, [id])
 
   return (
     <>
+      <iframe
+        src={`/admin/print/${id}`}
+        style={{ display: 'none' }}
+        title={`${id}`}
+        name="printFrame"
+        width="0"
+        height="0"
+      />
       <CardItem
         spacing={4}
         width="50%"

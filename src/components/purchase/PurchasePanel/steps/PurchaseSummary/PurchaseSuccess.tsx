@@ -18,10 +18,24 @@ export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited, n
   const { clearAll } = usePurchasePanelContext()
 
   const handlePrint = useCallback(() => {
-    const printablePage = window.open(`/admin/print/${purchaseId}`, '_blank')
-    printablePage.print()
-    printablePage.onafterprint = window.close
+    const frames = Array.from(document.getElementsByName('printFrame'))
+
+    const frame = frames.find((f: any) => {
+      const frameId = Number(f.title)
+      return frameId === purchaseId
+    }) as HTMLIFrameElement
+
+    if (frame) {
+      frame.focus()
+      frame.contentWindow.print()
+    }
   }, [purchaseId])
+
+  // const handlePrint = useCallback(() => {
+  //   const printablePage = window.open(`/admin/print/${purchaseId}`, '_blank')
+  //   printablePage.print()
+  //   printablePage.onafterprint = window.close
+  // }, [purchaseId])
 
   const handlePrev = useCallback(() => {
     clearAll()
@@ -30,6 +44,14 @@ export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited, n
 
   return (
     <Grid container py={30} flexDirection="column" justifyContent="center" alignItems="center">
+      <iframe
+        src={`/admin/print/${purchaseId}`}
+        style={{ display: 'none' }}
+        title={`${purchaseId}`}
+        name="printFrame"
+        width="0"
+        height="0"
+      />
       <Typography variant="h5" align="center">
         Pedido {status} com sucesso
       </Typography>
