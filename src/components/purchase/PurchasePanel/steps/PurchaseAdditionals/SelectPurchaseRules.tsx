@@ -23,6 +23,9 @@ export const SelectPurchaseRules: React.FC<Props> = ({ purchaseId }) => {
   const [loading, setLoading] = useState(false)
   const isMounted = useIsMounted()
 
+  // se adicionar uma regra, remove-la e adiciona-la denovo, precisamos renderizar o select novamente para que o onChange funcione
+  const [removed, setRemoved] = useState(false)
+
   const fetchSelected = useCallback(async () => {
     if (!purchaseId) return null
 
@@ -70,6 +73,7 @@ export const SelectPurchaseRules: React.FC<Props> = ({ purchaseId }) => {
 
   const handleAddRule = useCallback(
     (value: string) => {
+      setRemoved(false)
       const id = parseInt(value)
 
       const hasSelected = hasInSelected(id)
@@ -84,6 +88,7 @@ export const SelectPurchaseRules: React.FC<Props> = ({ purchaseId }) => {
   const handleDelete = useCallback(
     (id: number) => () => {
       setPriceRules(old => old.filter(rule => rule?.id !== id))
+      setRemoved(true)
     },
     [setPriceRules]
   )
@@ -99,6 +104,7 @@ export const SelectPurchaseRules: React.FC<Props> = ({ purchaseId }) => {
               <Select
                 labelId="add-rules"
                 defaultValue=""
+                key={`select-purchase-rules-${removed ? '1' : '0'}`}
                 label="Adicionar regras"
                 onChange={e => handleAddRule(e.target?.value as string)}
               >
