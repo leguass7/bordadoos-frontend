@@ -35,7 +35,13 @@ export function calculatePurchaseOriginalValue(qtd = 0, points = 0, config?: ICo
 export function calculatePurchaseTotalValue(originalValue: number, qtd: number, rules: PriceRules[] = []) {
   if (!rules?.length) return originalValue
 
-  const totalValue = rules.reduce((ac, at) => {
+  // adicionar valores percentuais primeiro para que não hajam discrepâncias com base na ordem das regras
+  const sortedRules = rules.sort((a, b) => {
+    const order = a.type === 'PERC' ? -1 : 0
+    return order
+  })
+
+  const totalValue = sortedRules.reduce((ac, at) => {
     const { modality, type, value } = at
 
     const percValue = value / 100 + 1
