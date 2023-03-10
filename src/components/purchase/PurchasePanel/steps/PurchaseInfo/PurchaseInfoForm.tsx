@@ -23,8 +23,6 @@ export const PurchaseInfoForm: React.FC<Props> = ({ onSuccess }) => {
 
   const [localInfo] = useState(info)
 
-  const clientId = useMemo(() => info?.clientId, [info])
-
   const autoUpdate = useCallback(() => {
     const data = { ...initialData, ...localInfo }
     changeInfo(data)
@@ -47,16 +45,16 @@ export const PurchaseInfoForm: React.FC<Props> = ({ onSuccess }) => {
     <Form ref={formRef} initialData={initialData} onSubmit={handleSubmit}>
       <Grid container>
         <Grid item xs={12} sm={6}>
-          <Datepicker disabled={!clientId} label="data de entrada" name="entryDate" />
+          <Datepicker label="data de entrada" name="entryDate" />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Datepicker disabled={!clientId} name="deliveryDate" />
+          <Datepicker name="deliveryDate" />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Field multiline disabled={!clientId} label="Observações para o cliente" name="clientObs" />
+          <Field multiline label="Observações (cliente)" name="clientObs" />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Field multiline disabled={!clientId} label="Observações internas" name="employeeObs" />
+          <Field multiline label="Observações (operador)" name="employeeObs" />
         </Grid>
         <Grid item xs={12} p={1}>
           <Grid container justifyContent="flex-end" alignItems="center">

@@ -6,23 +6,19 @@ import { Scope } from '@unform/core'
 
 import { Field } from '~/components/Form/Field'
 
+import { usePurchasePanelContext } from '../../../PurchasePanelProvider'
+
 interface Props {
   index: number
   id: number
   onRemove?: (id: number, index: number) => void
-  colorQtd?: number
   forceUpdate?: () => void
 }
 
-export const PurchaseEmbroideryColorFormScope: React.FC<Props> = ({
-  index,
-  onRemove,
-  id,
-  colorQtd = 1,
-  forceUpdate
-}) => {
+export const PurchaseEmbroideryColorFormScope: React.FC<Props> = ({ index, onRemove, id, forceUpdate }) => {
   const [colors, setColors] = useState([])
   const [updated, setUpdated] = useState(false)
+  const { embroidery } = usePurchasePanelContext()
 
   const handleAddColor = useCallback(() => {
     setColors(old => {
@@ -31,19 +27,27 @@ export const PurchaseEmbroideryColorFormScope: React.FC<Props> = ({
   }, [])
 
   const addColorFields = useCallback(() => {
+    const embColors = embroidery?.colors || []
+    const found = embColors?.find?.(color => color.id === id)?.colors || []
+    const colorQtd = found?.length
+
+    const noColor = !id || !colorQtd
+    if (noColor && !colors?.length) {
+      setUpdated(true)
+      return handleAddColor()
+    }
+
     const diffSize = colorQtd - colors?.length
 
     if (diffSize > 0) {
       for (let i = 0; i < colorQtd; i++) handleAddColor()
     }
 
-    if (!colorQtd && !colors?.length) handleAddColor()
-
     if (!diffSize) {
       setUpdated(true)
       forceUpdate?.()
     }
-  }, [colorQtd, handleAddColor, forceUpdate, colors])
+  }, [handleAddColor, forceUpdate, colors, id, embroidery?.colors])
 
   useEffect(() => {
     if (!updated) addColorFields()
@@ -69,9 +73,11 @@ export const PurchaseEmbroideryColorFormScope: React.FC<Props> = ({
             <Grid item xs={12}>
               <Grid container justifyContent="flex-start" flexWrap="wrap">
                 {colors?.map?.(([colorId, colorIndex], index) => {
+                  const itemId = colorId || colorIndex + 1
+
                   return (
                     <Field
-                      key={`scope-${id}-color-${colorId}`}
+                      key={`scope-${id}-color-${itemId}`}
                       sx={{ width: 120 }}
                       name={`colors[${index}]`}
                       label={`Cor ${index + 1} `}
@@ -86,7 +92,6 @@ export const PurchaseEmbroideryColorFormScope: React.FC<Props> = ({
           </Grid>
         </Scope>
       </Grid>
-      <Grid item height="64px"></Grid>
     </Grid>
   )
 }

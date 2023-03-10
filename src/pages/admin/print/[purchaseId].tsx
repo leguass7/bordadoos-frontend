@@ -1,12 +1,10 @@
 import { GetServerSideProps, NextPage } from 'next'
-import Image from 'next/image'
 
-import { Divider, Grid, Typography } from '@mui/material'
 import { PriceRules } from '@prisma/client'
 import styled from 'styled-components'
 
-import { PurchasePrinter } from '~/components/Printer/PurchasePrinter'
-import { formatDate } from '~/helpers/string'
+import { PurchaseClientPrinter } from '~/components/Printer/PurchaseClientPrinter'
+import { PurchaseOperatorPrinter } from '~/components/Printer/PurchaseOperatorPrinter'
 import { purchaseConfigService } from '~/serverSide/purchases/purchase-configs/purchase-config.service'
 import { PurchaseService } from '~/serverSide/purchases/purchase.service'
 import { PurchaseWithItems } from '~/services/api/purchase'
@@ -21,46 +19,8 @@ interface Props {
 const Print: NextPage<Props> = ({ purchase, rules }) => {
   return (
     <Container>
-      <Grid container spacing={1}>
-        <Grid item xs={6}>
-          <HeaderContainer>
-            <Image priority src="/logo.webp" width={100} height={100} alt="logo" />
-            <Grid item flex={10} justifyContent="center" pl={3}>
-              <Typography variant="h4" lineHeight="0.8em">
-                Pedido {purchase?.name || purchase?.id}
-                <br />
-                <Typography variant="caption" component="p" align="left">
-                  {formatDate(purchase.createdAt, 'dd/MM/yyyy HH:mm:ss')}
-                </Typography>
-              </Typography>
-            </Grid>
-          </HeaderContainer>
-
-          <Divider sx={{ width: '100%' }} />
-
-          <PurchasePrinter purchase={purchase} rules={rules} />
-          <div style={{ flex: 1 }}></div>
-        </Grid>
-        <Grid item xs={6}>
-          <HeaderContainer>
-            <Image priority src="/logo.webp" width={100} height={100} alt="logo" />
-            <Grid item flex={10} justifyContent="center" pl={3}>
-              <Typography variant="h4" lineHeight="0.8em">
-                Pedido {purchase?.name}
-                <br />
-                <Typography variant="caption" component="p" align="left">
-                  {formatDate(purchase.createdAt, 'dd/MM/yyyy HH:mm:ss')}
-                </Typography>
-              </Typography>
-            </Grid>
-          </HeaderContainer>
-
-          <Divider sx={{ width: '100%' }} />
-
-          <PurchasePrinter purchase={purchase} rules={rules} />
-          <div style={{ flex: 1 }}></div>
-        </Grid>
-      </Grid>
+      <PurchaseClientPrinter purchase={purchase} rules={rules} />
+      <PurchaseOperatorPrinter purchase={purchase} rules={rules} />
     </Container>
   )
 }
@@ -87,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
 export default Print
 
-const Container = styled.div`
+const Container = styled.div<{ expand?: boolean }>`
   /* padding: 20px; */
   display: flex;
   height: 100%;
@@ -98,13 +58,8 @@ const Container = styled.div`
   max-width: 219mm;
   width: 100%;
   background-color: #fff;
-`
 
-const HeaderContainer = styled.header`
-  width: 100%;
-  display: flex;
-  padding: 12px;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: center;
+  & > div {
+    flex: 1;
+  }
 `
