@@ -6,11 +6,12 @@ import { Form } from '@unform/web'
 import styled from 'styled-components'
 
 import { useIsMounted } from '~/hooks/useIsMounted'
-import { getDefault, putDefault } from '~/services/api'
+import { getDefault, postDefault, putDefault } from '~/services/api'
 import { IResponseUser } from '~/services/api/api.types'
 
 import { CircleLoading } from '../CircleLoading'
 import { Input } from '../Form/Input'
+import { usePagination } from '../Providers/PaginationProvider'
 
 interface Props {
   userId?: number
@@ -23,6 +24,7 @@ interface Props {
 export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initialData = {}, disable = false }) => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<Partial<User>>(initialData || {})
+  const { refreshData } = usePagination()
 
   const isMounted = useIsMounted()
 
@@ -43,16 +45,18 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initial
 
   const handleSubmit = useCallback(
     async (values: Partial<User>) => {
-      if (userId) {
-        setLoading(true)
-        await putDefault(`users/${userId}`, values)
-        if (isMounted()) {
-          setLoading(false)
-          if (onSuccess) onSuccess()
-        }
+      setLoading(true)
+      const fetcher = userId ? putDefault : postDefault
+      const route = userId ? `users/${userId}` : `/users`
+
+      await fetcher(route, values)
+      if (isMounted()) {
+        setLoading(false)
+        if (onSuccess) onSuccess()
+        if (refreshData) refreshData()
       }
     },
-    [userId, onSuccess, isMounted]
+    [userId, onSuccess, isMounted, refreshData]
   )
 
   return (
@@ -67,6 +71,7 @@ export const UserForm: React.FC<Props> = ({ userId, onCancel, onSuccess, initial
           </FieldContainer>
           <FieldContainer>
             <Input
+              mask="phone"
               name="cellPhone"
               label="Telefone do usuário: "
               placeholder="(99) 9 9999-999"

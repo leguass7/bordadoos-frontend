@@ -28,7 +28,6 @@ export const ClientItem: React.FC<Props> = ({ id, name, email, cellPhone, active
   const [openModal, setOpenModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [itemActived, setItemActived] = useState(actived)
-  const { refreshData } = usePagination()
 
   const isMounted = useIsMounted()
 
@@ -37,8 +36,7 @@ export const ClientItem: React.FC<Props> = ({ id, name, email, cellPhone, active
 
   const handleSuccess = useCallback(() => {
     handleClose()
-    refreshData()
-  }, [handleClose, refreshData])
+  }, [handleClose])
 
   const toggleActived = useCallback(
     async e => {
