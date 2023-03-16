@@ -27,7 +27,7 @@ export const SelectPurchaseRules: React.FC<Props> = ({ purchaseId }) => {
   const [removed, setRemoved] = useState(false)
 
   const fetchSelected = useCallback(async () => {
-    if (!purchaseId) return null
+    if (!purchaseId || !priceRules?.length) return null
 
     setLoading(true)
     const response = await getPurchaseConfig({ purchaseId })
@@ -36,7 +36,7 @@ export const SelectPurchaseRules: React.FC<Props> = ({ purchaseId }) => {
       setLoading(false)
       if (responseRules?.length) setPriceRules(responseRules)
     }
-  }, [purchaseId, isMounted, setPriceRules])
+  }, [purchaseId, isMounted, setPriceRules, priceRules?.length])
 
   useEffect(() => {
     fetchSelected()
