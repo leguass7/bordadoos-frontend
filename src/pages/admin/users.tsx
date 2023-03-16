@@ -11,12 +11,6 @@ import { UserForm } from '~/components/Users/UserForm'
 import { UserList } from '~/components/Users/UserList'
 
 const Users: React.FC = () => {
-  const [openModal, setOpenModal] = useState(false)
-
-  const toggleModal = useCallback(() => {
-    setOpenModal(old => !old)
-  }, [])
-
   return (
     <LayoutAdmin>
       <PaginationProvider url="/users">
@@ -28,18 +22,11 @@ const Users: React.FC = () => {
           />
         </Container>
         <Container>
-          <UserFilter onAdd={toggleModal} />
+          <UserFilter />
         </Container>
         <Container>
           <UserList />
         </Container>
-        <Modal open={!!openModal} onClose={toggleModal}>
-          <div>
-            <ModalForm title={'Cadastrar usuário'}>
-              <UserForm onSuccess={toggleModal} onCancel={toggleModal} />
-            </ModalForm>
-          </div>
-        </Modal>
       </PaginationProvider>
     </LayoutAdmin>
   )
