@@ -282,8 +282,7 @@ model PriceRules {
   modality PriceRuleModality
   value    Float             @default(0)
 
-  purchaseConfig   PurchaseConfig? @relation(fields: [purchaseConfigId], references: [id])
-  purchaseConfigId Int?            @db.UnsignedInt
+  purchaseConfigs PurchaseConfig[]
 
   createdBy Int
   creator   User @relation(fields: [createdBy], references: [id], name: "priceRuleCreator")
