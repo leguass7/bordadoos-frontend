@@ -29,7 +29,7 @@ interface Props {
 }
 
 export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, onSuccess, restart }) => {
-  const { additionals, info, embroidery, ruleIds } = usePurchasePanelContext()
+  const { additionals, info, embroidery, ruleIds, clearAll } = usePurchasePanelContext()
 
   const { data } = useSession()
 
@@ -81,8 +81,9 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
     if (success) {
       setpurchaseId(id)
       setSaved(true)
+      clearAll()
     } else toast(message, { type: 'error' })
-  }, [purchase, initialPurchaseId])
+  }, [purchase, initialPurchaseId, clearAll])
 
   return saved ? (
     <PurchaseSuccess name={purchaseCod} edited={!!initialPurchaseId} goBack={restart} purchaseId={purchaseId} />

@@ -2,6 +2,8 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 
 import { PriceRules, Purchase } from '@prisma/client'
 
+import { usePersistedState } from '~/hooks/usePersistedState'
+
 export interface PurchasePanelInfo {
   entryDate?: Date
   deliveryDate?: Date
@@ -48,54 +50,63 @@ interface PurchaseContext {
 export const PurchasePanelContext = createContext({} as PurchaseContext)
 
 export const PurchasePanelProvider: React.FC = ({ children }) => {
-  const [info, setInfo] = useState<PurchasePanelInfo>({})
-  const [embroidery, setEmbroidery] = useState<PurchaseEmbroidery>({})
-  const [priceRules, setPriceRules] = useState<PriceRules[]>([])
-  const [additionals, setAdditionals] = useState<PurchaseAdditionals>({})
+  const [info, setInfo] = usePersistedState<PurchasePanelInfo>('purchase-panel-info', {})
+  const [embroidery, setEmbroidery] = usePersistedState<PurchaseEmbroidery>('purchase-panel-embroidery', {})
+  const [priceRules, setPriceRules] = usePersistedState<PriceRules[]>('purchase-panel-price-rules', [])
+  const [additionals, setAdditionals] = usePersistedState<PurchaseAdditionals>('purchase-panel-additionals', {})
 
   const clearAll = useCallback(() => {
     setEmbroidery({})
     setInfo({})
     setAdditionals({})
     setPriceRules([])
-  }, [])
+  }, [setAdditionals, setEmbroidery, setInfo, setPriceRules])
 
-  const changeInfo = useCallback((info: Purchase) => {
-    setInfo(old => {
-      const clientId = info?.clientId || old?.clientId
-      const clientObs = info?.clientObs || old?.clientObs
-      const employeeObs = info?.employeeObs || old?.employeeObs
-      const entryDate = info?.entryDate || old?.entryDate
-      const deliveryDate = info?.deliveryDate || old?.deliveryDate
-      const name = info?.name || old?.name
+  const changeInfo = useCallback(
+    (info: Purchase) => {
+      setInfo(old => {
+        const clientId = info?.clientId || old?.clientId
+        const clientObs = info?.clientObs || old?.clientObs
+        const employeeObs = info?.employeeObs || old?.employeeObs
+        const entryDate = info?.entryDate || old?.entryDate
+        const deliveryDate = info?.deliveryDate || old?.deliveryDate
+        const name = info?.name || old?.name
 
-      return { ...old, clientId, clientObs, deliveryDate, employeeObs, entryDate, name }
-    })
-  }, [])
+        return { ...old, clientId, clientObs, deliveryDate, employeeObs, entryDate, name }
+      })
+    },
+    [setInfo]
+  )
 
-  const changeEmbroidery = useCallback((embroidery: Purchase) => {
-    setEmbroidery(old => {
-      const categoryId = embroidery?.categoryId || old.categoryId
-      const colors = (embroidery?.colors as any) || old.colors
-      const description = embroidery?.description || old.description
-      const label = embroidery?.label || old.label
-      const typeId = embroidery?.typeId || old.typeId
+  const changeEmbroidery = useCallback(
+    (embroidery: Purchase) => {
+      setEmbroidery(old => {
+        const categoryId = embroidery?.categoryId || old.categoryId
+        const colors = (embroidery?.colors as any) || old.colors
+        const description = embroidery?.description || old.description
+        const label = embroidery?.label || old.label
+        const typeId = embroidery?.typeId || old.typeId
 
-      return { ...old, categoryId, colors, description, label, typeId }
-    })
-  }, [])
+        return { ...old, categoryId, colors, description, label, typeId }
+      })
+    },
+    [setEmbroidery]
+  )
 
-  const changeAdditionals = useCallback((additionals: Purchase) => {
-    setAdditionals(old => {
-      const done = additionals?.done || old?.done
-      const paid = additionals?.paid || old?.paid
-      const points = additionals?.points || old?.points
-      const qtd = additionals?.qtd || old?.qtd
-      const value = additionals?.value || old?.value
+  const changeAdditionals = useCallback(
+    (additionals: Purchase) => {
+      setAdditionals(old => {
+        const done = additionals?.done || old?.done
+        const paid = additionals?.paid || old?.paid
+        const points = additionals?.points || old?.points
+        const qtd = additionals?.qtd || old?.qtd
+        const value = additionals?.value || old?.value
 
-      return { ...old, done, paid, points, qtd, value }
-    })
-  }, [])
+        return { ...old, done, paid, points, qtd, value }
+      })
+    },
+    [setAdditionals]
+  )
 
   return (
     <PurchasePanelContext.Provider
