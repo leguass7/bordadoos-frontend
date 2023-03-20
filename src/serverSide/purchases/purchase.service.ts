@@ -43,6 +43,8 @@ async function paginate(
   if (search)
     where.AND = {
       OR: [
+        { name: { contains: search } },
+        { label: { contains: search } },
         { client: { name: { contains: search } } },
         { category: { label: { contains: search } } },
         { type: { label: { contains: search } } }
