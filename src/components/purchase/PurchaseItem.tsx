@@ -3,7 +3,7 @@ import { IframeHTMLAttributes, memo, useCallback, useRef, useState } from 'react
 import { useRouter } from 'next/router'
 
 import { Edit, Print } from '@mui/icons-material'
-import { IconButton, Switch, Typography } from '@mui/material'
+import { Chip, IconButton, Switch, Typography } from '@mui/material'
 
 import { formatDate, toMoney } from '~/helpers/string'
 import { useIsMounted } from '~/hooks/useIsMounted'
@@ -19,46 +19,46 @@ const overflowTextProps = {
   overflow: 'hidden'
 }
 
-interface CollapsibleContentProps {
-  value?: number
-  createdAt?: Date
-  qtd?: number
-}
+// interface CollapsibleContentProps {
+//   value?: number
+//   createdAt?: Date
+//   qtd?: number
+// }
 
-const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ value = 0, createdAt, qtd = 0 }) => {
-  const unityValue = value / qtd
+// const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ value = 0, createdAt, qtd = 0 }) => {
+//   const unityValue = value / qtd
 
-  return (
-    <Row justify="space-between" align="stretch">
-      <Column align="flex-start">
-        <Typography variant="subtitle1" {...overflowTextProps}>
-          {qtd}x
-        </Typography>
-        <Typography variant="subtitle1" {...overflowTextProps}>
-          {toMoney(unityValue)}
-        </Typography>
-      </Column>
-      <Column align="flex-end">
-        <Typography variant="caption" color="GrayText" {...overflowTextProps}>
-          data de criação
-        </Typography>
-        <Typography variant="body1" {...overflowTextProps}>
-          {createdAt && formatDate(createdAt, 'dd/MM/yyyy')}
-        </Typography>
-      </Column>
-    </Row>
-  )
-}
+//   return (
+//     <Row justify="space-between" align="stretch">
+//       <Column align="flex-start">
+//         <Typography variant="subtitle1" {...overflowTextProps}>
+//           {qtd}x
+//         </Typography>
+//         <Typography variant="subtitle1" {...overflowTextProps}>
+//           {toMoney(unityValue)}
+//         </Typography>
+//       </Column>
+//       <Column align="flex-end">
+//         <Typography variant="caption" color="GrayText" {...overflowTextProps}>
+//           data de criação
+//         </Typography>
+//         <Typography variant="body1" {...overflowTextProps}>
+//           {createdAt && formatDate(createdAt, 'dd/MM/yyyy')}
+//         </Typography>
+//       </Column>
+//     </Row>
+//   )
+// }
 
 interface Props extends PurchaseWithRelations {}
 
-const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
-  const { value = 0, qtd = 0, done = false, id, category, client, type, createdAt, deliveryDate, purchaseItem } = props
+const PurchaseItemComponent: React.FC<Props> = ({ label, name, ...props }) => {
+  const { value = 0, done = false, client, id, category, type, createdAt, deliveryDate } = props
   const hasLabel = !!(type?.label || category?.label)
   const [itemDone, setItemDone] = useState(done)
   const { push } = useRouter()
 
-  const originalValue = purchaseItem?.[0]?.originalValue || value
+  // const originalValue = purchaseItem?.[0]?.originalValue || value
 
   const [expand, setExpand] = useState(false)
 
@@ -114,10 +114,12 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
         spacing={4}
         width="50%"
         expand={expand}
-        CollapsibleContent={<CollapsibleContent value={originalValue} createdAt={createdAt} qtd={qtd} />}
+        // CollapsibleContent={<CollapsibleContent value={originalValue} createdAt={createdAt} qtd={qtd} />}
       >
         <Row align="stretch">
           <Column align="flex-start">
+            <Typography variant="caption">{name}</Typography>
+            <br />
             <Typography variant="subtitle1" {...overflowTextProps}>
               {hasLabel ? (
                 <>
@@ -128,7 +130,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
               )}
             </Typography>
             <Typography variant="h6" {...overflowTextProps}>
-              {client?.name ?? '--'}
+              {label ?? '--'}
             </Typography>
             <Switch name="done" checked={itemDone} color="info" onChange={toggleActived} disabled={loading} />
             <Typography pl={1} variant="caption" color="GrayText" htmlFor="done" component="label">
@@ -138,15 +140,31 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
           <Column align="flex-end" expand={1} justify="space-between">
             <Column align="flex-end">
               <Typography variant="caption" color="GrayText" {...overflowTextProps}>
-                data de entrega
+                data (criação) ~ data (entrega)
               </Typography>
               <Typography variant="body1" {...overflowTextProps}>
-                {deliveryDate && formatDate(deliveryDate, 'dd/MM/yyyy')}
+                {createdAt && formatDate(createdAt, 'dd/MM/yyyy')}
+                {' ~ '}
+                {deliveryDate ? formatDate(deliveryDate, 'dd/MM/yyyy') : 'Sem prazo'}
               </Typography>
+            </Column>
+            {/* <Column>
+              <Typography variant="body1" {...overflowTextProps}>
+                {client?.name ?? '--'}
+              </Typography>
+            </Column> */}
+            <Column>
               <Typography variant="subtitle1" {...overflowTextProps}>
                 total: {toMoney(value)}
               </Typography>
             </Column>
+            {/* <Column align="flex-end">
+              <Typography variant="caption" color="GrayText" {...overflowTextProps}>
+                data de criação
+              </Typography>
+              <Typography variant="body1" {...overflowTextProps}>
+              </Typography>
+            </Column> */}
             <Row align="flex-end" justify="flex-end">
               <IconButton onClick={handleEdit}>
                 <Edit />
@@ -154,12 +172,12 @@ const PurchaseItemComponent: React.FC<Props> = ({ ...props }) => {
               <IconButton onClick={handlePrint}>
                 <Print />
               </IconButton>
-              <CardExpandMore
+              {/* <CardExpandMore
                 expand={expand}
                 onClick={() => setExpand(old => !old)}
                 aria-expanded={expand}
                 aria-label="saber mais"
-              />
+              /> */}
             </Row>
           </Column>
         </Row>
