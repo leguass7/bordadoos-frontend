@@ -43,8 +43,6 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
   const [purchaseRules, setPurchaseRules] = useState()
 
   const [unityValue, setUnityValue] = useState(formatPrice(0))
-  const [totalPrice, setTotalPrice] = useState(formatPrice(0))
-  const [developmentPrice, setDevelopmentPrice] = useState(0)
 
   const fetchPurchaseRules = useCallback(async () => {
     const response = await getConfig('purchaseRules')
@@ -61,28 +59,20 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
     const data = formRef.current?.getData() as FormData
     const qtd = Number(data?.qtd) || 0
     const points = Number(data?.points) || 0
+    const developmentPrice = Number(data?.developmentPrice) || 0
 
-    const originalPrice = calculatePurchaseOriginalValue(qtd, points, purchaseRules)
+    const originalPrice = calculatePurchaseOriginalValue(qtd, points, developmentPrice, purchaseRules)
     if (originalPrice) setUnityValue(formatPrice(originalPrice / qtd))
-    const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, priceRules, developmentPrice)
+    const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, priceRules)
 
-    setTotalPrice(formatPrice(totalPrice))
     formRef.current.setFieldValue('value', Number(totalPrice.toFixed(2)))
-  }, [purchaseRules, priceRules, developmentPrice])
+  }, [purchaseRules, priceRules])
 
   useEffect(() => {
     updateTotalPrice()
   }, [priceRules?.length, updateTotalPrice])
 
   const changeUnityValue = useCallback(e => setUnityValue(e.target.value), [])
-  const changeDevelopmentPrice = useCallback(
-    e => {
-      const value = Number(e?.target?.value)
-      setDevelopmentPrice(value)
-      updateTotalPrice()
-    },
-    [updateTotalPrice]
-  )
 
   const updateForm = useCallback(() => {
     setUpdated(true)
@@ -109,8 +99,8 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
             name="developmentPrice"
             number
             label="Taxa de desenvolvimento"
-            onChange={changeDevelopmentPrice}
             autoComplete="off"
+            onChange={updateTotalPrice}
           />
         </Grid>
         <Grid item sm={6}></Grid>
@@ -140,11 +130,7 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <div>
-            {isAdmin() ? (
-              <Field fullWidth name="value" number label="Total" autoComplete="off" />
-            ) : (
-              <TextField style={{ padding: 4 }} value={totalPrice} disabled={true} label="Valor total" fullWidth />
-            )}
+            <Field fullWidth name="value" number label="Total" autoComplete="off" disabled={!isAdmin()} />
           </div>
         </Grid>
       </Grid>
