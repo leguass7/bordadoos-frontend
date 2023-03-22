@@ -41,12 +41,14 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
   const isMounted = useIsMounted()
 
   const fetchUser = useCallback(async () => {
+    if (user?.name) return null
+
     const userId = parseInt(`${data.user?.userId}`)
     if (!userId || initialPurchaseId) return null
 
-    const { success, user } = await getUserForPurchase(userId)
-    if (isMounted() && success) setUser(user)
-  }, [isMounted, data?.user, initialPurchaseId])
+    const { success, user: foundUser } = await getUserForPurchase(userId)
+    if (isMounted() && success) setUser(foundUser)
+  }, [isMounted, data?.user, initialPurchaseId, user])
 
   useEffect(() => {
     fetchUser()
