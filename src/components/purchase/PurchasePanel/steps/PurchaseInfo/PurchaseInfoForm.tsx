@@ -19,19 +19,7 @@ const initialData: PurchasePanelInfo = {
 
 export const PurchaseInfoForm: React.FC<Props> = ({ onSuccess }) => {
   const formRef = useRef<FormHandles>(null)
-  const { info, changeInfo } = usePurchasePanelContext()
-
-  const [localInfo] = useState(info)
-
-  const autoUpdate = useCallback(() => {
-    const data = { ...initialData, ...localInfo }
-    changeInfo(data)
-    formRef.current.setData(data)
-  }, [changeInfo, localInfo])
-
-  useEffect(() => {
-    autoUpdate()
-  }, [autoUpdate])
+  const { changeInfo } = usePurchasePanelContext()
 
   const handleSubmit = useCallback(
     (data: PurchasePanelInfo) => {

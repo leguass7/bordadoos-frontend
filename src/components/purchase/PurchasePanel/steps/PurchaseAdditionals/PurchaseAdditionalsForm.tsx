@@ -62,7 +62,9 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
     const developmentPrice = Number(data?.developmentPrice) || 0
 
     const originalPrice = calculatePurchaseOriginalValue(qtd, points, developmentPrice, purchaseRules)
-    if (originalPrice) setUnityValue(formatPrice(originalPrice / qtd))
+    const priceWithoutDevelopment = originalPrice - developmentPrice
+
+    if (originalPrice) setUnityValue(formatPrice(priceWithoutDevelopment / qtd))
     const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, priceRules)
 
     formRef.current.setFieldValue('value', Number(totalPrice.toFixed(2)))
