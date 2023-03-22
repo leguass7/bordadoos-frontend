@@ -17,6 +17,7 @@ interface Props {
 
 export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
   const originalValue = purchase?.purchaseItem?.[0].originalValue || 0
+  const developmentPrice = purchase.purchaseItem?.[0]?.developmentPrice || 0
 
   return (
     <Content>
@@ -107,6 +108,7 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                       <Typography variant="body1">Valor:</Typography>
                       <Typography variant="body1">Quantidade:</Typography>
                       <Typography variant="body1">Subtotal:</Typography>
+                      <Typography variant="body1">desenvolvimento:</Typography>
                       <Typography variant="body1">Total:</Typography>
                     </Grid>
                     <Grid item xs={6}>
@@ -120,11 +122,15 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                         {formatPrice(originalValue)}
                       </Typography>
                       <Typography align="right" variant="body1">
+                        {formatPrice(developmentPrice)}
+                      </Typography>
+                      <Typography align="right" variant="body1">
                         {formatPrice(purchase.value)}
                       </Typography>
                     </Grid>
                   </Grid>
                 </Grid>
+                <Divider sx={{ width: '100%' }} style={{ paddingTop: 8 }} />
                 <Grid item xs={12} pt={1}>
                   <Grid container>
                     <Grid item xs={6}>
