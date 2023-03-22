@@ -17,6 +17,7 @@ import { usePurchasePanelContext } from '../../PurchasePanelProvider'
 import { PurchaseAdditionalFormCard } from '../PurchaseAdditionals/PurchaseAdditionalFormCard'
 import { SelectPurchaseRules } from '../PurchaseAdditionals/SelectPurchaseRules'
 import { PurchaseEmbroideryCard } from '../PurchaseEmbroidery/PurchaseEmbroideryCard'
+import { PurchaseEmbroideryColorCard } from '../PurchaseEmbroidery/PurchaseEmbroideryColorCard'
 import { PurchaseInfoCard } from '../PurchaseInfo/PurchaseInfoCard'
 import { SelectCustomerCard } from '../PurchaseInfo/SelectCustomerCard'
 import { PurchaseSuccess } from './PurchaseSuccess'
@@ -81,7 +82,7 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
     if (success) {
       setpurchaseId(id)
       setSaved(true)
-      clearAll()
+      clearAll?.()
     } else toast(message, { type: 'error' })
   }, [purchase, initialPurchaseId, clearAll])
 
@@ -102,6 +103,9 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
         </PanelWrapper>
         <PanelWrapper>
           <PurchaseEmbroideryCard onSuccess={onSuccess} />
+        </PanelWrapper>
+        <PanelWrapper>
+          <PurchaseEmbroideryColorCard onSuccess={onSuccess} />
         </PanelWrapper>
         <PanelWrapper>
           <Grid container>

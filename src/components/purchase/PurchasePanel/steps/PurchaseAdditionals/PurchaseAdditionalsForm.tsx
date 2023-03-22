@@ -97,7 +97,6 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
           <Field
             name="points"
             number
-            int
             label="Qtd. de pontos do bordado"
             onChange={updateTotalPrice}
             autoComplete="off"
