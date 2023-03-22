@@ -1,18 +1,8 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
-export function usePersistedState<T = any>(
-  name: string,
-  defaultValue: T
-): [T, Dispatch<SetStateAction<T>>, () => void] {
+export function usePersistedState<T = any>(name: string, defaultValue: T): [T, Dispatch<SetStateAction<T>>] {
   const [value, setValue] = useState(defaultValue)
   const [rendered, setRendered] = useState(0)
-
-  const clearStorage = useCallback(() => {
-    if (localStorage) {
-      localStorage.removeItem(name)
-      setValue(defaultValue)
-    }
-  }, [name, defaultValue])
 
   useEffect(() => {
     try {
@@ -36,5 +26,5 @@ export function usePersistedState<T = any>(
     } catch {}
   }, [name, value])
 
-  return [value, setValue, clearStorage]
+  return [value, setValue]
 }
