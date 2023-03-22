@@ -17,6 +17,7 @@ export interface PurchaseAdditionals {
   points?: number
   value?: number
   paid?: boolean
+  developmentPrice?: number
   done?: boolean
   qtd?: number
 }
@@ -104,15 +105,16 @@ export const PurchasePanelProvider: React.FC<Props> = ({ children, purchaseId })
   )
 
   const changeAdditionals = useCallback(
-    (additionals: Purchase) => {
+    (additionals: any) => {
       setAdditionals(old => {
         const done = additionals?.done || old?.done
         const paid = additionals?.paid || old?.paid
         const points = additionals?.points || old?.points
         const qtd = additionals?.qtd || old?.qtd
         const value = additionals?.value || old?.value
+        const developmentPrice = additionals?.developmentPrice || old?.developmentPrice
 
-        return { ...old, done, paid, points, qtd, value }
+        return { ...old, done, paid, points, qtd, value, developmentPrice }
       })
     },
     [setAdditionals]

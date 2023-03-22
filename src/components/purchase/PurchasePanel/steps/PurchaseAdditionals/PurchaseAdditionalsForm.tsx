@@ -25,6 +25,11 @@ interface FormData {
   qtd?: number
   value?: number
   points?: number
+  developmentPrice?: number
+}
+
+const initialFormData: FormData = {
+  developmentPrice: 35
 }
 
 export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
@@ -39,6 +44,7 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
 
   const [unityValue, setUnityValue] = useState(formatPrice(0))
   const [totalPrice, setTotalPrice] = useState(formatPrice(0))
+  const [developmentPrice, setDevelopmentPrice] = useState(0)
 
   const fetchPurchaseRules = useCallback(async () => {
     const response = await getConfig('purchaseRules')
@@ -58,17 +64,25 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
 
     const originalPrice = calculatePurchaseOriginalValue(qtd, points, purchaseRules)
     if (originalPrice) setUnityValue(formatPrice(originalPrice / qtd))
-    const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, priceRules)
+    const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, priceRules, developmentPrice)
 
     setTotalPrice(formatPrice(totalPrice))
     formRef.current.setFieldValue('value', Number(totalPrice.toFixed(2)))
-  }, [purchaseRules, priceRules])
+  }, [purchaseRules, priceRules, developmentPrice])
 
   useEffect(() => {
     updateTotalPrice()
   }, [priceRules?.length, updateTotalPrice])
 
   const changeUnityValue = useCallback(e => setUnityValue(e.target.value), [])
+  const changeDevelopmentPrice = useCallback(
+    e => {
+      const value = Number(e?.target?.value)
+      setDevelopmentPrice(value)
+      updateTotalPrice()
+    },
+    [updateTotalPrice]
+  )
 
   const updateForm = useCallback(() => {
     setUpdated(true)
@@ -88,8 +102,18 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
   )
 
   return (
-    <Form ref={formRef} onSubmit={handleSubmit}>
+    <Form ref={formRef} initialData={initialFormData} onSubmit={handleSubmit}>
       <Grid container>
+        <Grid item xs={12} sm={6}>
+          <Field
+            name="developmentPrice"
+            number
+            label="Taxa de desenvolvimento"
+            onChange={changeDevelopmentPrice}
+            autoComplete="off"
+          />
+        </Grid>
+        <Grid item sm={6}></Grid>
         <Grid item xs={12} sm={6}>
           <Field name="qtd" number int label="Qtd. de peças" autoComplete="off" onChange={updateTotalPrice} />
         </Grid>

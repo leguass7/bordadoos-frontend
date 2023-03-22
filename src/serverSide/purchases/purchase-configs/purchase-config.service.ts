@@ -8,7 +8,7 @@ import { priceRuleService } from '~/serverSide/priceRules/priceRule.service'
 import { IPurchaseConfigFilter } from './purchase-config.dto'
 import { calculatePurchaseOriginalValue, calculatePurchaseTotalValue } from './purchase-config.helper'
 
-async function save(purchase: Purchase, ruleIds: number[], isAdmin = false) {
+async function save(purchase: Purchase, ruleIds: number[], developmentPrice = 35, isAdmin = false) {
   const { qtd, points, id, value } = purchase
 
   const config = await configService.getOne<IConfigPurchaseRules>('purchaseRules')
@@ -21,11 +21,11 @@ async function save(purchase: Purchase, ruleIds: number[], isAdmin = false) {
   if (!rules) return null
 
   const forceValue = !!(isAdmin && value)
-  const totalValue = forceValue ? value : calculatePurchaseTotalValue(originalValue, qtd, rules)
+  const totalValue = forceValue ? value : calculatePurchaseTotalValue(originalValue, qtd, rules, developmentPrice)
 
   const purchaseRule: PurchaseRules = isRetail ? 'RETAIL' : 'WHOLESALE'
 
-  const data = { originalValue, totalValue, purchaseRule }
+  const data = { originalValue, totalValue, purchaseRule, developmentPrice }
   const priceRules = ruleIds?.map?.(id => ({ id })) ?? []
 
   const purchaseConfig = await prisma.purchaseConfig.upsert({

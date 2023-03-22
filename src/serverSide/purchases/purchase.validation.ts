@@ -29,7 +29,8 @@ export const createPurchasesSchema = celebrate({
     ),
     employeeObs: Joi.string().allow(''),
     clientObs: Joi.string().allow(''),
-    name: Joi.string()
+    name: Joi.string(),
+    developmentPrice: Joi.number().allow('')
   }
 })
 
@@ -61,7 +62,8 @@ export const updatePurchasesSchema = celebrate({
     ),
     employeeObs: Joi.string().allow(''),
     clientObs: Joi.string().allow(''),
-    name: Joi.string().allow('')
+    name: Joi.string().allow(''),
+    developmentPrice: Joi.number().allow('')
   }
 })
 
