@@ -304,8 +304,9 @@ enum PurchaseRules {
 model PurchaseConfig {
   id Int @id @default(autoincrement()) @db.UnsignedInt
 
-  originalValue Float @default(0)
-  totalValue    Float @default(0)
+  originalValue    Float @default(0)
+  developmentPrice Float @default(35)
+  totalValue       Float @default(0)
 
   priceRules   PriceRules[]
   purchaseRule PurchaseRules
