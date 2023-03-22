@@ -19,7 +19,7 @@ export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev, onSuccess 
   const { embroidery } = usePurchasePanelContext()
 
   const disableNext = useMemo(() => {
-    return !(embroidery?.typeId && embroidery?.categoryId && embroidery?.label)
+    return !(embroidery?.typeId && embroidery?.categoryId && embroidery?.label && !!embroidery.colors?.length)
   }, [embroidery])
 
   return (
@@ -51,7 +51,7 @@ export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev, onSuccess 
               <Grid container justifyContent="center">
                 {disableNext ? (
                   <Typography align="center" variant="caption" color="red">
-                    Adicione nome, tipo e posição do bordado para prosseguir
+                    Adicione nome, tipo, posição e ao menos uma cor do bordado para prosseguir
                   </Typography>
                 ) : null}
               </Grid>
