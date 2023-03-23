@@ -63,16 +63,20 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                 <Typography variant="h6">Cliente</Typography>
                 <Grid container justifyContent="space-between">
                   <Grid item xs={6}>
-                    <Typography variant="body1">Nome</Typography>
-                    <Typography variant="body1">Telefone</Typography>
+                    <Grid container flexDirection="column" height="100%" justifyContent="space-between">
+                      <Typography variant="body1">Nome</Typography>
+                      <Typography variant="body1">Telefone</Typography>
+                    </Grid>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography align="right" variant="body1">
-                      {purchase.client.name}
-                    </Typography>
-                    <Typography align="right" variant="body1">
-                      {purchase.client.phone}
-                    </Typography>
+                    <Grid container flexDirection="column" justifyContent="space-between">
+                      <Typography align="right" variant="body1">
+                        {purchase.client.name}
+                      </Typography>
+                      <Typography align="right" variant="body1">
+                        {purchase.client.phone}
+                      </Typography>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
