@@ -1,5 +1,3 @@
-import { Fragment } from 'react'
-
 import { Grid, Table, TableHead, TableRow, Typography, TableCell, TableBody, Divider } from '@mui/material'
 import { PriceRules } from '@prisma/client'
 import styled from 'styled-components'
@@ -17,7 +15,6 @@ interface Props {
 
 export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
   const originalValue = purchase?.purchaseItem?.[0].originalValue || 0
-  const developmentPrice = purchase.purchaseItem?.[0]?.developmentPrice || 0
 
   return (
     <Content>
@@ -122,7 +119,7 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                         {formatPrice(originalValue)}
                       </Typography>
                       <Typography align="right" variant="body1">
-                        {formatPrice(developmentPrice)}
+                        {formatPrice(purchase?.developmentPrice)}
                       </Typography>
                       <Typography align="right" variant="body1">
                         {formatPrice(purchase.value)}
@@ -152,7 +149,6 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                   </Grid>
                 </Grid>
               </Grid>
-              {/* aaa */}
             </Grid>
           </Grid>
 
@@ -162,7 +158,7 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                 <Typography align="center" variant="h6">
                   Adicionais
                 </Typography>
-                <Table>
+                <Table size="small">
                   <TableHead>
                     <TableRow>
                       <TableCell>Nome</TableCell>
