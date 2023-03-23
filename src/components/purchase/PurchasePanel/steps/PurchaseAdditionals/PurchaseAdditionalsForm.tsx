@@ -25,6 +25,11 @@ interface FormData {
   qtd?: number
   value?: number
   points?: number
+  developmentPrice?: number
+}
+
+const initialFormData: FormData = {
+  developmentPrice: 35
 }
 
 export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
@@ -38,7 +43,6 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
   const [purchaseRules, setPurchaseRules] = useState()
 
   const [unityValue, setUnityValue] = useState(formatPrice(0))
-  const [totalPrice, setTotalPrice] = useState(formatPrice(0))
 
   const fetchPurchaseRules = useCallback(async () => {
     const response = await getConfig('purchaseRules')
@@ -55,12 +59,14 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
     const data = formRef.current?.getData() as FormData
     const qtd = Number(data?.qtd) || 0
     const points = Number(data?.points) || 0
+    const developmentPrice = Number(data?.developmentPrice) || 0
 
-    const originalPrice = calculatePurchaseOriginalValue(qtd, points, purchaseRules)
-    if (originalPrice) setUnityValue(formatPrice(originalPrice / qtd))
+    const originalPrice = calculatePurchaseOriginalValue(qtd, points, developmentPrice, purchaseRules)
+    const priceWithoutDevelopment = originalPrice - developmentPrice
+
+    if (originalPrice) setUnityValue(formatPrice(priceWithoutDevelopment / qtd))
     const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, priceRules)
 
-    setTotalPrice(formatPrice(totalPrice))
     formRef.current.setFieldValue('value', Number(totalPrice.toFixed(2)))
   }, [purchaseRules, priceRules])
 
@@ -88,8 +94,18 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
   )
 
   return (
-    <Form ref={formRef} onSubmit={handleSubmit}>
+    <Form ref={formRef} initialData={initialFormData} onSubmit={handleSubmit}>
       <Grid container>
+        <Grid item xs={12} sm={6}>
+          <Field
+            name="developmentPrice"
+            number
+            label="Taxa de desenvolvimento"
+            autoComplete="off"
+            onChange={updateTotalPrice}
+          />
+        </Grid>
+        <Grid item sm={6}></Grid>
         <Grid item xs={12} sm={6}>
           <Field name="qtd" number int label="Qtd. de peças" autoComplete="off" onChange={updateTotalPrice} />
         </Grid>
@@ -97,7 +113,6 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
           <Field
             name="points"
             number
-            int
             label="Qtd. de pontos do bordado"
             onChange={updateTotalPrice}
             autoComplete="off"
@@ -117,11 +132,7 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <div>
-            {isAdmin() ? (
-              <Field fullWidth name="value" number label="Total" autoComplete="off" />
-            ) : (
-              <TextField style={{ padding: 4 }} value={totalPrice} disabled={true} label="Valor total" fullWidth />
-            )}
+            <Field fullWidth name="value" number label="Total" autoComplete="off" disabled={!isAdmin()} />
           </div>
         </Grid>
       </Grid>

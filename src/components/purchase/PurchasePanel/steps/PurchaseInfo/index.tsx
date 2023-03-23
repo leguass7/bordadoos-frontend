@@ -17,7 +17,7 @@ export const PurchaseInfo: React.FC<Props> = ({ onNext, onSuccess }) => {
   const { info } = usePurchasePanelContext()
 
   const disableNext = useMemo(() => {
-    return !info?.clientId
+    return !info?.clientId || !info?.entryDate
   }, [info])
 
   return (
@@ -44,7 +44,7 @@ export const PurchaseInfo: React.FC<Props> = ({ onNext, onSuccess }) => {
               <Grid container justifyContent="center">
                 {disableNext ? (
                   <Typography align="center" variant="caption" color="red">
-                    Selecione o cliente para prosseguir
+                    Selecione o cliente e uma data de entrada para prosseguir
                   </Typography>
                 ) : null}
               </Grid>

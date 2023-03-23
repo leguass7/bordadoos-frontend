@@ -9,12 +9,12 @@ import { IPurchaseConfigFilter } from './purchase-config.dto'
 import { calculatePurchaseOriginalValue, calculatePurchaseTotalValue } from './purchase-config.helper'
 
 async function save(purchase: Purchase, ruleIds: number[], isAdmin = false) {
-  const { qtd, points, id, value } = purchase
+  const { qtd, points, id, value, developmentPrice } = purchase
 
   const config = await configService.getOne<IConfigPurchaseRules>('purchaseRules')
   if (!config?.meta) return null
 
-  const originalValue = calculatePurchaseOriginalValue(qtd, points, config?.meta)
+  const originalValue = calculatePurchaseOriginalValue(qtd, points, developmentPrice, config?.meta)
   const isRetail = !!(purchase.qtd <= config.meta.retail.maxQtd)
 
   const rules = await priceRuleService.listRules({ id: ruleIds })

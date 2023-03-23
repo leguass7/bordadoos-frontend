@@ -1,5 +1,3 @@
-import { Fragment } from 'react'
-
 import { Grid, Table, TableHead, TableRow, Typography, TableCell, TableBody, Divider } from '@mui/material'
 import { PriceRules } from '@prisma/client'
 import styled from 'styled-components'
@@ -65,16 +63,20 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                 <Typography variant="h6">Cliente</Typography>
                 <Grid container justifyContent="space-between">
                   <Grid item xs={6}>
-                    <Typography variant="body1">Nome</Typography>
-                    <Typography variant="body1">Telefone</Typography>
+                    <Grid container flexDirection="column" height="100%" justifyContent="space-between">
+                      <Typography variant="body1">Nome</Typography>
+                      <Typography variant="body1">Telefone</Typography>
+                    </Grid>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography align="right" variant="body1">
-                      {purchase.client.name}
-                    </Typography>
-                    <Typography align="right" variant="body1">
-                      {purchase.client.phone}
-                    </Typography>
+                    <Grid container flexDirection="column" justifyContent="space-between">
+                      <Typography align="right" variant="body1">
+                        {purchase.client.name}
+                      </Typography>
+                      <Typography align="right" variant="body1">
+                        {purchase.client.phone}
+                      </Typography>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -107,6 +109,7 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                       <Typography variant="body1">Valor:</Typography>
                       <Typography variant="body1">Quantidade:</Typography>
                       <Typography variant="body1">Subtotal:</Typography>
+                      <Typography variant="body1">desenvolvimento:</Typography>
                       <Typography variant="body1">Total:</Typography>
                     </Grid>
                     <Grid item xs={6}>
@@ -120,11 +123,15 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                         {formatPrice(originalValue)}
                       </Typography>
                       <Typography align="right" variant="body1">
+                        {formatPrice(purchase?.developmentPrice)}
+                      </Typography>
+                      <Typography align="right" variant="body1">
                         {formatPrice(purchase.value)}
                       </Typography>
                     </Grid>
                   </Grid>
                 </Grid>
+                <Divider sx={{ width: '100%' }} style={{ paddingTop: 8 }} />
                 <Grid item xs={12} pt={1}>
                   <Grid container>
                     <Grid item xs={6}>
@@ -146,7 +153,6 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                   </Grid>
                 </Grid>
               </Grid>
-              {/* aaa */}
             </Grid>
           </Grid>
 
@@ -156,7 +162,7 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                 <Typography align="center" variant="h6">
                   Adicionais
                 </Typography>
-                <Table>
+                <Table size="small">
                   <TableHead>
                     <TableRow>
                       <TableCell>Nome</TableCell>

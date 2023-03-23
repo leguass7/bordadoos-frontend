@@ -17,6 +17,7 @@ import { usePurchasePanelContext } from '../../PurchasePanelProvider'
 import { PurchaseAdditionalFormCard } from '../PurchaseAdditionals/PurchaseAdditionalFormCard'
 import { SelectPurchaseRules } from '../PurchaseAdditionals/SelectPurchaseRules'
 import { PurchaseEmbroideryCard } from '../PurchaseEmbroidery/PurchaseEmbroideryCard'
+import { PurchaseEmbroideryColorCard } from '../PurchaseEmbroidery/PurchaseEmbroideryColorCard'
 import { PurchaseInfoCard } from '../PurchaseInfo/PurchaseInfoCard'
 import { SelectCustomerCard } from '../PurchaseInfo/SelectCustomerCard'
 import { PurchaseSuccess } from './PurchaseSuccess'
@@ -29,7 +30,7 @@ interface Props {
 }
 
 export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, onSuccess, restart }) => {
-  const { additionals, info, embroidery, ruleIds } = usePurchasePanelContext()
+  const { additionals, info, embroidery, ruleIds, clearAll } = usePurchasePanelContext()
 
   const { data } = useSession()
 
@@ -40,12 +41,14 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
   const isMounted = useIsMounted()
 
   const fetchUser = useCallback(async () => {
+    if (user?.name) return null
+
     const userId = parseInt(`${data.user?.userId}`)
     if (!userId || initialPurchaseId) return null
 
-    const { success, user } = await getUserForPurchase(userId)
-    if (isMounted() && success) setUser(user)
-  }, [isMounted, data?.user, initialPurchaseId])
+    const { success, user: foundUser } = await getUserForPurchase(userId)
+    if (isMounted() && success) setUser(foundUser)
+  }, [isMounted, data?.user, initialPurchaseId, user])
 
   useEffect(() => {
     fetchUser()
@@ -81,8 +84,9 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
     if (success) {
       setpurchaseId(id)
       setSaved(true)
+      clearAll?.()
     } else toast(message, { type: 'error' })
-  }, [purchase, initialPurchaseId])
+  }, [purchase, initialPurchaseId, clearAll])
 
   return saved ? (
     <PurchaseSuccess name={purchaseCod} edited={!!initialPurchaseId} goBack={restart} purchaseId={purchaseId} />
@@ -101,6 +105,9 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
         </PanelWrapper>
         <PanelWrapper>
           <PurchaseEmbroideryCard onSuccess={onSuccess} />
+        </PanelWrapper>
+        <PanelWrapper>
+          <PurchaseEmbroideryColorCard onSuccess={onSuccess} />
         </PanelWrapper>
         <PanelWrapper>
           <Grid container>

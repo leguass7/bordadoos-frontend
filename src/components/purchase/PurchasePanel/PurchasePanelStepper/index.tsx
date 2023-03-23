@@ -8,14 +8,14 @@ const steps = ['Informações do pedido', 'Informações do bordado', 'Informaç
 
 interface Props {
   step?: number
-  hidePartnerSelection?: boolean
+  setStep?: (step: number) => void
 }
 
-export const PurchasePanelStepper: React.FC<Props> = ({ step = 0 }) => {
+export const PurchasePanelStepper: React.FC<Props> = ({ step = 0, setStep }) => {
   return (
     <Stepper alternativeLabel activeStep={step} connector={<QontoConnector />}>
-      {steps.map(label => (
-        <Step key={label}>
+      {steps.map((label, index) => (
+        <Step key={label} onClick={() => setStep(index)}>
           <StepLabel StepIconComponent={QontoStepIcon}>{label}</StepLabel>
         </Step>
       ))}

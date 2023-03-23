@@ -222,8 +222,9 @@ model EmbroideryPosition {
 model Purchase {
   id Int @id @default(autoincrement())
 
-  value Float @default(0)
-  qtd   Int?  @default(0)
+  value            Float @default(0)
+  developmentPrice Float @default(35)
+  qtd              Int?  @default(0)
 
   clientId   Int
   typeId     Int? // EmbroideryTypeId

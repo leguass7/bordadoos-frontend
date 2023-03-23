@@ -19,19 +19,15 @@ const initialData: PurchasePanelInfo = {
 
 export const PurchaseInfoForm: React.FC<Props> = ({ onSuccess }) => {
   const formRef = useRef<FormHandles>(null)
-  const { info, changeInfo } = usePurchasePanelContext()
+  const { changeInfo, info } = usePurchasePanelContext()
 
-  const [localInfo] = useState(info)
-
-  const autoUpdate = useCallback(() => {
-    const data = { ...initialData, ...localInfo }
-    changeInfo(data)
-    formRef.current.setData(data)
-  }, [changeInfo, localInfo])
+  const updateForm = useCallback(() => {
+    formRef.current.setData({ ...initialData, ...info })
+  }, [info])
 
   useEffect(() => {
-    autoUpdate()
-  }, [autoUpdate])
+    updateForm()
+  }, [updateForm])
 
   const handleSubmit = useCallback(
     (data: PurchasePanelInfo) => {
@@ -42,7 +38,7 @@ export const PurchaseInfoForm: React.FC<Props> = ({ onSuccess }) => {
   )
 
   return (
-    <Form ref={formRef} initialData={initialData} onSubmit={handleSubmit}>
+    <Form ref={formRef} onSubmit={handleSubmit}>
       <Grid container>
         <Grid item xs={12} sm={6}>
           <Datepicker label="data de entrada" name="entryDate" />

@@ -1,5 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+import { isDefined } from '~/helpers/variables'
+
 import { IResponseApi } from '../api.interface'
 import ErrorApi from '../ErrorApi'
 import { PaginationQueryDto } from '../pagination/pagination.dto'
@@ -10,13 +12,20 @@ import type { IPurchaseService } from './purchase.service'
 function create(purchaseService: IPurchaseService, purchaseConfigService: IPurchaseConfigService) {
   return async (req: IRequestFilter, res: NextApiResponse) => {
     const { userId, level } = req.auth
-    const data: any = { ...req.body, updatedBy: userId, createdBy: userId, rules: undefined }
+
+    const data: any = {
+      ...req.body,
+      updatedBy: userId,
+      createdBy: userId,
+      rules: undefined
+    }
+
     const isAdmin = level >= 8
 
     const createdPurchase = await purchaseService.create(data)
     if (!createdPurchase) throw ErrorApi({ status: 500, message: 'error while creating purchase' })
 
-    const rules = req.body.rules
+    const rules = req.body?.rules
 
     const config = await purchaseConfigService.save(createdPurchase, rules, isAdmin)
 
@@ -36,12 +45,13 @@ function update(purchaseService: IPurchaseService, purchaseConfigService: IPurch
     const { purchaseId } = req.query
 
     if (!userId) throw ErrorApi({ status: 401, message: 'User not logged' })
+
     const data = { ...req.body, updatedBy: userId, rules: undefined }
     const isAdmin = level >= 8
 
     const updatedPurchase = await purchaseService.update(purchaseId, data)
 
-    const rules = req.body.rules
+    const rules = req.body?.rules
 
     const config = await purchaseConfigService.save(updatedPurchase, rules, isAdmin)
     const diffValues = config?.totalValue !== updatedPurchase?.value

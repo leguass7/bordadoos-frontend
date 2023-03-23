@@ -21,7 +21,12 @@ function calculateWholesalePrice(points: number, { pricePerThousandPoints }: ICo
   return (points / 1000) * pricePerThousandPoints
 }
 
-export function calculatePurchaseOriginalValue(qtd = 0, points = 0, config?: IConfigPurchaseRules) {
+export function calculatePurchaseOriginalValue(
+  qtd = 0,
+  points = 0,
+  developmentPrice = 0,
+  config?: IConfigPurchaseRules
+) {
   if (!config.retail || !config.wholesale) return 0
   const isRetail = !!(qtd <= config?.retail?.maxQtd)
 
@@ -29,7 +34,10 @@ export function calculatePurchaseOriginalValue(qtd = 0, points = 0, config?: ICo
     ? calculateRetailPrice(points, config?.retail)
     : calculateWholesalePrice(points, config?.wholesale)
 
-  return unityValue * qtd
+  const price = unityValue * qtd
+  const originalValue = price + developmentPrice
+
+  return originalValue
 }
 
 export function calculatePurchaseTotalValue(originalValue: number, qtd: number, rules: PriceRules[] = []) {
@@ -41,7 +49,7 @@ export function calculatePurchaseTotalValue(originalValue: number, qtd: number, 
     return order
   })
 
-  const totalValue = sortedRules.reduce((ac, at) => {
+  const totalPrice = sortedRules.reduce((ac, at) => {
     const { modality, type, value } = at
 
     const percValue = value / 100 + 1
@@ -56,5 +64,5 @@ export function calculatePurchaseTotalValue(originalValue: number, qtd: number, 
     return ac
   }, originalValue)
 
-  return totalValue
+  return totalPrice
 }

@@ -77,6 +77,8 @@ async function paginate(
     'actived',
     'paid',
     'done',
+    'label',
+    'name',
     'qtd',
     'value'
   ]
