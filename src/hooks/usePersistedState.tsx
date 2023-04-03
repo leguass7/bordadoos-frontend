@@ -1,10 +1,15 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
-export function usePersistedState<T = any>(name: string, defaultValue: T): [T, Dispatch<SetStateAction<T>>] {
+export function usePersistedState<T = any>(
+  name: string,
+  defaultValue: T,
+  persist = true
+): [T, Dispatch<SetStateAction<T>>] {
   const [value, setValue] = useState(defaultValue)
   const [rendered, setRendered] = useState(0)
 
   useEffect(() => {
+    if (!persist) return
     try {
       if (!localStorage) return null
 
@@ -16,15 +21,16 @@ export function usePersistedState<T = any>(name: string, defaultValue: T): [T, D
         setRendered(old => old + 1)
       }
     } catch {}
-  }, [name, value, defaultValue, rendered])
+  }, [name, value, defaultValue, rendered, persist])
 
   useEffect(() => {
+    if (!persist) return
     try {
       if (!localStorage) return null
 
       localStorage.setItem(name, JSON.stringify(value))
     } catch {}
-  }, [name, value])
+  }, [name, value, persist])
 
   return [value, setValue]
 }

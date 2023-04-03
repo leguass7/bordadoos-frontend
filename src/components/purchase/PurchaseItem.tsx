@@ -2,7 +2,7 @@ import { IframeHTMLAttributes, memo, useCallback, useRef, useState } from 'react
 
 import { useRouter } from 'next/router'
 
-import { Edit, Print } from '@mui/icons-material'
+import { Edit, Lock, LockOpen, Print } from '@mui/icons-material'
 import { Chip, IconButton, Switch, Typography } from '@mui/material'
 
 import { formatDate, toMoney } from '~/helpers/string'
@@ -50,37 +50,53 @@ const overflowTextProps = {
 //   )
 // }
 
-interface Props extends PurchaseWithRelations {}
+interface Props extends PurchaseWithRelations {
+  isAdmin?: boolean
+}
 
-const PurchaseItemComponent: React.FC<Props> = ({ label, name, ...props }) => {
-  const { value = 0, done = false, client, id, category, type, createdAt, deliveryDate } = props
+const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props }) => {
+  const { value = 0, done = false, id, category, type, createdAt, deliveryDate, lock } = props
   const hasLabel = !!(type?.label || category?.label)
-  const [itemDone, setItemDone] = useState(done)
+
   const { push } = useRouter()
+  const [itemDone, setItemDone] = useState(done)
+  const [itemLock, setItemLock] = useState(!!lock)
 
   // const originalValue = purchaseItem?.[0]?.originalValue || value
 
-  const [expand, setExpand] = useState(false)
+  // const [expand, setExpand] = useState(false)
 
   const isMounted = useIsMounted()
   const [loading, setLoading] = useState(false)
 
   const toggleActived = useCallback(
     async e => {
-      if (id) {
-        const newDone = e.target.checked
-        setItemDone(newDone)
+      if (!id) return
 
-        setLoading(true)
+      const newDone = e.target.checked
+      setItemDone(newDone)
 
-        await putDefault(`/purchases/${id}`, { done: newDone })
-        if (isMounted()) {
-          setLoading(false)
-        }
-      }
+      setLoading(true)
+      await putDefault(`/purchases/${id}`, { done: newDone })
+      if (isMounted()) setLoading(false)
     },
     [isMounted, id]
   )
+
+  const toggleLock = useCallback(async () => {
+    if (!id) return
+
+    let newLock = false
+
+    setItemLock(old => {
+      newLock = !old
+      return newLock
+    })
+
+    setLoading(true)
+    await putDefault(`/purchases/${id}`, { lock: newLock })
+    if (isMounted()) setLoading(false)
+  }, [isMounted, id])
 
   const handleEdit = useCallback(() => {
     push(`/admin?purchaseId=${id}`)
@@ -113,7 +129,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, ...props }) => {
       <CardItem
         spacing={4}
         width="50%"
-        expand={expand}
+        // expand={expand}
         // CollapsibleContent={<CollapsibleContent value={originalValue} createdAt={createdAt} qtd={qtd} />}
       >
         <Row align="stretch">
@@ -132,7 +148,13 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, ...props }) => {
             <Typography variant="h6" {...overflowTextProps}>
               {label ?? '--'}
             </Typography>
-            <Switch name="done" checked={itemDone} color="info" onChange={toggleActived} disabled={loading} />
+            <Switch
+              name="done"
+              checked={itemDone}
+              color="info"
+              onChange={toggleActived}
+              disabled={loading || itemLock}
+            />
             <Typography pl={1} variant="caption" color="GrayText" htmlFor="done" component="label">
               Finalizado
             </Typography>
@@ -166,11 +188,14 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, ...props }) => {
               </Typography>
             </Column> */}
             <Row align="flex-end" justify="flex-end">
-              <IconButton onClick={handleEdit}>
+              <IconButton disabled={!!itemLock || loading} onClick={handleEdit}>
                 <Edit />
               </IconButton>
               <IconButton onClick={handlePrint}>
                 <Print />
+              </IconButton>
+              <IconButton disabled={!isAdmin || loading} onClick={toggleLock}>
+                {itemLock ? <Lock /> : <LockOpen />}
               </IconButton>
               {/* <CardExpandMore
                 expand={expand}

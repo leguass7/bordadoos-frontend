@@ -42,8 +42,10 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
       changeAdditionals(purchase)
       changeEmbroidery(purchase)
       changeInfo(purchase)
+
+      if (purchase?.lock) restart()
     }
-  }, [purchaseId, isMounted, changeAdditionals, changeEmbroidery, changeInfo])
+  }, [purchaseId, isMounted, changeAdditionals, changeEmbroidery, changeInfo, restart])
 
   useEffect(() => {
     updatePurchaseData()

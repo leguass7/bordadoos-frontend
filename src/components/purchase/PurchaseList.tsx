@@ -4,6 +4,8 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { Container } from '@mui/material'
 import { Prisma } from '@prisma/client'
 
+import { useHasAccess } from '~/hooks/useHasAccess'
+
 import { CircleLoading } from '../CircleLoading'
 import { usePagination } from '../Providers/PaginationProvider'
 import { Paragraph } from '../shared/web/src/styled'
@@ -16,6 +18,7 @@ export type PurchaseWithRelations = Prisma.PurchaseGetPayload<{
 
 export const PurchaseList: React.FC = () => {
   const { data, hasMore, fetchMoreData, pagination } = usePagination<PurchaseWithRelations>()
+  const isAdmin = useHasAccess(8)
 
   const renderMessage = useCallback((text: string) => {
     return (
@@ -53,7 +56,7 @@ export const PurchaseList: React.FC = () => {
           }}
         >
           {data?.map?.(item => {
-            return <PurchaseItem key={`purchase-${item?.id}-${item?.deliveryDate}`} {...item} />
+            return <PurchaseItem key={`purchase-${item?.id}-${item?.deliveryDate}`} isAdmin={isAdmin()} {...item} />
           })}
         </div>
       </InfiniteScroll>
