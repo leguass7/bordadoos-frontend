@@ -27,9 +27,10 @@ interface Props {
   initialPurchaseId?: number
   onSuccess?: () => void
   restart?: () => void
+  duplicated?: boolean
 }
 
-export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, onSuccess, restart }) => {
+export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, onSuccess, restart, duplicated }) => {
   const { additionals, info, embroidery, ruleIds, clearAll } = usePurchasePanelContext()
 
   const { data } = useSession()
@@ -73,8 +74,8 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
   }, [additionals, info, embroidery, ruleIds, initialPurchaseId, purchaseCod])
 
   const handleSave = useCallback(async () => {
-    const route = initialPurchaseId ? `/purchases/${initialPurchaseId}` : `/purchases`
-    const fetcher = initialPurchaseId ? putDefault : postDefault
+    const route = initialPurchaseId && !duplicated ? `/purchases/${initialPurchaseId}` : `/purchases`
+    const fetcher = initialPurchaseId && !duplicated ? putDefault : postDefault
     const data = { ...purchase }
 
     const { success, message, purchase: foundPurchase } = await fetcher<IResponsePurchase>(route, data)
@@ -86,7 +87,7 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
       setSaved(true)
       clearAll?.()
     } else toast(message, { type: 'error' })
-  }, [purchase, initialPurchaseId, clearAll])
+  }, [purchase, initialPurchaseId, clearAll, duplicated])
 
   return saved ? (
     <PurchaseSuccess name={purchaseCod} edited={!!initialPurchaseId} goBack={restart} purchaseId={purchaseId} />

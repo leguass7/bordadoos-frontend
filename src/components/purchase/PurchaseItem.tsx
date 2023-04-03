@@ -1,16 +1,16 @@
-import { IframeHTMLAttributes, memo, useCallback, useRef, useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { Edit, Lock, LockOpen, Print } from '@mui/icons-material'
-import { Chip, IconButton, Switch, Typography } from '@mui/material'
+import { Edit, Lock, LockOpen, Print, ContentCopy } from '@mui/icons-material'
+import { IconButton, Switch, Typography } from '@mui/material'
 
 import { formatDate, toMoney } from '~/helpers/string'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { putDefault } from '~/services/api'
 import { Column, Row } from '~/styles/grid'
 
-import { CardExpandMore, CardItem } from '../ListItems/CardItem'
+import { CardItem } from '../ListItems/CardItem'
 import { PurchaseWithRelations } from './PurchaseList'
 
 const overflowTextProps = {
@@ -102,6 +102,10 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
     push(`/admin?purchaseId=${id}`)
   }, [push, id])
 
+  const handleCopy = useCallback(() => {
+    push(`/admin?purchaseId=${id}&duplicated=true`)
+  }, [push, id])
+
   const handlePrint = useCallback(() => {
     const frames = Array.from(document.getElementsByName('printFrame'))
 
@@ -190,6 +194,9 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
             <Row align="flex-end" justify="flex-end">
               <IconButton disabled={!!itemLock || loading} onClick={handleEdit}>
                 <Edit />
+              </IconButton>
+              <IconButton disabled={loading} onClick={handleCopy}>
+                <ContentCopy />
               </IconButton>
               <IconButton onClick={handlePrint}>
                 <Print />

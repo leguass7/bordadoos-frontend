@@ -17,10 +17,11 @@ import { PurchaseSummary } from './steps/PurchaseSummary'
 
 interface Props {
   purchaseId?: number
+  duplicated?: boolean
 }
 
 // Depends on PurchasePanelProvider
-export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
+export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
   const { changeAdditionals, changeEmbroidery, changeInfo } = usePurchasePanelContext()
   const [step, setStep] = useState(0)
   const { replace } = useRouter()
@@ -43,9 +44,10 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
       changeEmbroidery(purchase)
       changeInfo(purchase)
 
-      if (purchase?.lock) restart()
+      if (purchase?.lock && duplicated) restart()
+      if (duplicated) toast('Informações copiadas com sucesso', { type: 'success' })
     }
-  }, [purchaseId, isMounted, changeAdditionals, changeEmbroidery, changeInfo, restart])
+  }, [purchaseId, isMounted, changeAdditionals, changeEmbroidery, changeInfo, restart, duplicated])
 
   useEffect(() => {
     updatePurchaseData()
@@ -88,6 +90,7 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId }) => {
             initialPurchaseId={purchaseId}
             onSuccess={showSuccessMessage}
             onPrev={handlePrev}
+            duplicated={duplicated}
           />
         ) : null}
       </Grid>
