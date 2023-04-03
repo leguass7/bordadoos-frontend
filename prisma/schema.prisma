@@ -232,6 +232,7 @@ model Purchase {
 
   createdBy Int
   updatedBy Int
+  lock      Boolean? @default(false)
 
   name        String?
   label       String? @db.VarChar(100)
