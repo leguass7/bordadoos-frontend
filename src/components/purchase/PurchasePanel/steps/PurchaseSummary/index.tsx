@@ -41,15 +41,17 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
   const [user, setUser] = useState<any>({})
   const isMounted = useIsMounted()
 
+  const isEditing = useMemo(() => initialPurchaseId && !duplicated, [initialPurchaseId, duplicated])
+
   const fetchUser = useCallback(async () => {
     if (user?.name) return null
 
     const userId = parseInt(`${data.user?.userId}`)
-    if (!userId || initialPurchaseId) return null
+    if (!userId || isEditing) return null
 
     const { success, user: foundUser } = await getUserForPurchase(userId)
     if (isMounted() && success) setUser(foundUser)
-  }, [isMounted, data?.user, initialPurchaseId, user])
+  }, [isMounted, data?.user, isEditing, user])
 
   useEffect(() => {
     fetchUser()
@@ -68,14 +70,14 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
 
   const purchase = useMemo(() => {
     const optional: Partial<Purchase> = {}
-    if (!initialPurchaseId && purchaseCod) optional.name = purchaseCod
+    if (!isEditing && purchaseCod) optional.name = purchaseCod
 
     return { ...additionals, ...info, ...embroidery, rules: ruleIds, ...optional }
-  }, [additionals, info, embroidery, ruleIds, initialPurchaseId, purchaseCod])
+  }, [additionals, info, embroidery, ruleIds, isEditing, purchaseCod])
 
   const handleSave = useCallback(async () => {
-    const route = initialPurchaseId && !duplicated ? `/purchases/${initialPurchaseId}` : `/purchases`
-    const fetcher = initialPurchaseId && !duplicated ? putDefault : postDefault
+    const route = isEditing ? `/purchases/${initialPurchaseId}` : `/purchases`
+    const fetcher = isEditing ? putDefault : postDefault
     const data = { ...purchase }
 
     const { success, message, purchase: foundPurchase } = await fetcher<IResponsePurchase>(route, data)
@@ -87,7 +89,7 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
       setSaved(true)
       clearAll?.()
     } else toast(message, { type: 'error' })
-  }, [purchase, initialPurchaseId, clearAll, duplicated])
+  }, [purchase, initialPurchaseId, clearAll, isEditing])
 
   return saved ? (
     <PurchaseSuccess name={purchaseCod} edited={!!initialPurchaseId} goBack={restart} purchaseId={purchaseId} />
