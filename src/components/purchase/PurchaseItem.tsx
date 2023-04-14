@@ -3,7 +3,7 @@ import { memo, useCallback, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { Edit, Lock, LockOpen, Print, ContentCopy } from '@mui/icons-material'
-import { IconButton, Switch, Typography } from '@mui/material'
+import { IconButton, Switch, Tooltip, Typography } from '@mui/material'
 
 import { formatDate, toMoney } from '~/helpers/string'
 import { useIsMounted } from '~/hooks/useIsMounted'
@@ -192,18 +192,34 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
               </Typography>
             </Column> */}
             <Row align="flex-end" justify="flex-end">
-              <IconButton disabled={!!itemLock || loading} onClick={handleEdit}>
-                <Edit />
-              </IconButton>
-              <IconButton disabled={loading} onClick={handleCopy}>
-                <ContentCopy />
-              </IconButton>
-              <IconButton onClick={handlePrint}>
-                <Print />
-              </IconButton>
-              <IconButton disabled={!isAdmin || loading} onClick={toggleLock}>
-                {itemLock ? <Lock /> : <LockOpen />}
-              </IconButton>
+              <Tooltip title="Editar pedido">
+                <div>
+                  <IconButton disabled={!!itemLock || loading} onClick={handleEdit}>
+                    <Edit />
+                  </IconButton>
+                </div>
+              </Tooltip>
+              <Tooltip title="Copiar pedido">
+                <div>
+                  <IconButton disabled={loading} onClick={handleCopy}>
+                    <ContentCopy />
+                  </IconButton>
+                </div>
+              </Tooltip>
+              <Tooltip title="Imprimir pedido">
+                <div>
+                  <IconButton onClick={handlePrint}>
+                    <Print />
+                  </IconButton>
+                </div>
+              </Tooltip>
+              <Tooltip title={lock ? 'Desbloquear pedido' : 'Bloquear a edição pedido'}>
+                <div>
+                  <IconButton disabled={!isAdmin || loading} onClick={toggleLock}>
+                    {itemLock ? <Lock /> : <LockOpen />}
+                  </IconButton>
+                </div>
+              </Tooltip>
               {/* <CardExpandMore
                 expand={expand}
                 onClick={() => setExpand(old => !old)}
