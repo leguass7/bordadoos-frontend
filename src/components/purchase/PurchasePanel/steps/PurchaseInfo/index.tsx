@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { ArrowRightAlt } from '@mui/icons-material'
-import { Button, Grid, Tooltip, Typography } from '@mui/material'
+import { Button, Grid, Typography } from '@mui/material'
 
 import { PanelWrapper } from '../../../styles'
 import { usePurchasePanelContext } from '../../PurchasePanelProvider'
