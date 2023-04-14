@@ -39,12 +39,18 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
     if (!purchaseId) return null
     const { purchase } = await findPurchaseWithItems(purchaseId)
 
+    if (duplicated) {
+      purchase.name = null
+      purchase.lock = false
+    }
+
     if (isMounted()) {
       changeAdditionals(purchase)
       changeEmbroidery(purchase)
       changeInfo(purchase)
+      setStep(3)
 
-      if (purchase?.lock && duplicated) restart()
+      if (purchase?.lock && !duplicated) restart()
       if (duplicated) toast('Informações copiadas com sucesso', { type: 'success' })
     }
   }, [purchaseId, isMounted, changeAdditionals, changeEmbroidery, changeInfo, restart, duplicated])
