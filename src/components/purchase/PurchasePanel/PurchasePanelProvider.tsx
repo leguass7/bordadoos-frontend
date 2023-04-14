@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useMemo } from 'react'
 import { PriceRules, Purchase } from '@prisma/client'
 
 import { removeInvalidValues } from '~/helpers/object'
-import { useStateSelector } from '~/hooks/useStateSelector'
+import { usePersistedState } from '~/hooks/usePersistedState'
 
 export interface PurchasePanelInfo {
   entryDate?: Date
@@ -56,15 +56,19 @@ interface Props {
 }
 
 export const PurchasePanelProvider: React.FC<Props> = ({ children, purchaseId }) => {
-  const [info, setInfo] = useStateSelector<PurchasePanelInfo>(!purchaseId, 'purchase-panel-info', {})
-  const [embroidery, setEmbroidery] = useStateSelector<PurchaseEmbroidery>(!purchaseId, 'purchase-panel-embroidery', {})
+  const [info, setInfo] = usePersistedState<PurchasePanelInfo>('purchase-panel-info', {}, !purchaseId)
+  const [embroidery, setEmbroidery] = usePersistedState<PurchaseEmbroidery>(
+    'purchase-panel-embroidery',
+    {},
+    !purchaseId
+  )
 
-  const [priceRules, setPriceRules] = useStateSelector<PriceRules[]>(!purchaseId, 'purchase-panel-price-rules', [])
+  const [priceRules, setPriceRules] = usePersistedState<PriceRules[]>('purchase-panel-price-rules', [], !purchaseId)
 
-  const [additionals, setAdditionals] = useStateSelector<PurchaseAdditionals>(
-    !purchaseId,
+  const [additionals, setAdditionals] = usePersistedState<PurchaseAdditionals>(
     'purchase-panel-additionals',
-    {}
+    {},
+    !purchaseId
   )
 
   const clearAll = useCallback(() => {

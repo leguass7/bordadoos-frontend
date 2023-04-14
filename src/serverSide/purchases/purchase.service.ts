@@ -79,6 +79,7 @@ async function paginate(
     'done',
     'label',
     'name',
+    'lock',
     'qtd',
     'value'
   ]

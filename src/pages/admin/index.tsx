@@ -14,6 +14,7 @@ const PageAdminIndex: NextPage = () => {
   const { query } = useRouter()
 
   const purchaseId = useMemo(() => (query?.purchaseId ? parseInt(`${query?.purchaseId}`) : 0), [query])
+  const duplicated = useMemo(() => query?.duplicated === 'true', [query])
 
   return (
     <LayoutAdmin>
@@ -24,7 +25,7 @@ const PageAdminIndex: NextPage = () => {
           description={'Preencha as informações para iniciar uma nova O.S.'}
         />
         <PurchasePanelProvider purchaseId={purchaseId}>
-          <PurchasePanel purchaseId={purchaseId} />
+          <PurchasePanel duplicated={duplicated} purchaseId={purchaseId} />
         </PurchasePanelProvider>
       </Container>
     </LayoutAdmin>
