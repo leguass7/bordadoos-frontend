@@ -29,7 +29,7 @@ export const PurchaseInfo: React.FC<Props> = ({ onNext, onSuccess }) => {
           </Grid>
         </PanelWrapper>
         <PanelWrapper>
-          <PurchaseInfoCard onSuccess={onSuccess} />
+          <PurchaseInfoCard />
         </PanelWrapper>
         <PanelWrapper>
           <Grid container>
