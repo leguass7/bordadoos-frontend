@@ -77,9 +77,7 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
         <Divider sx={{ py: 1, mb: 2 }} />
         {step === 0 ? <PurchaseInfo onSuccess={showSuccessMessage} onNext={handleNext} /> : null}
 
-        {step === 1 ? (
-          <PurchaseEmbroidery onSuccess={showSuccessMessage} onPrev={handlePrev} onNext={handleNext} />
-        ) : null}
+        {step === 1 ? <PurchaseEmbroidery onPrev={handlePrev} onNext={handleNext} /> : null}
 
         {step === 2 ? (
           <PurchaseAdditionals

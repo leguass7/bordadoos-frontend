@@ -1,3 +1,4 @@
+import { ChangeEventHandler } from 'react'
 import { Control, Controller, FieldError } from 'react-hook-form'
 
 import FormControl from '@mui/material/FormControl'
@@ -11,11 +12,13 @@ import { ErrorMessage } from '../styles'
 export interface IOptionProps {
   label?: string
   value?: string | number
+  disabled?: boolean
 }
 
 interface Props extends Omit<SelectProps, 'error'> {
   control: Control<any>
   label?: string
+  onChange?: ChangeEventHandler<HTMLInputElement>
   error?: FieldError
   options?: IOptionProps[]
 }
@@ -43,7 +46,7 @@ export const Select: React.FC<Props> = ({
           render={({ field: { onChange, value, ref } }) => {
             const handleChange = (e: any) => {
               onChange(e)
-              if (customChange) customChange(e, <></>)
+              if (customChange) customChange(e)
             }
 
             return (
@@ -57,9 +60,9 @@ export const Select: React.FC<Props> = ({
                 inputRef={ref}
               >
                 <MenuItem value={defaultValue as any}>Selecione</MenuItem>
-                {options?.map(({ label, value }) => {
+                {options?.map(({ label, value, disabled }) => {
                   return (
-                    <MenuItem value={value} key={`${label}-${value}`}>
+                    <MenuItem value={value} disabled={disabled} key={`${label}-${value}`}>
                       {label}
                     </MenuItem>
                   )
