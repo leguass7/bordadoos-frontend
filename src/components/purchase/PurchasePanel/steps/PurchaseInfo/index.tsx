@@ -13,7 +13,7 @@ interface Props {
   onSuccess?: () => void
 }
 
-export const PurchaseInfo: React.FC<Props> = ({ onNext, onSuccess }) => {
+export const PurchaseInfo: React.FC<Props> = ({ onNext }) => {
   const { info } = usePurchasePanelContext()
 
   const disableNext = useMemo(() => {

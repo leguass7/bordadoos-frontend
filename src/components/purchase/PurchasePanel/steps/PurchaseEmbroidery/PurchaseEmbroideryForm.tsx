@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
-import { Button, ButtonGroup, Grid } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import { EmbroideryPosition, EmbroideryType } from '@prisma/client'
-import { FormHandles } from '@unform/core'
-import { Form } from '@unform/web'
 
 import { CircleLoading } from '~/components/CircleLoading'
-import { Field } from '~/components/Form/Field'
-import Select, { SelectItem } from '~/components/Form/Select'
+import { Field } from '~/components/Form/react-hook-form/Field'
+import { IOptionProps, Select } from '~/components/Form/react-hook-form/Select'
+import { SelectItem } from '~/components/Form/Select'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { getPositionByType } from '~/services/api/embroidery'
 import { findPurchaseWithItems } from '~/services/api/purchase'
@@ -22,23 +22,59 @@ function selectItemsDto(data: EmbroideryPosition[] | EmbroideryType[]): SelectIt
     })
 }
 
+interface FormData extends PurchaseEmbroidery {}
+
 interface Props {
   onSuccess?: () => void
 }
 
 export const PurchaseEmbroideryForm: React.FC<Props> = ({ onSuccess }) => {
-  const formRef = useRef<FormHandles>(null)
-  const { embroidery, changeEmbroidery } = usePurchasePanelContext()
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors, isDirty }
+  } = useForm<FormData>()
 
-  const [localEmbroidery] = useState(embroidery)
+  const { changeEmbroidery, embroidery } = usePurchasePanelContext()
 
-  const isMounted = useIsMounted()
+  const [initialEmbroidery] = useState(embroidery)
+
   const [loading, setLoading] = useState(false)
+  const isMounted = useIsMounted()
 
-  const [typeItems, setTypeItems] = useState<SelectItem[]>([])
-  const [positionItems, setPositionItems] = useState<SelectItem[]>([
+  const [typeItems, setTypeItems] = useState<IOptionProps[]>([])
+  const [positionItems, setPositionItems] = useState<IOptionProps[]>([
     { label: 'Selecione um tipo de bordado primeiro', value: '', disabled: true }
   ])
+
+  const updateForm = useCallback(
+    (emb: PurchaseEmbroidery) => {
+      if (isDirty) return
+
+      if (emb?.typeId) {
+        const hasItems = typeItems?.length && positionItems?.length
+        if (hasItems) reset({ ...emb })
+      } else reset({ ...emb })
+    },
+    [reset, typeItems, positionItems, isDirty]
+  )
+
+  useEffect(() => {
+    if (initialEmbroidery) updateForm(initialEmbroidery)
+  }, [updateForm, initialEmbroidery])
+
+  const fetchData = useCallback(async () => {
+    if (typeItems?.length) return null
+
+    setLoading(true)
+    const { types } = await findPurchaseWithItems()
+    if (isMounted()) {
+      setLoading(false)
+      if (types) setTypeItems(selectItemsDto(types))
+    }
+  }, [isMounted, typeItems])
 
   const updatePositionItems = useCallback(
     async (value: number) => {
@@ -53,85 +89,83 @@ export const PurchaseEmbroideryForm: React.FC<Props> = ({ onSuccess }) => {
     [isMounted]
   )
 
-  const canUpdateForm = useMemo(() => {
-    const typeId = localEmbroidery.typeId
-
-    const noPositionItems = typeId && !positionItems?.[0]?.value
-    if (noPositionItems) updatePositionItems(parseInt(`${typeId}`))
-
-    let canUpdate = !!typeItems?.length
-    if (typeId) canUpdate = canUpdate && !!positionItems?.[0]?.value
-
-    return canUpdate
-  }, [typeItems?.length, positionItems, localEmbroidery, updatePositionItems])
-
-  const updateForm = useCallback(() => {
-    if (canUpdateForm) formRef.current.setData({ ...localEmbroidery })
-  }, [canUpdateForm, localEmbroidery])
-
   useEffect(() => {
-    updateForm()
-  }, [updateForm])
-
-  const fetchData = useCallback(async () => {
-    if (typeItems?.length) return null
-
-    setLoading(true)
-    const { types } = await findPurchaseWithItems()
-    if (isMounted()) {
-      setLoading(false)
-      if (types) setTypeItems(selectItemsDto(types))
-    }
-  }, [isMounted, typeItems])
+    if (embroidery?.typeId) updatePositionItems(embroidery?.typeId)
+  }, [updatePositionItems, embroidery?.typeId])
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
-  const handleSubmit = useCallback(
+  const onSubmit = useCallback(
     (formData: PurchaseEmbroidery) => {
       changeEmbroidery(formData)
-      onSuccess?.()
+      if (onSuccess) onSuccess?.()
     },
-    [changeEmbroidery, onSuccess]
+    [onSuccess, changeEmbroidery]
   )
 
   const handleChangeType = useCallback(
     async e => {
       const value = parseInt(`${e.target?.value || 0}`) || 0
       if (value) {
-        formRef.current.setFieldValue('categoryId', '')
+        setValue('categoryId', '' as any)
+        // formRef.current.setFieldValue('categoryId', '')
         updatePositionItems(value)
       }
+      handleSubmit(onSubmit)(e)
     },
-    [updatePositionItems]
+    [updatePositionItems, setValue, handleSubmit, onSubmit]
   )
 
   return (
-    <Form ref={formRef} onSubmit={handleSubmit}>
-      <Grid container>
-        <Grid item xs={12}>
-          <Field name="label" label="Nome do bordado" autoComplete="off" />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Select items={typeItems} onChange={handleChangeType} label="Tipo de bordado" name="typeId" />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Select items={positionItems} label="Posição do bordado" name="categoryId" />
-        </Grid>
-        <Grid item xs={12}>
-          <Field name="description" label="Descrição" multiline minRows={3} />
-        </Grid>
-
-        <Grid item xs={12} p={1}>
-          <Grid container justifyContent="flex-end">
-            <Button type="submit" variant="contained">
-              Salvar
-            </Button>
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Grid container>
+          <Grid item xs={12}>
+            <Field
+              onBlur={handleSubmit(onSubmit)}
+              control={control}
+              error={errors?.label}
+              name="label"
+              label="Nome do bordado"
+              autoComplete="off"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Select
+              control={control}
+              options={typeItems}
+              onChange={handleChangeType}
+              label="Tipo de bordado"
+              error={errors?.typeId}
+              name="typeId"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Select
+              control={control}
+              options={positionItems}
+              onChange={handleSubmit(onSubmit)}
+              label="Posição do bordado"
+              error={errors?.categoryId}
+              name="categoryId"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Field
+              onBlur={handleSubmit(onSubmit)}
+              control={control}
+              error={errors?.description}
+              name="description"
+              label="Descrição"
+              multiline
+              minRows={3}
+            />
           </Grid>
         </Grid>
-      </Grid>
-      {loading ? <CircleLoading /> : null}
-    </Form>
+        {loading ? <CircleLoading /> : null}
+      </form>
+    </div>
   )
 }

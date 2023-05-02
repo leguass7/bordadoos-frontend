@@ -24,9 +24,9 @@ export interface PurchaseAdditionals {
 }
 
 export interface PurchaseEmbroideryColor {
-  label?: string
-  colors?: string[]
-  id?: number
+  label: string
+  colors: string[]
+  // id?: number
 }
 
 export interface PurchaseEmbroidery {

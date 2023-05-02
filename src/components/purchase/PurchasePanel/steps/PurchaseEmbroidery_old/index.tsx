@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 
 import { ArrowRightAlt } from '@mui/icons-material'
-import { Button, ButtonGroup, Grid, Tooltip, Typography } from '@mui/material'
+import { Button, ButtonGroup, Grid, Typography } from '@mui/material'
 
 import { PanelWrapper } from '~/components/purchase/styles'
 
 import { usePurchasePanelContext } from '../../PurchasePanelProvider'
-import { PurchaseEmbroideryCard } from './PurchaseEmbroideryCard'
-import { PurchaseEmbroideryColorCard } from './PurchaseEmbroideryColorCard'
+import { PurchaseEmbroideryCard } from '../newPurchaseEmbroidery/PurchaseEmbroideryCard'
+import { PurchaseEmbroideryColorCard } from '../newPurchaseEmbroidery/PurchaseEmbroideryColorCard'
 
 interface Props {
   onNext?: () => void

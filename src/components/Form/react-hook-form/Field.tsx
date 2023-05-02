@@ -54,7 +54,7 @@ export const Field: React.FC<Props> = ({
         render={({ field: { onChange, value, onBlur } }) => (
           <TextField
             autoComplete="new-password"
-            variant="standard"
+            variant="outlined"
             {...props}
             id={id}
             label={label}
@@ -72,5 +72,5 @@ export const Field: React.FC<Props> = ({
 
 const Container = styled.div`
   padding: 8px;
-  width: 100%;
+  /* width: 100%; */
 `

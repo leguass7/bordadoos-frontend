@@ -6,8 +6,8 @@ import { Button, ButtonGroup, Grid, Typography } from '@mui/material'
 import { PanelWrapper } from '~/components/purchase/styles'
 
 import { usePurchasePanelContext } from '../../PurchasePanelProvider'
-import { PurchaseEmbroideryCard } from '../newPurchaseEmbroidery/PurchaseEmbroideryCard'
-import { PurchaseEmbroideryColorCard } from '../newPurchaseEmbroidery/PurchaseEmbroideryColorCard'
+import { PurchaseEmbroideryCard } from './PurchaseEmbroideryCard'
+import { PurchaseEmbroideryColorCard } from './PurchaseEmbroideryColorCard'
 
 interface Props {
   onNext?: () => void

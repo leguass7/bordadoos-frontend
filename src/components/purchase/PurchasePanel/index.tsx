@@ -75,7 +75,7 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
       <Grid item xs={12}>
         <PurchasePanelStepper setStep={handleChangeStep} step={step} />
         <Divider sx={{ py: 1, mb: 2 }} />
-        {step === 0 ? <PurchaseInfo onSuccess={showSuccessMessage} onNext={handleNext} /> : null}
+        {step === 0 ? <PurchaseInfo onNext={handleNext} /> : null}
 
         {step === 1 ? <PurchaseEmbroidery onPrev={handlePrev} onNext={handleNext} /> : null}
 
