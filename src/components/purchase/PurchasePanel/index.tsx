@@ -22,7 +22,7 @@ interface Props {
 
 // Depends on PurchasePanelProvider
 export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
-  const { changeAdditionals, changeEmbroidery, changeInfo } = usePurchasePanelContext()
+  const { changeAdditionals, changeEmbroidery, changeInfo, additionals } = usePurchasePanelContext()
   const [step, setStep] = useState(0)
   const { replace } = useRouter()
 
@@ -79,14 +79,7 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
 
         {step === 1 ? <PurchaseEmbroidery onPrev={handlePrev} onNext={handleNext} /> : null}
 
-        {step === 2 ? (
-          <PurchaseAdditionals
-            purchaseId={purchaseId}
-            onSuccess={showSuccessMessage}
-            onPrev={handlePrev}
-            onNext={handleNext}
-          />
-        ) : null}
+        {step === 2 ? <PurchaseAdditionals purchaseId={purchaseId} onPrev={handlePrev} onNext={handleNext} /> : null}
 
         {step === 3 ? (
           <PurchaseSummary

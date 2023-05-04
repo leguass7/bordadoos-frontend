@@ -1,10 +1,11 @@
-import { useCallback } from 'react'
+import { ChangeEventHandler, useCallback } from 'react'
 import { Controller, Control, FieldError } from 'react-hook-form'
 
 import TextField, { BaseTextFieldProps } from '@mui/material/TextField'
 import styled from 'styled-components'
 
 import { masks } from '~/helpers/masks'
+import { addSeparatorsToNumberString } from '~/helpers/string'
 
 import { ErrorMessage } from '../styles'
 
@@ -13,6 +14,9 @@ type Props = Partial<Omit<BaseTextFieldProps, 'error'>> & {
   name: string
   label?: string
   error?: FieldError
+  number?: boolean
+  onChange?: ChangeEventHandler<HTMLInputElement>
+  int?: boolean
   mask?: keyof typeof masks
 }
 
@@ -22,6 +26,9 @@ export const Field: React.FC<Props> = ({
   id,
   defaultValue = '',
   label,
+  onChange,
+  number,
+  int,
   onBlur,
   mask,
   error,
@@ -29,11 +36,21 @@ export const Field: React.FC<Props> = ({
 }) => {
   const handleChange = useCallback(
     (e, cb) => {
-      if (e?.target?.value && mask) e.target.value = masks[mask](e.target.value)
+      let value: string = e.target.value
+
+      if (value && mask) e.target.value = masks[mask](value)
+
+      if (number) {
+        value = addSeparatorsToNumberString(value, ['.', ','])
+
+        if (int) value = value.replaceAll(/[,.]/g, '')
+        e.target.value = value.replace(/[^0-9.,]/g, '')
+      }
 
       if (cb) cb(e)
+      if (onChange) onChange(e)
     },
-    [mask]
+    [mask, number, int, onChange]
   )
 
   const handleBlur = useCallback(

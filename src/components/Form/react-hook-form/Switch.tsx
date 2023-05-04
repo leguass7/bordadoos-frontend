@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { Control, Controller, FieldError } from 'react-hook-form'
 
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -13,7 +14,23 @@ interface Props extends SwitchProps {
   name: string
 }
 
-export const Switch: React.FC<Props> = ({ label, defaultValue = false, error, control, name = '', ...props }) => {
+export const Switch: React.FC<Props> = ({
+  label,
+  defaultValue = false,
+  error,
+  control,
+  onChange,
+  name = '',
+  ...props
+}) => {
+  const handleChange = useCallback(
+    (e, v, cb) => {
+      if (cb) cb(e, v)
+      if (onChange) onChange(e, v)
+    },
+    [onChange]
+  )
+
   return (
     <Container>
       <FormControlLabel
@@ -25,7 +42,13 @@ export const Switch: React.FC<Props> = ({ label, defaultValue = false, error, co
             defaultValue={defaultValue}
             control={control}
             render={({ field: { ref, value, onChange, ...field } }) => (
-              <MuiSwitch {...props} {...field} onChange={(e, c) => onChange(c)} inputRef={ref} checked={!!value} />
+              <MuiSwitch
+                {...props}
+                {...field}
+                onChange={(e, c) => handleChange(e, c, onChange)}
+                inputRef={ref}
+                checked={!!value}
+              />
             )}
           />
         }
