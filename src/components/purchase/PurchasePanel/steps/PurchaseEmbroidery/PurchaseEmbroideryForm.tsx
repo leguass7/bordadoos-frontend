@@ -55,10 +55,10 @@ export const PurchaseEmbroideryForm: React.FC<Props> = ({ onSuccess }) => {
 
       if (emb?.typeId) {
         const hasItems = typeItems?.length && positionItems?.length
-        if (hasItems) reset({ ...emb })
+        if (hasItems && isMounted()) reset({ ...emb })
       } else reset({ ...emb })
     },
-    [reset, typeItems, positionItems, isDirty]
+    [reset, typeItems, positionItems, isDirty, isMounted]
   )
 
   useEffect(() => {
