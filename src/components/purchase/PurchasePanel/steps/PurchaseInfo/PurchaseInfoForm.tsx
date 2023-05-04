@@ -13,7 +13,7 @@ interface Props {
   onSuccess?: () => void
 }
 
-const initialData: PurchasePanelInfo = {
+const defaultValues: PurchasePanelInfo = {
   entryDate: new Date()
 }
 
@@ -22,12 +22,14 @@ export const PurchaseInfoForm: React.FC<Props> = ({ onSuccess }) => {
   const {
     control,
     reset,
+    getFieldState,
+    getValues,
     handleSubmit,
     formState: { errors }
   } = useForm<PurchasePanelInfo>()
 
   const updateForm = useCallback(() => {
-    reset({ ...initialData, ...info })
+    reset({ ...defaultValues, ...info })
   }, [info, reset])
 
   useEffect(() => {
@@ -41,6 +43,10 @@ export const PurchaseInfoForm: React.FC<Props> = ({ onSuccess }) => {
     },
     [changeInfo, onSuccess]
   )
+
+  useEffect(() => {
+    onSubmit?.(getValues())
+  }, [onSubmit, getValues])
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
