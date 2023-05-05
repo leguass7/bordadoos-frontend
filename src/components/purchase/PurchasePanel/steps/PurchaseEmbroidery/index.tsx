@@ -19,7 +19,7 @@ export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev, onSuccess 
   const { embroidery } = usePurchasePanelContext()
 
   const disableNext = useMemo(() => {
-    return !(embroidery?.typeId && embroidery?.categoryId && embroidery?.label && !!embroidery.colors?.length)
+    return !(embroidery?.label && !!embroidery.colors?.length)
   }, [embroidery])
 
   return (
