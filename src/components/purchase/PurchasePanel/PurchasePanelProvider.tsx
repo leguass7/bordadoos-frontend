@@ -24,9 +24,9 @@ export interface PurchaseAdditionals {
 }
 
 export interface PurchaseEmbroideryColor {
-  label?: string
-  colors?: string[]
-  id?: number
+  label: string
+  colors: string[]
+  // id?: number
 }
 
 export interface PurchaseEmbroidery {
@@ -114,10 +114,10 @@ export const PurchasePanelProvider: React.FC<Props> = ({ children, purchaseId })
   )
 
   const changeAdditionals = useCallback(
-    (additionals: any) => {
+    (additionals: Purchase) => {
       setAdditionals(old => {
-        const done = additionals?.done || old?.done
-        const paid = additionals?.paid || old?.paid
+        const done = typeof additionals?.done === 'boolean' ? additionals?.done : additionals?.done || old?.done
+        const paid = typeof additionals?.paid === 'boolean' ? additionals?.paid : additionals?.paid || old?.paid
         const points = additionals?.points || old?.points
         const qtd = additionals?.qtd || old?.qtd
         const value = additionals?.value || old?.value
