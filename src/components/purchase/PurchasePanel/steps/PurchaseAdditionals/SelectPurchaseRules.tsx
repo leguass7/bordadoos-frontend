@@ -18,7 +18,7 @@ interface Props {
 
 export const SelectPurchaseRules: React.FC<Props> = ({ purchaseId }) => {
   const [rules, setRules] = useState<Partial<PriceRules>[]>([])
-  const { priceRules, setPriceRules } = usePurchasePanelContext()
+  const { priceRules, setPriceRules, info } = usePurchasePanelContext()
 
   const [loading, setLoading] = useState(false)
   const isMounted = useIsMounted()
@@ -95,7 +95,7 @@ export const SelectPurchaseRules: React.FC<Props> = ({ purchaseId }) => {
 
   return (
     <Card>
-      <CardTitle title="Adicionais" divider />
+      <CardTitle title={`Adicionais - ${info?.name}`} divider />
       <SpacedContainer>
         <Grid container direction="column">
           <Grid item py={1}>

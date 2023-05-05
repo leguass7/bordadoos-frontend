@@ -1,17 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { useSession } from 'next-auth/react'
-
 import { Button, ButtonGroup, Grid } from '@mui/material'
-import type { Purchase } from '@prisma/client'
 
 import { PanelWrapper } from '~/components/purchase/styles'
-import { stringAvatar } from '~/helpers/string'
-import { useIsMounted } from '~/hooks/useIsMounted'
 import { IResponsePurchase } from '~/serverSide/purchases/purchase.dto'
 import { postDefault, putDefault } from '~/services/api'
-import { getUserForPurchase } from '~/services/api/user'
 
 import { usePurchasePanelContext } from '../../PurchasePanelProvider'
 import { PurchaseAdditionalFormCard } from '../PurchaseAdditionals/PurchaseAdditionalFormCard'
@@ -33,47 +27,14 @@ interface Props {
 export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, onSuccess, restart, duplicated }) => {
   const { additionals, info, embroidery, ruleIds, clearAll } = usePurchasePanelContext()
 
-  const { data } = useSession()
-
   const [saved, setSaved] = useState(false)
   const [purchaseId, setpurchaseId] = useState(initialPurchaseId)
 
-  const [user, setUser] = useState<any>({})
-  const isMounted = useIsMounted()
-
   const isEditing = useMemo(() => initialPurchaseId && !duplicated, [initialPurchaseId, duplicated])
 
-  const fetchUser = useCallback(async () => {
-    if (user?.name) return null
-
-    const userId = parseInt(`${data.user?.userId}`)
-    if (!userId || isEditing) return null
-
-    const { success, user: foundUser } = await getUserForPurchase(userId)
-    if (isMounted() && success) setUser(foundUser)
-  }, [isMounted, data?.user, isEditing, user])
-
-  useEffect(() => {
-    fetchUser()
-  }, [fetchUser])
-
-  const purchaseCod = useMemo(() => {
-    if (!user?.name) return null
-
-    const name = user?.name
-    const purchaseQtd = user?._count?.createdPurchases
-
-    const counter = !!purchaseQtd ? purchaseQtd + 1 : 1
-
-    return `${stringAvatar(name)}${counter}`
-  }, [user?.name, user?._count])
-
   const purchase = useMemo(() => {
-    const optional: Partial<Purchase> = {}
-    if (!isEditing && purchaseCod) optional.name = purchaseCod
-
-    return { ...additionals, ...info, ...embroidery, rules: ruleIds, ...optional }
-  }, [additionals, info, embroidery, ruleIds, isEditing, purchaseCod])
+    return { ...additionals, ...info, ...embroidery, rules: ruleIds }
+  }, [additionals, info, embroidery, ruleIds])
 
   const handleSave = useCallback(async () => {
     const route = isEditing ? `/purchases/${initialPurchaseId}` : `/purchases`
@@ -92,7 +53,7 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
   }, [purchase, initialPurchaseId, clearAll, isEditing])
 
   return saved ? (
-    <PurchaseSuccess name={purchaseCod} edited={!!initialPurchaseId} goBack={restart} purchaseId={purchaseId} />
+    <PurchaseSuccess name={info?.name} edited={!!initialPurchaseId} goBack={restart} purchaseId={purchaseId} />
   ) : (
     <Grid container>
       <Grid item xs={12}>

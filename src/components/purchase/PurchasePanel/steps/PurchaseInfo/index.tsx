@@ -1,7 +1,13 @@
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+
+import { useSession } from 'next-auth/react'
 
 import { ArrowRightAlt } from '@mui/icons-material'
 import { Button, Grid, Typography } from '@mui/material'
+
+import { stringAvatar } from '~/helpers/string'
+import { useIsMounted } from '~/hooks/useIsMounted'
+import { getUserForPurchase } from '~/services/api/user'
 
 import { PanelWrapper } from '../../../styles'
 import { usePurchasePanelContext } from '../../PurchasePanelProvider'
@@ -14,11 +20,48 @@ interface Props {
 }
 
 export const PurchaseInfo: React.FC<Props> = ({ onNext }) => {
-  const { info } = usePurchasePanelContext()
+  const { info, changeInfo } = usePurchasePanelContext()
+  const { data } = useSession()
+
+  const [user, setUser] = useState<any>({})
+  const isMounted = useIsMounted()
 
   const disableNext = useMemo(() => {
     return !info?.clientId || !info?.entryDate
   }, [info])
+
+  const fetchUser = useCallback(async () => {
+    if (user?.name) return null
+
+    const userId = parseInt(`${data.user?.userId}`)
+    if (!userId) return null
+
+    const { success, user: foundUser } = await getUserForPurchase(userId)
+    if (isMounted() && success) setUser(foundUser)
+  }, [isMounted, data?.user, user])
+
+  useEffect(() => {
+    fetchUser()
+  }, [fetchUser])
+
+  const purchaseCod = useMemo(() => {
+    if (!user?.name) return null
+
+    const name = user?.name
+    const purchaseQtd = user?._count?.createdPurchases
+
+    const counter = !!purchaseQtd ? purchaseQtd + 1 : 1
+
+    return `${stringAvatar(name)}${counter}`
+  }, [user?.name, user?._count])
+
+  const updatePurchaseName = useCallback(() => {
+    if (purchaseCod) changeInfo({ name: purchaseCod })
+  }, [purchaseCod, changeInfo])
+
+  useEffect(() => {
+    updatePurchaseName()
+  }, [updatePurchaseName])
 
   return (
     <Grid container>
