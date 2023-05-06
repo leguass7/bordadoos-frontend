@@ -100,7 +100,7 @@ export const PurchaseEmbroideryForm: React.FC<Props> = ({ onSuccess }) => {
   const onSubmit = useCallback(
     (formData: PurchaseEmbroidery) => {
       changeEmbroidery(formData)
-      if (onSuccess) onSuccess?.()
+      if (onSuccess) onSuccess()
     },
     [onSuccess, changeEmbroidery]
   )

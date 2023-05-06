@@ -26,11 +26,11 @@ export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev, onSuccess 
     <Grid container>
       <Grid item xs={12}>
         <PanelWrapper>
-          <PurchaseEmbroideryCard onSuccess={onSuccess} />
+          <PurchaseEmbroideryCard />
         </PanelWrapper>
 
         <PanelWrapper>
-          <PurchaseEmbroideryColorCard onSuccess={onSuccess} />
+          <PurchaseEmbroideryColorCard />
         </PanelWrapper>
 
         <PanelWrapper>

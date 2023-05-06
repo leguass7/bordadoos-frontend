@@ -16,7 +16,7 @@ export const PurchaseEmbroideryCard: React.FC<Props> = ({ onSuccess }) => {
     <Card>
       <CardTitle title={`Dados do bordado - ${info?.name}`} divider />
       <Grid item p={2} xs={12}>
-        <PurchaseEmbroideryForm onSuccess={onSuccess} />
+        <PurchaseEmbroideryForm />
       </Grid>
     </Card>
   )
