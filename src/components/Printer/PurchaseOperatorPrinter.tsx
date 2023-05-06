@@ -20,7 +20,7 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
   const originalValue = purchase?.purchaseItem?.[0].originalValue || 0
 
   const colors = useMemo(() => {
-    const localColors = (purchase?.colors as PurchaseEmbroideryColor[]) || []
+    const localColors = (purchase?.colors as unknown as PurchaseEmbroideryColor[]) || []
 
     const sortedColors = localColors?.sort?.((a, b) => a?.colors?.length - b?.colors?.length)
     return sortedColors
@@ -51,7 +51,11 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
           <Grid item xs={6}>
             <Grid justifyContent="space-between" container>
               <Typography variant="h6" noWrap>
-                {purchase.type.label} {'>'} {purchase.category.label}
+                {purchase?.type?.label && purchase?.category?.label ? (
+                  <>
+                    {purchase.type.label} {'>'} {purchase.category.label}
+                  </>
+                ) : null}
                 <br />
                 <Typography component="span" variant="h5">
                   {purchase.label}

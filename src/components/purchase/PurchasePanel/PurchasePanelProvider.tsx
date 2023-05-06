@@ -99,11 +99,12 @@ export const PurchasePanelProvider: React.FC<Props> = ({ children, purchaseId })
   const changeEmbroidery = useCallback(
     (embroidery: Purchase) => {
       setEmbroidery(old => {
-        const categoryId = embroidery?.categoryId || old?.categoryId
         const colors = (embroidery?.colors as any) || old?.colors
         const description = embroidery?.description || old?.description
         const label = embroidery?.label || old?.label
-        const typeId = embroidery?.typeId || old?.typeId
+        const typeId = embroidery?.typeId === ('' as any) ? embroidery?.typeId : embroidery?.typeId || old?.typeId
+        const categoryId =
+          embroidery?.categoryId === ('' as any) ? embroidery?.categoryId : embroidery?.categoryId || old?.categoryId
 
         const newEmbroidery = { ...old, categoryId, colors, description, label, typeId }
 

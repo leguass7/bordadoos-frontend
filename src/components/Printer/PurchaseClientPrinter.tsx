@@ -27,7 +27,11 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
           <Grid item xs={6}>
             <Grid justifyContent="space-between" container>
               <Typography variant="h6" noWrap>
-                {purchase.type.label} {'>'} {purchase.category.label}
+                {purchase?.type?.label && purchase?.category?.label ? (
+                  <>
+                    {purchase.type.label} {'>'} {purchase.category.label}
+                  </>
+                ) : null}
                 <br />
                 <Typography component="span" variant="h5">
                   {purchase.label}
