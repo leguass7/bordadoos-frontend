@@ -15,7 +15,7 @@ interface Props {
   onSuccess?: () => void
 }
 
-export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev, onSuccess }) => {
+export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev }) => {
   const { embroidery } = usePurchasePanelContext()
 
   const disableNext = useMemo(() => {

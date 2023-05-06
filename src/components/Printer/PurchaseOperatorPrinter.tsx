@@ -4,12 +4,17 @@ import { Divider, Grid, Typography } from '@mui/material'
 import type { PriceRules } from '@prisma/client'
 import styled from 'styled-components'
 
-import { formatPrice } from '~/helpers'
 import { formatDate } from '~/helpers/string'
 import { PurchaseWithItems } from '~/services/api/purchase'
 
 import { PurchaseEmbroideryColor } from '../purchase/PurchasePanel/PurchasePanelProvider'
 import { PurchasePrinterHeader } from './PurchasePrinterHeader'
+
+const overflowTextProps = {
+  textOverflow: 'ellipsis',
+  noWrap: false,
+  overflow: 'hidden'
+}
 
 interface Props {
   purchase: PurchaseWithItems
@@ -135,11 +140,20 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
                   <Typography variant="h6">Cores</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <Grid container spacing={2} flexWrap="wrap" justifyContent="flex-start" alignItems="stretch">
+                  <Grid
+                    container
+                    spacing={2}
+                    overflow="hidden"
+                    flexWrap="wrap"
+                    justifyContent="flex-start"
+                    alignItems="stretch"
+                  >
                     {colors?.map(({ label, colors }) => {
                       return (
                         <Grid key={`color-${label}`} item xs={4}>
-                          <Typography variant="body1">{label}</Typography>
+                          <Typography variant="body1" {...overflowTextProps}>
+                            {label}
+                          </Typography>
                           {renderColors(label, colors)}
                         </Grid>
                       )
