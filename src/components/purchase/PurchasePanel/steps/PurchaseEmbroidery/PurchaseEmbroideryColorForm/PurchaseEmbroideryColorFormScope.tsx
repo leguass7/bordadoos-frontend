@@ -17,7 +17,7 @@ interface Props {
 }
 
 export const PurchaseEmbroideryColorFormScope: React.FC<Props> = ({ id, index, control, onRemove, handleSubmit }) => {
-  const { append, fields, update } = useFieldArray({ control, name: `colors.${index}.colors` as 'colors' })
+  const { append, fields, update } = useFieldArray({ control, name: `colors.${index}.colors` as any })
 
   const handleAddColor = useCallback(() => {
     append('temp' as any)
