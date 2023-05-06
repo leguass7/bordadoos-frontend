@@ -35,7 +35,13 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
 
   const onSubmit = useCallback(
     async ({ colors }: PurchaseEmbroideryColorFormFields) => {
-      changeEmbroidery({ colors })
+      const cleanedColors = colors.map(c => {
+        const cleaned = c.colors.filter(s => s !== '' && s !== 'temp')
+        c.colors = cleaned
+        return c
+      })
+
+      changeEmbroidery({ colors: cleanedColors })
       onSuccess?.()
     },
     [changeEmbroidery, onSuccess]
