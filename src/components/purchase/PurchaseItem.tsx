@@ -140,7 +140,8 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
           <Column align="flex-start">
             <Typography variant="caption">{name}</Typography>
             <br />
-            <Typography variant="body1">{client?.name ?? '--'}</Typography>
+            <Typography variant="body1">{`${client?.name ?? '--'} `}</Typography>
+
             <Typography variant="subtitle1" {...overflowTextProps}>
               {hasLabel ? (
                 <>
@@ -175,14 +176,15 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
                 {deliveryDate ? formatDate(deliveryDate, 'dd/MM/yyyy') : 'Sem prazo'}
               </Typography>
             </Column>
-            {/* <Column>
-              <Typography variant="body1" {...overflowTextProps}>
-                {client?.name ?? '--'}
+            <Column align="right">
+              <Typography textAlign="right" variant="body1" {...overflowTextProps}>
+                Contato
               </Typography>
-            </Column> */}
+              <Typography variant="caption">{client?.phone ?? '---'}</Typography>
+            </Column>
             <Column>
               <Typography variant="subtitle1" {...overflowTextProps}>
-                total: {toMoney(value)}
+                Total: {toMoney(value)}
               </Typography>
             </Column>
             {/* <Column align="flex-end">

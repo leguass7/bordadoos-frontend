@@ -8,6 +8,7 @@ export interface IPurchaseFilter {
   purchaseId?: number
   clientId?: number
   actived?: boolean
+  phone?: string
   startDate?: Date
   endDate?: Date
   paid?: boolean

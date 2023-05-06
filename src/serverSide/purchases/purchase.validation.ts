@@ -81,6 +81,7 @@ export const listPurchasesSchema = celebrate({
     startDate: Joi.date(),
     endDate: Joi.date(),
     size: Joi.number(),
+    phone: Joi.string().allow(''),
     page: Joi.number(),
     paid: Joi.number(),
     clientId: Joi.number(),

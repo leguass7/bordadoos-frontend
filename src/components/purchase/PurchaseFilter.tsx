@@ -3,8 +3,8 @@ import { IoReload } from 'react-icons/io5'
 
 import { useRouter } from 'next/router'
 
-import { Add } from '@mui/icons-material'
-import { IconButton, Container, ButtonGroup, Button } from '@mui/material'
+import { Add, Clear } from '@mui/icons-material'
+import { IconButton, Container, ButtonGroup, Button, TextField } from '@mui/material'
 import { Purchase } from '@prisma/client'
 import { Form } from '@unform/web'
 
@@ -31,7 +31,7 @@ const doneItems: SelectItem[] = [
 ]
 
 export const PurchaseFilter: React.FC = () => {
-  const { updateFilter, refreshData } = usePagination<Purchase>()
+  const { updateFilter, refreshData, clearFilter, filter, data } = usePagination<Purchase>()
   const { push } = useRouter()
 
   const [openSearchCustomer, setOpenSearchCustomer] = useState(false)
@@ -61,6 +61,9 @@ export const PurchaseFilter: React.FC = () => {
           </IconButton>
           <IconButton size="large" color="primary" onClick={refreshData}>
             <IoReload size={18} />
+          </IconButton>
+          <IconButton size="large" color="primary" onClick={() => clearFilter({})}>
+            <Clear />
           </IconButton>
           {/* <IconButton size="large" color="primary" onClick={() => setFiltered(old => !old)}> */}
           {/* {filtered ? <FilterListOff /> : <FilterList />} */}
@@ -97,6 +100,7 @@ export const PurchaseFilter: React.FC = () => {
               onChange={e => handleSearchChange('done')(e.target.value)}
               label="Finalizado"
             />
+            {/* <TextField label="Telefone" onChange={e => handleSearchChange('phone')(e.target.value)} /> */}
           </div>
         </Form>
         <ButtonGroup style={{ padding: 12 }}>
