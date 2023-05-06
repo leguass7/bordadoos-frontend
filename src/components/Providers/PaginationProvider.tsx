@@ -89,16 +89,21 @@ export const PaginationProvider: React.FC<Props> = ({
     [clearData]
   )
 
-  const clearFilter = useCallback((persistData = {}) => {
-    setFilter(persistData)
-  }, [])
-
   const refreshData = useCallback(() => {
     // setHasMore(true)
     updatePagination({ page: 1 })
     clearData()
     fetchData()
   }, [fetchData, clearData, updatePagination])
+
+  const clearFilter = useCallback(
+    (persistData = {}) => {
+      updatePagination({ page: 1 })
+      clearData()
+      setFilter(persistData)
+    },
+    [clearData, updatePagination]
+  )
 
   useEffect(() => {
     fetchData()

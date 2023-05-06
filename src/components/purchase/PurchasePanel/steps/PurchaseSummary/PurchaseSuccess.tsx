@@ -63,7 +63,7 @@ export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited, n
       <br />
       <br />
       <ButtonGroup>
-        {goBack ? <Button onClick={handlePrev}>Criar outro pedido</Button> : null}
+        {goBack ? <Button onClick={handlePrev}>Voltar</Button> : null}
         <Button variant="contained" onClick={handlePrint} startIcon={<Print />}>
           Imprimir pedido
         </Button>

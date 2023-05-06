@@ -1,6 +1,6 @@
 {
   "name": "bordadoos-frontend",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "private": true,
   "scripts": {
     "release": "standard-version --no-verify --skip.tag --release-as patch",
@@ -37,6 +37,7 @@
   "dependencies": {
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
+    "@hookform/resolvers": "^3.1.0",
     "@joi/date": "^2.1.0",
     "@mui/core": "^5.0.0-alpha.54",
     "@mui/icons-material": "^5.2.0",
@@ -62,6 +63,7 @@
     "next-seo": "^4.28.1",
     "react": "^17.0.2",
     "react-dom": "17.0.2",
+    "react-hook-form": "^7.43.9",
     "react-icons": "^4.3.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-toastify": "^8.1.0",

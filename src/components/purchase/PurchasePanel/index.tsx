@@ -22,7 +22,7 @@ interface Props {
 
 // Depends on PurchasePanelProvider
 export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
-  const { changeAdditionals, changeEmbroidery, changeInfo } = usePurchasePanelContext()
+  const { changeAdditionals, changeEmbroidery, changeInfo, additionals } = usePurchasePanelContext()
   const [step, setStep] = useState(0)
   const { replace } = useRouter()
 
@@ -75,20 +75,11 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
       <Grid item xs={12}>
         <PurchasePanelStepper setStep={handleChangeStep} step={step} />
         <Divider sx={{ py: 1, mb: 2 }} />
-        {step === 0 ? <PurchaseInfo onSuccess={showSuccessMessage} onNext={handleNext} /> : null}
+        {step === 0 ? <PurchaseInfo onNext={handleNext} /> : null}
 
-        {step === 1 ? (
-          <PurchaseEmbroidery onSuccess={showSuccessMessage} onPrev={handlePrev} onNext={handleNext} />
-        ) : null}
+        {step === 1 ? <PurchaseEmbroidery onPrev={handlePrev} onNext={handleNext} /> : null}
 
-        {step === 2 ? (
-          <PurchaseAdditionals
-            purchaseId={purchaseId}
-            onSuccess={showSuccessMessage}
-            onPrev={handlePrev}
-            onNext={handleNext}
-          />
-        ) : null}
+        {step === 2 ? <PurchaseAdditionals purchaseId={purchaseId} onPrev={handlePrev} onNext={handleNext} /> : null}
 
         {step === 3 ? (
           <PurchaseSummary

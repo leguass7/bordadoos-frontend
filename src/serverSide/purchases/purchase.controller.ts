@@ -46,6 +46,10 @@ function update(purchaseService: IPurchaseService, purchaseConfigService: IPurch
 
     if (!userId) throw ErrorApi({ status: 401, message: 'User not logged' })
 
+    // TEMP
+    if (req.body.typeId === '') req.body.typeId = null
+    if (req.body.categoryId === '') req.body.categoryId = null
+
     const data = { ...req.body, updatedBy: userId, rules: undefined }
     const isAdmin = level >= 8
 

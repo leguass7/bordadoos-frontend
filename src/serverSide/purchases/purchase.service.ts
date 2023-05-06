@@ -37,7 +37,7 @@ async function paginate(
   pagination: PaginationQueryDto,
   filter: IPurchaseFilter = {}
 ): Promise<PaginationDto<Purchase>> {
-  const { search, startDate, endDate, paid, done, clientId } = filter
+  const { search, startDate, endDate, paid, done, clientId, phone } = filter
   const where: PrismaTypes.PurchaseWhereInput = { id: { not: 0 } }
 
   if (search)
@@ -46,11 +46,13 @@ async function paginate(
         { name: { contains: search } },
         { label: { contains: search } },
         { client: { name: { contains: search } } },
+        { client: { phone: { contains: search } } },
         { category: { label: { contains: search } } },
         { type: { label: { contains: search } } }
       ]
     }
 
+  if (phone) where.AND = { ...where.AND, client: { phone: { contains: phone } } }
   if (clientId) where.AND = { clientId }
 
   if (startDate && endDate)
@@ -105,7 +107,8 @@ async function paginate(
       },
       client: {
         select: {
-          name: true
+          name: true,
+          phone: true
         }
       },
       type: {

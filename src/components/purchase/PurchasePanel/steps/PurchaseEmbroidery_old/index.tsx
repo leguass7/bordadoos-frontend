@@ -6,8 +6,8 @@ import { Button, ButtonGroup, Grid, Typography } from '@mui/material'
 import { PanelWrapper } from '~/components/purchase/styles'
 
 import { usePurchasePanelContext } from '../../PurchasePanelProvider'
-import { PurchaseEmbroideryCard } from './PurchaseEmbroideryCard'
-import { PurchaseEmbroideryColorCard } from './PurchaseEmbroideryColorCard'
+import { PurchaseEmbroideryCard } from '../newPurchaseEmbroidery/PurchaseEmbroideryCard'
+import { PurchaseEmbroideryColorCard } from '../newPurchaseEmbroidery/PurchaseEmbroideryColorCard'
 
 interface Props {
   onNext?: () => void
@@ -15,22 +15,22 @@ interface Props {
   onSuccess?: () => void
 }
 
-export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev }) => {
+export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev, onSuccess }) => {
   const { embroidery } = usePurchasePanelContext()
 
   const disableNext = useMemo(() => {
-    return !(embroidery?.label && !!embroidery.colors?.length)
+    return !(embroidery?.typeId && embroidery?.categoryId && embroidery?.label && !!embroidery.colors?.length)
   }, [embroidery])
 
   return (
     <Grid container>
       <Grid item xs={12}>
         <PanelWrapper>
-          <PurchaseEmbroideryCard />
+          <PurchaseEmbroideryCard onSuccess={onSuccess} />
         </PanelWrapper>
 
         <PanelWrapper>
-          <PurchaseEmbroideryColorCard />
+          <PurchaseEmbroideryColorCard onSuccess={onSuccess} />
         </PanelWrapper>
 
         <PanelWrapper>
