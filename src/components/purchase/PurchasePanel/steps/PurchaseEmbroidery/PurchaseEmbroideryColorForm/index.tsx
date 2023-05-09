@@ -30,8 +30,8 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
   })
 
   useEffect(() => {
-    append({ label: '', colors: [''] })
-  }, [append])
+    if (!fields?.length) append({ label: '', colors: [''] })
+  }, [append, fields])
 
   const onSubmit = useCallback(
     async ({ colors }: PurchaseEmbroideryColorFormFields) => {
