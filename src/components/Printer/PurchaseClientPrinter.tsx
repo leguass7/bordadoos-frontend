@@ -33,7 +33,7 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                   </>
                 ) : null}
                 <br />
-                <Typography component="span" variant="h5">
+                <Typography component="span" whiteSpace="pre-line" variant="h5">
                   {purchase.label}
                 </Typography>
               </Typography>
@@ -88,7 +88,7 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
           </Grid>
           <Grid item xs={6}>
             <Grid container>
-              <Grid item xs={12} pt={3}>
+              <Grid item xs={12} pt={0}>
                 <Typography variant="h6">Vendedor</Typography>
                 <Grid container justifyContent="space-between">
                   <Grid item xs={6}>
@@ -199,8 +199,8 @@ const Content = styled.div`
   width: 100%;
   margin: 0 auto;
   max-width: 910px;
-  padding: 4px 20px;
-  height: 100%;
+  padding: 0px 20px;
+  /* overflow: hidden; */
   /* padding-top: 200px; */
   /* flex: 1; */
 `

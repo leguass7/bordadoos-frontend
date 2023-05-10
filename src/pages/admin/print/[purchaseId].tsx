@@ -51,15 +51,18 @@ const Container = styled.div<{ expand?: boolean }>`
   /* padding: 20px; */
   display: flex;
   height: 100%;
-  flex-flow: column wrap;
+  max-height: 100%;
+  position: relative;
+  flex-flow: row wrap;
   align-items: center;
+  overflow: hidden;
   /* border: 1px dashed #000; */
   margin: auto;
   max-width: 219mm;
   width: 100%;
   background-color: #fff;
 
-  & > div {
+  /* & > div {
     flex: 1;
-  }
+  } */
 `
