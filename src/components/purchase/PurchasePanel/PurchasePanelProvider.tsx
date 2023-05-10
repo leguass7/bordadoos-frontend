@@ -52,23 +52,19 @@ interface PurchaseContext {
 export const PurchasePanelContext = createContext({} as PurchaseContext)
 
 interface Props {
-  purchaseId?: number
+  persist?: boolean
 }
 
-export const PurchasePanelProvider: React.FC<Props> = ({ children, purchaseId }) => {
-  const [info, setInfo] = usePersistedState<PurchasePanelInfo>('purchase-panel-info', {}, !purchaseId)
-  const [embroidery, setEmbroidery] = usePersistedState<PurchaseEmbroidery>(
-    'purchase-panel-embroidery',
-    {},
-    !purchaseId
-  )
+export const PurchasePanelProvider: React.FC<Props> = ({ children, persist }) => {
+  const [info, setInfo] = usePersistedState<PurchasePanelInfo>('purchase-panel-info', {}, persist)
+  const [embroidery, setEmbroidery] = usePersistedState<PurchaseEmbroidery>('purchase-panel-embroidery', {}, persist)
 
-  const [priceRules, setPriceRules] = usePersistedState<PriceRules[]>('purchase-panel-price-rules', [], !purchaseId)
+  const [priceRules, setPriceRules] = usePersistedState<PriceRules[]>('purchase-panel-price-rules', [], persist)
 
   const [additionals, setAdditionals] = usePersistedState<PurchaseAdditionals>(
     'purchase-panel-additionals',
     {},
-    !purchaseId
+    persist
   )
 
   const clearAll = useCallback(() => {
