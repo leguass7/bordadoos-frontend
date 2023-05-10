@@ -22,8 +22,6 @@ interface Props {
 }
 
 export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
-  const originalValue = purchase?.purchaseItem?.[0].originalValue || 0
-
   const colors = useMemo(() => {
     const localColors = (purchase?.colors as unknown as PurchaseEmbroideryColor[]) || []
 
@@ -36,12 +34,11 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
 
     return colors.map((value, index) => {
       return (
-        <div key={`${label}-${value}-${index}`}>
-          <Typography variant="caption">
-            Cor {index + 1}: {value}
+        <Grid key={`${label}-${value}-${index}`} item>
+          <Typography variant="caption" pr={1}>
+            {value}
           </Typography>
-          <br />
-        </div>
+        </Grid>
       )
     })
   }, [])
@@ -62,7 +59,7 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
                   </>
                 ) : null}
                 <br />
-                <Typography component="span" variant="h5">
+                <Typography component="span" whiteSpace="pre-line" variant="h5">
                   {purchase.label}
                 </Typography>
               </Typography>
@@ -142,19 +139,21 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
                 <Grid item xs={12}>
                   <Grid
                     container
-                    spacing={2}
                     overflow="hidden"
+                    width="100%"
                     flexWrap="wrap"
                     justifyContent="flex-start"
-                    alignItems="stretch"
+                    alignItems="flex-start"
                   >
-                    {colors?.map(({ label, colors }) => {
+                    {colors?.map(({ label, colors }, index) => {
                       return (
-                        <Grid key={`color-${label}`} item xs={4}>
-                          <Typography variant="body1" {...overflowTextProps}>
+                        <Grid item key={`color-${label}`} xs={6} width="100%">
+                          <Typography variant="body1" lineHeight={1} {...overflowTextProps}>
                             {label}
                           </Typography>
-                          {renderColors(label, colors)}
+                          <Grid container flexWrap="wrap" columnSpacing={0} justifyContent="flex-start">
+                            {renderColors(label, colors)}
+                          </Grid>
                         </Grid>
                       )
                     })}
@@ -174,5 +173,4 @@ const Content = styled.div`
   margin: 0 auto;
   max-width: 910px;
   padding: 4px 20px;
-  height: 100%;
 `

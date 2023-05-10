@@ -24,7 +24,7 @@ const PageAdminIndex: NextPage = () => {
           title="ordem de serviço"
           description={'Preencha as informações para iniciar uma nova O.S.'}
         />
-        <PurchasePanelProvider purchaseId={purchaseId}>
+        <PurchasePanelProvider persist={!purchaseId || duplicated}>
           <PurchasePanel duplicated={duplicated} purchaseId={purchaseId} />
         </PurchasePanelProvider>
       </Container>

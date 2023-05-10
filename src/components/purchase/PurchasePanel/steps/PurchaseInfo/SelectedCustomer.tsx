@@ -46,9 +46,11 @@ export const SelectedCustomer: React.FC<Props> = ({ customerId }) => {
           </Text>
           <FlexContainer spaced>
             <Text bold themeColor="primary">
-              Telefone:
+              Telefones:
               <br />
               <Span>{data?.phone || '--'}</Span>
+              <br />
+              <Span>{data?.phone2 || '--'}</Span>
             </Text>
             <Text bold themeColor="primary">
               Documento:

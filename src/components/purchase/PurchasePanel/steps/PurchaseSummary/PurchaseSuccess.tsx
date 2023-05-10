@@ -10,11 +10,11 @@ interface Props {
   purchaseId: number
   goBack?: () => void
   edited?: boolean
-  name?: string
 }
 
-export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited, name }) => {
+export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited }) => {
   const status = useMemo(() => (edited ? 'editado' : 'criado'), [edited])
+  const { info } = usePurchasePanelContext()
   const { clearAll } = usePurchasePanelContext()
 
   const handlePrint = useCallback(() => {
@@ -56,7 +56,7 @@ export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited, n
         Pedido {status} com sucesso
       </Typography>
       <Typography variant="caption" align="center">
-        Código do pedido: {name || purchaseId}
+        Código do pedido: {info?.name || purchaseId}
       </Typography>
       <BiLike size={50} />
       <br />

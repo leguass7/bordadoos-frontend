@@ -17,7 +17,7 @@ interface Props extends Client {
   toggleModal: (id?: number) => void
 }
 
-export const ClientItem: React.FC<Props> = ({ id, phone, name, showModal, toggleModal, actived }) => {
+export const ClientItem: React.FC<Props> = ({ id, phone, phone2, name, showModal, toggleModal, actived }) => {
   const [itemActived, setItemActived] = useState(actived)
   const [loading, setLoading] = useState(false)
   const isMounted = useIsMounted()
@@ -45,6 +45,9 @@ export const ClientItem: React.FC<Props> = ({ id, phone, name, showModal, toggle
         </FlatDescriptionLine>
         <FlatDescriptionLine>
           <FlatText>{phone}</FlatText>
+        </FlatDescriptionLine>
+        <FlatDescriptionLine>
+          <FlatText>{phone2}</FlatText>
         </FlatDescriptionLine>
       </FlatDescriptionContainer>
       <IconButton color="primary" onClick={() => toggleModal(id)} disabled={showModal}>

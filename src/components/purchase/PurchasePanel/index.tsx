@@ -22,7 +22,7 @@ interface Props {
 
 // Depends on PurchasePanelProvider
 export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
-  const { changeAdditionals, changeEmbroidery, changeInfo, additionals } = usePurchasePanelContext()
+  const { changeAdditionals, changeEmbroidery, changeInfo } = usePurchasePanelContext()
   const [step, setStep] = useState(0)
   const { replace } = useRouter()
 

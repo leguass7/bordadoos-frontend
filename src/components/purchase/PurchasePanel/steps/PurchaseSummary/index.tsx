@@ -53,7 +53,7 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
   }, [purchase, initialPurchaseId, clearAll, isEditing])
 
   return saved ? (
-    <PurchaseSuccess name={info?.name} edited={!!initialPurchaseId} goBack={restart} purchaseId={purchaseId} />
+    <PurchaseSuccess edited={!!initialPurchaseId} goBack={restart} purchaseId={purchaseId} />
   ) : (
     <Grid container>
       <Grid item xs={12}>

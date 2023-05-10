@@ -18,6 +18,7 @@ import { Input } from '../Form/Input'
 const schema = Yup.object({
   name: Yup.string().required('O nome do cliente é obrigatório'),
   phone: Yup.string(),
+  phone2: Yup.string(),
   doc: Yup.string()
     .test('doc', 'CPF/CNPJ inválido', value => (value ? cpf.isValid(value) || cnpj.isValid(value) : true))
     .nullable()
@@ -86,6 +87,9 @@ export const ClientForm: React.FC<Props> = ({ onCancel, onSuccess, clientId }) =
           </FieldContainer>
           <FieldContainer>
             <Input fullWidth mask="phone" autoComplete="off" name="phone" label="telefone" />
+          </FieldContainer>
+          <FieldContainer>
+            <Input fullWidth mask="phone" autoComplete="off" name="phone2" label="telefone 2" />
           </FieldContainer>
           <FieldContainer>
             <div>

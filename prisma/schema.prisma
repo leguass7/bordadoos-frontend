@@ -170,6 +170,7 @@ model Client {
   id        Int       @id @default(autoincrement())
   name      String
   phone     String    @unique
+  phone2    String?   @db.VarChar(20)
   doc       String?   @unique
   actived   Boolean   @default(true)
   createdBy Int

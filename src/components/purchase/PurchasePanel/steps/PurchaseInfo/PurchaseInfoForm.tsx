@@ -22,8 +22,6 @@ export const PurchaseInfoForm: React.FC<Props> = ({ onSuccess }) => {
   const {
     control,
     reset,
-    getFieldState,
-    getValues,
     handleSubmit,
     formState: { errors }
   } = useForm<PurchasePanelInfo>()
@@ -45,8 +43,8 @@ export const PurchaseInfoForm: React.FC<Props> = ({ onSuccess }) => {
   )
 
   useEffect(() => {
-    onSubmit?.(getValues())
-  }, [onSubmit, getValues])
+    if (!info?.entryDate) onSubmit?.({ ...defaultValues })
+  }, [onSubmit, info?.entryDate])
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
