@@ -11,6 +11,8 @@ import { IRequestCreateClientDto, IRequestPaginateClientDto } from './client.dto
 async function createValidation(req: IRequestCreateClientDto, res: NextApiResponse, next: NextHandler) {
   const { body } = req
 
+  if (!body?.doc) body.doc = null
+
   if (!Object.keys(body).length) throw ErrorApi({ status: 400, message: 'no body' })
 
   next()
