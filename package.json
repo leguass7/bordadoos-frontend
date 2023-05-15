@@ -1,6 +1,6 @@
 {
   "name": "bordadoos-frontend",
-  "version": "0.0.21",
+  "version": "0.0.23",
   "private": true,
   "scripts": {
     "release": "standard-version --no-verify --skip.tag --release-as patch",
