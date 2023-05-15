@@ -77,7 +77,7 @@ export const PurchasePanelProvider: React.FC<Props> = ({ children, persist }) =>
   const changeInfo = useCallback(
     (info: Purchase) => {
       setInfo(old => {
-        const clientId = info?.clientId || old?.clientId
+        const clientId = info?.clientId === null ? null : info?.clientId || old?.clientId
         const clientObs = info?.clientObs || old?.clientObs
         const employeeObs = info?.employeeObs || old?.employeeObs
         const entryDate = info?.entryDate || old?.entryDate
