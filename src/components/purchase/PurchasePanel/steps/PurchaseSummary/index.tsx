@@ -6,6 +6,7 @@ import { Button, ButtonGroup, Grid } from '@mui/material'
 import { PanelWrapper } from '~/components/purchase/styles'
 import { IResponsePurchase } from '~/serverSide/purchases/purchase.dto'
 import { postDefault, putDefault } from '~/services/api'
+import { addDuplicatedImages } from '~/services/api/images'
 
 import { usePurchasePanelContext } from '../../PurchasePanelProvider'
 import { PurchaseAdditionalFormCard } from '../PurchaseAdditionals/PurchaseAdditionalFormCard'
@@ -40,18 +41,22 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
   const handleSave = useCallback(async () => {
     const route = isEditing ? `/purchases/${initialPurchaseId}` : `/purchases`
     const fetcher = isEditing ? putDefault : postDefault
-    const data = { ...purchase }
+    const data: any = { ...purchase }
+
+    if (duplicated) data.duplicated = initialPurchaseId
 
     const { success, message, purchase: foundPurchase } = await fetcher<IResponsePurchase>(route, data)
 
     const id = foundPurchase?.id
 
     if (success) {
+      if (duplicated && id && initialPurchaseId) await addDuplicatedImages(id, initialPurchaseId)
+
       setpurchaseId(id)
       setSaved(true)
       clearAll?.()
     } else toast(message, { type: 'error' })
-  }, [purchase, initialPurchaseId, clearAll, isEditing])
+  }, [purchase, initialPurchaseId, clearAll, isEditing, duplicated])
 
   return saved ? (
     <PurchaseSuccess edited={!!initialPurchaseId} goBack={restart} purchaseId={purchaseId} />

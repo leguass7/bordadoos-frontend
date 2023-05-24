@@ -253,6 +253,8 @@ model Purchase {
   entryDate    DateTime?
   deliveryDate DateTime? @db.Date
 
+  duplicated Int?
+
   createdAt DateTime? @default(now()) @db.Timestamp(0)
   updatedAt DateTime? @updatedAt
 
@@ -337,8 +339,7 @@ model EmbroideryImage {
 
   updatedBy Int?
 
-  purchaseId Int
-  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+  purchases Purchase[]
 
   createdAt DateTime? @default(now()) @db.Timestamp(0)
   updatedAt DateTime? @updatedAt

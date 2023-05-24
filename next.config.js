@@ -9,6 +9,8 @@ const nextConfig = {
   compiler: {
     styledComponents: true
   },
+
+  webpack: {},
   api: {
     bodyParser: {
       sizeLimit: '500kb'

@@ -36,6 +36,31 @@ class EmbroideryImageController {
   }
 
   @JwtAuthGuard()
+  @Post('/:purchaseId/:duplicated')
+  async addDuplicated(
+    @Param('purchaseId') param: string,
+    @Param('duplicated') duplicatedParam: string,
+    @ReqAuth() auth: IAuthorizedUser
+  ) {
+    const duplicated = parseInt(duplicatedParam)
+    const purchaseId = parseInt(param)
+
+    if (typeof purchaseId !== 'number' || typeof duplicated !== 'number')
+      throw new BadRequestException('Purchase not found')
+
+    // Get images from duplicated purchase
+    const images = await this.embroideryImageService.list({ purchaseId: duplicated })
+
+    const dto = images.map(img => {
+      return { ...img, createdAt: undefined, updatedAt: undefined, id: undefined }
+    })
+
+    const data = await this.embroideryImageService.create(dto, purchaseId, auth.userId)
+
+    return { data }
+  }
+
+  @JwtAuthGuard()
   @Post('/:purchaseId')
   async upload(
     @Param('purchaseId') param: string,
@@ -46,7 +71,7 @@ class EmbroideryImageController {
     if (typeof purchaseId !== 'number') throw new BadRequestException('Purchase not found')
 
     const data = await this.embroideryImageService.create(files, purchaseId, auth.userId)
-    const isMany = data?.count > 1
+    const isMany = data?.length > 1
 
     return { data, message: `Sucesso no upload ${isMany ? 'das imagens' : 'da imagem'}` }
   }

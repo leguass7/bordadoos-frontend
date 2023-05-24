@@ -22,6 +22,11 @@ export async function listEmbroideryImages(filter: FilterEmbroideryImageDto) {
   return response
 }
 
+export async function addDuplicatedImages(purchaseId: number, duplicatedId: number) {
+  const response = await postDefault(`/embroidery-image/${purchaseId}/${duplicatedId}`, null)
+  return response
+}
+
 export async function deleteEmbroideryImage(imageId: number) {
   const response = await deleteDefault(`/embroidery-image/${imageId}`)
   return response
