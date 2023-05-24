@@ -1,4 +1,3 @@
-import { PriceRuleModality, PriceRuleType } from '@prisma/client'
 import { Segments, celebrate, Joi } from 'celebrate'
 // categoryId43
 // clientId32
