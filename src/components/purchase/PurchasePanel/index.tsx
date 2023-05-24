@@ -12,6 +12,7 @@ import { usePurchasePanelContext } from './PurchasePanelProvider'
 import { PurchasePanelStepper } from './PurchasePanelStepper'
 import { PurchaseAdditionals } from './steps/PurchaseAdditionals'
 import { PurchaseEmbroidery } from './steps/PurchaseEmbroidery'
+import { PurchaseImages } from './steps/PurchaseImages'
 import { PurchaseInfo } from './steps/PurchaseInfo'
 import { PurchaseSummary } from './steps/PurchaseSummary'
 
