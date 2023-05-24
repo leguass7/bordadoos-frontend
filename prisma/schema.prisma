@@ -79,8 +79,9 @@ model User {
   updatedClients   Client[]   @relation(name: "clientUpdatedUser")
   createdPurchases Purchase[] @relation(name: "purchaseCreatedUser")
 
-  createdPriceRules PriceRules[] @relation(name: "priceRuleCreator")
-  updatedPriceRules PriceRules[] @relation(name: "priceRuleUpdater")
+  createdPriceRules PriceRules[]      @relation(name: "priceRuleCreator")
+  updatedPriceRules PriceRules[]      @relation(name: "priceRuleUpdater")
+  embroideryImages  EmbroideryImage[]
 
   @@map("users")
 }
@@ -260,7 +261,8 @@ model Purchase {
   client      Client              @relation(fields: [clientId], references: [id])
   createdUser User                @relation(name: "purchaseCreatedUser", fields: [createdBy], references: [id])
 
-  purchaseItem PurchaseConfig[]
+  purchaseItem     PurchaseConfig[]
+  embroideryImages EmbroideryImage[]
 
   @@map(name: "purchases")
 }
@@ -320,4 +322,26 @@ model PurchaseConfig {
   updatedAt DateTime? @updatedAt
 
   @@map(name: "purchase_configs")
+}
+
+model EmbroideryImage {
+  id      Int      @id @default(autoincrement()) @db.UnsignedInt
+  name    String
+  actived Boolean? @default(true)
+  uri     String   @db.LongText
+  type    String?
+  size    Int?
+
+  createdBy Int
+  creator   User @relation(fields: [createdBy], references: [id])
+
+  updatedBy Int?
+
+  purchaseId Int
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @updatedAt
+
+  @@map("embroidery_images")
 }
