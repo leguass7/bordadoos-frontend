@@ -12,6 +12,7 @@ import { PurchaseAdditionalFormCard } from '../PurchaseAdditionals/PurchaseAddit
 import { SelectPurchaseRules } from '../PurchaseAdditionals/SelectPurchaseRules'
 import { PurchaseEmbroideryCard } from '../PurchaseEmbroidery/PurchaseEmbroideryCard'
 import { PurchaseEmbroideryColorCard } from '../PurchaseEmbroidery/PurchaseEmbroideryColorCard'
+import { PurchaseImagesCard } from '../PurchaseImages'
 import { PurchaseInfoCard } from '../PurchaseInfo/PurchaseInfoCard'
 import { SelectCustomerCard } from '../PurchaseInfo/SelectCustomerCard'
 import { PurchaseSuccess } from './PurchaseSuccess'
@@ -83,6 +84,11 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
         <PanelWrapper>
           <PurchaseAdditionalFormCard onSuccess={onSuccess} />
         </PanelWrapper>
+        {isEditing ? (
+          <PanelWrapper>
+            <PurchaseImagesCard purchaseId={initialPurchaseId} />
+          </PanelWrapper>
+        ) : null}
         <PanelWrapper>
           <Grid container>
             <Grid item xs={12}>

@@ -104,3 +104,7 @@ export function addSeparatorsToNumberString(value: string, separators: string[] 
 export function validNumber(value: string) {
   return value?.replace(',', '.') ?? null
 }
+
+export function removeFileExtension(filename: string) {
+  return filename.split('.').slice(0, -1).join('.')
+}

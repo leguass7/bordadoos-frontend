@@ -3,6 +3,7 @@ import { memo, useCallback, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { Edit, Lock, LockOpen, Print, ContentCopy } from '@mui/icons-material'
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import { IconButton, Switch, Tooltip, Typography } from '@mui/material'
 
 import { formatDate, toMoney } from '~/helpers/string'
@@ -10,8 +11,10 @@ import { useIsMounted } from '~/hooks/useIsMounted'
 import { putDefault } from '~/services/api'
 import { Column, Row } from '~/styles/grid'
 
+import { SimpleModal } from '../Common/SimpleModal'
 import { CardItem } from '../ListItems/CardItem'
 import { PurchaseWithRelations } from './PurchaseList'
+import { PurchaseImages } from './PurchasePanel/steps/PurchaseImages/PurchaseImages'
 
 const overflowTextProps = {
   textOverflow: 'ellipsis',
@@ -61,8 +64,13 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
   const { push } = useRouter()
   const [itemDone, setItemDone] = useState(done)
   const [itemLock, setItemLock] = useState(!!lock)
+  const [openImageModal, setOpenImageModal] = useState(false)
 
   // const originalValue = purchaseItem?.[0]?.originalValue || value
+
+  const toggleOpenImageModal = useCallback(() => {
+    setOpenImageModal(old => !old)
+  }, [])
 
   // const [expand, setExpand] = useState(false)
 
@@ -216,6 +224,13 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
                   </IconButton>
                 </div>
               </Tooltip>
+              <Tooltip title="Imagens">
+                <div>
+                  <IconButton onClick={toggleOpenImageModal}>
+                    <AddPhotoAlternateIcon />
+                  </IconButton>
+                </div>
+              </Tooltip>
               <Tooltip title={lock ? 'Desbloquear pedido' : 'Bloquear a edição pedido'}>
                 <div>
                   <IconButton disabled={!isAdmin || loading} onClick={toggleLock}>
@@ -233,6 +248,9 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
           </Column>
         </Row>
       </CardItem>
+      <SimpleModal maxWidth={910} title="Imagens do pedido" onToggle={toggleOpenImageModal} open={openImageModal}>
+        <PurchaseImages purchaseId={id} />
+      </SimpleModal>
     </>
   )
 }

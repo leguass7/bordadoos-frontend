@@ -15,11 +15,11 @@ import createEmotionCache from '~/config/createEmotionCache'
 
 const clientSideEmotionCache = createEmotionCache()
 
-interface MyAppProps extends AppProps {
+interface MyAppProps extends AppProps<Record<string, any>> {
   emotionCache?: EmotionCache
 }
 
-function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) {
+function MyApp({ Component, emotionCache = clientSideEmotionCache, pageProps }: MyAppProps) {
   return (
     <CacheProvider value={emotionCache}>
       <SessionProvider session={pageProps?.session}>

@@ -7,15 +7,16 @@ import styled from 'styled-components'
 
 interface Props {
   title?: string
+  maxWidth?: number
   open: boolean
   onToggle?: () => void
   children: React.ReactNode
 }
 
-export const SimpleModal: React.FC<Props> = ({ children, title = '', open = false, onToggle }) => {
+export const SimpleModal: React.FC<Props> = ({ children, title = '', open = false, onToggle, maxWidth = 600 }) => {
   return (
     <Modal open={open} onClose={onToggle}>
-      <ModalContainer>
+      <ModalContainer maxWidth={maxWidth}>
         <PaperContainer>
           <ModalHeader>
             <Typography variant="h5">{title}</Typography>
@@ -30,7 +31,7 @@ export const SimpleModal: React.FC<Props> = ({ children, title = '', open = fals
   )
 }
 
-const ModalContainer = styled.div`
+const ModalContainer = styled.div<{ maxWidth?: number }>`
   display: flex;
   margin: 0 auto;
   align-items: center;
@@ -38,7 +39,7 @@ const ModalContainer = styled.div`
   width: 100%;
   height: 100%;
   outline: none;
-  max-width: 600px;
+  max-width: ${props => `${props.maxWidth}px`};
 `
 
 const ModalHeader = styled.div`

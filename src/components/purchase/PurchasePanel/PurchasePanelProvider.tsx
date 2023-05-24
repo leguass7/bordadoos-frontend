@@ -47,15 +47,17 @@ interface PurchaseContext {
   additionals: PurchaseAdditionals
   changeAdditionals: (additionals: PurchaseAdditionals | Purchase) => void
   clearAll?: () => void
+  isEditing?: boolean
 }
 
 export const PurchasePanelContext = createContext({} as PurchaseContext)
 
 interface Props {
   persist?: boolean
+  isEditing?: boolean
 }
 
-export const PurchasePanelProvider: React.FC<Props> = ({ children, persist }) => {
+export const PurchasePanelProvider: React.FC<Props> = ({ children, persist, isEditing }) => {
   const [info, setInfo] = usePersistedState<PurchasePanelInfo>('purchase-panel-info', {}, persist)
   const [embroidery, setEmbroidery] = usePersistedState<PurchaseEmbroidery>('purchase-panel-embroidery', {}, persist)
 
@@ -139,7 +141,8 @@ export const PurchasePanelProvider: React.FC<Props> = ({ children, persist }) =>
         setPriceRules,
         additionals,
         changeAdditionals,
-        clearAll
+        clearAll,
+        isEditing
       }}
     >
       {children}
