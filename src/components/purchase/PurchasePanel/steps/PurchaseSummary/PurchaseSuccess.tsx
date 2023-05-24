@@ -5,7 +5,6 @@ import { Print } from '@mui/icons-material'
 import { Button, ButtonGroup, Grid, Typography } from '@mui/material'
 
 import { usePurchasePanelContext } from '../../PurchasePanelProvider'
-import { PurchaseImages } from '../PurchaseImages'
 
 interface Props {
   purchaseId: number
