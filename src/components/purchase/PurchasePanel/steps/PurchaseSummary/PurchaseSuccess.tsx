@@ -17,17 +17,28 @@ export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited })
   const { info } = usePurchasePanelContext()
   const { clearAll, isEditing } = usePurchasePanelContext()
 
+  // const handlePrint = useCallback(() => {
+  //   const frames = Array.from(document.getElementsByName('printFrame'))
+
+  //   const frame = frames.find((f: any) => {
+  //     const frameId = Number(f.title)
+  //     return frameId === purchaseId
+  //   }) as HTMLIFrameElement
+
+  //   if (frame) {
+  //     frame.focus()
+  //     frame.contentWindow.print()
+  //   }
+  // }, [purchaseId]
+
   const handlePrint = useCallback(() => {
-    const frames = Array.from(document.getElementsByName('printFrame'))
+    const page = window.open(`/admin/print/${purchaseId}`, '_blank')
 
-    const frame = frames.find((f: any) => {
-      const frameId = Number(f.title)
-      return frameId === purchaseId
-    }) as HTMLIFrameElement
-
-    if (frame) {
-      frame.focus()
-      frame.contentWindow.print()
+    page.onload = () => {
+      setTimeout(() => {
+        page.print()
+        page.close()
+      }, 0)
     }
   }, [purchaseId])
 
@@ -45,14 +56,14 @@ export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited })
   return (
     <>
       <Grid container py={30} flexDirection="column" justifyContent="center" alignItems="center">
-        <iframe
+        {/* <iframe
           src={`/admin/print/${purchaseId}`}
           style={{ display: 'none' }}
           title={`${purchaseId}`}
           name="printFrame"
           width="0"
           height="0"
-        />
+        /> */}
         <Typography variant="h5" align="center">
           Pedido {status} com sucesso
         </Typography>

@@ -1,15 +1,14 @@
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
 import { Edit, Lock, LockOpen, Print, ContentCopy } from '@mui/icons-material'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
-import { IconButton, Switch, Tooltip, Typography } from '@mui/material'
+import { Grid, IconButton, Switch, Tooltip, Typography } from '@mui/material'
 
 import { formatDate, toMoney } from '~/helpers/string'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { putDefault } from '~/services/api'
-import { Column, Row } from '~/styles/grid'
 
 import { SimpleModal } from '../Common/SimpleModal'
 import { CardItem } from '../ListItems/CardItem'
@@ -32,24 +31,24 @@ const overflowTextProps = {
 //   const unityValue = value / qtd
 
 //   return (
-//     <Row justify="space-between" align="stretch">
-//       <Column align="flex-start">
+//     <Grid justify="space-between" align="stretch">
+//       <Grid align="flex-start">
 //         <Typography variant="subtitle1" {...overflowTextProps}>
 //           {qtd}x
 //         </Typography>
 //         <Typography variant="subtitle1" {...overflowTextProps}>
 //           {toMoney(unityValue)}
 //         </Typography>
-//       </Column>
-//       <Column align="flex-end">
+//       </Grid>
+//       <Grid align="flex-end">
 //         <Typography variant="caption" color="GrayText" {...overflowTextProps}>
 //           data de criação
 //         </Typography>
 //         <Typography variant="body1" {...overflowTextProps}>
 //           {createdAt && formatDate(createdAt, 'dd/MM/yyyy')}
 //         </Typography>
-//       </Column>
-//     </Row>
+//       </Grid>
+//     </Grid>
 //   )
 // }
 
@@ -60,6 +59,8 @@ interface Props extends PurchaseWithRelations {
 const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props }) => {
   const { value = 0, done = false, id, category, type, createdAt, client, deliveryDate, lock } = props
   const hasLabel = !!(type?.label || category?.label)
+
+  const frameRef = useRef<HTMLIFrameElement>(null)
 
   const { push } = useRouter()
   const [itemDone, setItemDone] = useState(done)
@@ -114,41 +115,47 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
     push(`/admin?purchaseId=${id}&duplicated=true`)
   }, [push, id])
 
-  const handlePrint = useCallback(() => {
-    const frames = Array.from(document.getElementsByName('printFrame'))
+  const handlePrint = useCallback((src: string) => {
+    const page = window.open(src, '_blank')
 
-    const frame = frames.find((f: any) => {
-      const frameId = Number(f.title)
-      return frameId === id
-    }) as HTMLIFrameElement
-
-    if (frame) {
-      frame.focus()
-      frame.contentWindow.print()
+    page.onload = () => {
+      setTimeout(() => {
+        page.print()
+        page.close()
+      }, 0)
     }
-  }, [id])
+
+    // console.log(a)
+    // history.pushState
+    // const frames = Array.from(document.getElementsByName('printFrame'))
+    // const frame = frameRef.current
+    // frame.src = src
+    // const frame = frames.find((f: any) => {
+    //   const frameId = Number(f.title)
+    //   return frameId === id
+    // }) as HTMLIFrameElement
+    // if (frame) {
+    //   frame.focus()
+    //   frame.contentWindow.print()
+    // frame.contentWindow.onafterprint = () => {
+    //   frame.src = ''
+    // }
+    // }
+  }, [])
 
   return (
     <>
-      <iframe
-        src={`/admin/print/${id}`}
-        style={{ display: 'none' }}
-        title={`${id}`}
-        name="printFrame"
-        width="0"
-        height="0"
-      />
+      {/* <iframe ref={frameRef} style={{ display: 'none' }} title={`${id}`} name="printFrame" width="0" height="0" /> */}
       <CardItem
         spacing={4}
         width="50%"
         // expand={expand}
         // CollapsibleContent={<CollapsibleContent value={originalValue} createdAt={createdAt} qtd={qtd} />}
       >
-        <Row align="stretch">
-          <Column align="flex-start">
+        <Grid container>
+          <Grid item xs={12} sm={6} alignItems="flex-start">
             <Typography variant="caption">{name}</Typography>
-            <br />
-            <Typography variant="body1">{`${client?.name ?? '--'} `}</Typography>
+            <Typography pt={1} variant="body1">{`${client?.name ?? '--'} `}</Typography>
 
             <Typography variant="subtitle1" {...overflowTextProps}>
               {hasLabel ? (
@@ -162,19 +169,21 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
             <Typography variant="h6" {...overflowTextProps}>
               {label ?? '--'}
             </Typography>
-            <Switch
-              name="done"
-              checked={itemDone}
-              color="info"
-              onChange={toggleActived}
-              disabled={loading || itemLock}
-            />
-            <Typography pl={1} variant="caption" color="GrayText" htmlFor="done" component="label">
-              Finalizado
-            </Typography>
-          </Column>
-          <Column align="flex-end" expand={1} justify="space-between">
-            <Column align="flex-end">
+            <Grid container direction="column">
+              <Switch
+                name="done"
+                checked={itemDone}
+                color="info"
+                onChange={toggleActived}
+                disabled={loading || itemLock}
+              />
+              <Typography pl={1} variant="caption" color="GrayText" htmlFor="done" component="label">
+                Finalizado
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid item xs={12} sm={6} alignItems="flex-end" justifyContent="space-between">
+            <Grid container flexDirection="column" alignItems="flex-end">
               <Typography variant="caption" color="GrayText" {...overflowTextProps}>
                 data (criação) ~ data (entrega)
               </Typography>
@@ -183,26 +192,30 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
                 {' ~ '}
                 {deliveryDate ? formatDate(deliveryDate, 'dd/MM/yyyy') : 'Sem prazo'}
               </Typography>
-            </Column>
-            <Column align="right">
-              <Typography textAlign="right" variant="body1" {...overflowTextProps}>
-                Contato
-              </Typography>
-              <Typography variant="caption">{client?.phone ?? '---'}</Typography>
-            </Column>
-            <Column>
-              <Typography variant="subtitle1" {...overflowTextProps}>
+            </Grid>
+            <Grid item xs={12} pt={1}>
+              <Grid container direction="column" alignItems="right">
+                <Typography textAlign="right" variant="body1" {...overflowTextProps}>
+                  Contato
+                </Typography>
+                <Typography variant="caption" align="right">
+                  {client?.phone ?? '---'}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid item xs={12} pt={1}>
+              <Typography variant="subtitle1" align="right" {...overflowTextProps}>
                 Total: {toMoney(value)}
               </Typography>
-            </Column>
-            {/* <Column align="flex-end">
+            </Grid>
+            {/* <Grid align="flex-end">
               <Typography variant="caption" color="GrayText" {...overflowTextProps}>
                 data de criação
               </Typography>
               <Typography variant="body1" {...overflowTextProps}>
               </Typography>
-            </Column> */}
-            <Row align="flex-end" justify="flex-end">
+            </Grid> */}
+            <Grid container pt={1} justifyContent="flex-end">
               <Tooltip title="Editar pedido">
                 <div>
                   <IconButton disabled={!!itemLock || loading} onClick={handleEdit}>
@@ -219,7 +232,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
               </Tooltip>
               <Tooltip title="Imprimir pedido">
                 <div>
-                  <IconButton onClick={handlePrint}>
+                  <IconButton onClick={() => handlePrint(`/admin/print/${id}`)}>
                     <Print />
                   </IconButton>
                 </div>
@@ -244,9 +257,9 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
                 aria-expanded={expand}
                 aria-label="saber mais"
               /> */}
-            </Row>
-          </Column>
-        </Row>
+            </Grid>
+          </Grid>
+        </Grid>
       </CardItem>
       <SimpleModal maxWidth={910} title="Imagens do pedido" onToggle={toggleOpenImageModal} open={openImageModal}>
         <PurchaseImages purchaseId={id} />
