@@ -36,7 +36,7 @@ export const PurchaseList: React.FC = () => {
     <div>
       <InfiniteScroll
         dataLength={data.length}
-        scrollableTarget={container}
+        scrollableTarget="layout-container"
         hasMore={!!hasMore}
         next={fetchMoreData}
         loader={
@@ -55,9 +55,11 @@ export const PurchaseList: React.FC = () => {
             overflow: 'hidden'
           }}
         >
-          {data?.map?.(item => {
-            return <PurchaseItem key={`purchase-${item?.id}-${item?.deliveryDate}`} isAdmin={isAdmin()} {...item} />
-          })}
+          {data?.length
+            ? data?.map?.(item => {
+                return <PurchaseItem key={`purchase-${item?.id}`} isAdmin={isAdmin()} {...item} />
+              })
+            : null}
         </div>
       </InfiniteScroll>
     </div>

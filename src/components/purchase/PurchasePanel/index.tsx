@@ -8,6 +8,7 @@ import { Divider, Grid } from '@mui/material'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import { findPurchaseWithItems } from '~/services/api/purchase'
 
+import { PurchaseName } from './PurchaseName'
 import { usePurchasePanelContext } from './PurchasePanelProvider'
 import { PurchasePanelStepper } from './PurchasePanelStepper'
 import { PurchaseAdditionals } from './steps/PurchaseAdditionals'
@@ -23,7 +24,8 @@ interface Props {
 // Depends on PurchasePanelProvider
 export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
   const { changeAdditionals, changeEmbroidery, changeInfo } = usePurchasePanelContext()
-  const [step, setStep] = useState(0)
+  const editing = purchaseId || (purchaseId && duplicated)
+  const [step, setStep] = useState(editing ? 3 : 0)
   const { replace } = useRouter()
 
   const isMounted = useIsMounted()
@@ -48,12 +50,10 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
       changeAdditionals(purchase)
       changeEmbroidery(purchase)
       changeInfo(purchase)
-      setStep(3)
 
-      if (purchase?.lock && !duplicated) restart()
       if (duplicated) toast('Informações copiadas com sucesso', { type: 'success' })
     }
-  }, [purchaseId, isMounted, changeAdditionals, changeEmbroidery, changeInfo, restart, duplicated])
+  }, [purchaseId, isMounted, changeAdditionals, changeEmbroidery, changeInfo, duplicated])
 
   useEffect(() => {
     updatePurchaseData()
@@ -74,6 +74,7 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
     <Grid container py={2}>
       <Grid item xs={12}>
         <PurchasePanelStepper setStep={handleChangeStep} step={step} />
+        <PurchaseName />
         <Divider sx={{ py: 1, mb: 2 }} />
         {step === 0 ? <PurchaseInfo onNext={handleNext} /> : null}
 
@@ -85,7 +86,7 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
           <PurchaseSummary
             restart={restart}
             initialPurchaseId={purchaseId}
-            onSuccess={showSuccessMessage}
+            // onSuccess={showSuccessMessage}
             onPrev={handlePrev}
             duplicated={duplicated}
           />
