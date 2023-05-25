@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 
-import { Button, Grid } from '@mui/material'
+import { Button } from '@mui/material'
 
 import { usePurchasePanelContext } from '../../../PurchasePanelProvider'
 import { PurchaseEmbroideryColorFormScope } from './PurchaseEmbroideryColorFormScope'
@@ -21,17 +21,32 @@ interface Props {
 
 export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
   const { embroidery, changeEmbroidery } = usePurchasePanelContext()
-  const { control, handleSubmit } = useForm<PurchaseEmbroideryColorFormFields>({
-    defaultValues: { colors: embroidery?.colors }
-  })
+  const formRef = useRef<HTMLFormElement>(null)
+
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty }
+  } = useForm<PurchaseEmbroideryColorFormFields>()
+
   const { fields, append, remove } = useFieldArray({
     name: 'colors',
     control
   })
 
+  const updateForm = useCallback(() => {
+    if (!isDirty) {
+      const colors = [...(embroidery?.colors ?? [])]
+
+      colors.forEach(c => {
+        append(c)
+      })
+    }
+  }, [embroidery, isDirty, append])
+
   useEffect(() => {
-    if (!fields?.length) append({ label: '', colors: [''] })
-  }, [append, fields])
+    updateForm()
+  }, [updateForm])
 
   const onSubmit = useCallback(
     async ({ colors }: PurchaseEmbroideryColorFormFields) => {
@@ -49,7 +64,7 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
         <Button variant="outlined" onClick={() => append({ label: '', colors: [''] })}>
           Adicionar mais cores
         </Button>

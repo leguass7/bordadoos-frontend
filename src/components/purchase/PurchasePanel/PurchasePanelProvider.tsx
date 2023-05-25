@@ -58,7 +58,7 @@ interface Props {
 }
 
 export const PurchasePanelProvider: React.FC<Props> = ({ children, persist, isEditing }) => {
-  const [info, setInfo] = usePersistedState<PurchasePanelInfo>('purchase-panel-info', {}, persist)
+  const [info, setInfo] = usePersistedState<PurchasePanelInfo>('purchase-panel-info', { name: '' }, persist)
   const [embroidery, setEmbroidery] = usePersistedState<PurchaseEmbroidery>('purchase-panel-embroidery', {}, persist)
 
   const [priceRules, setPriceRules] = usePersistedState<PriceRules[]>('purchase-panel-price-rules', [], persist)
