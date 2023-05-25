@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { Button, Grid } from '@mui/material'
+import { Grid } from '@mui/material'
 import { EmbroideryPosition, EmbroideryType } from '@prisma/client'
 
 import { CircleLoading } from '~/components/CircleLoading'
@@ -49,20 +49,17 @@ export const PurchaseEmbroideryForm: React.FC<Props> = ({ onSuccess }) => {
     { label: 'Selecione um tipo de bordado primeiro', value: '', disabled: true }
   ])
 
-  const updateForm = useCallback(
-    (emb: PurchaseEmbroidery) => {
-      if (isDirty) return
+  const updateForm = useCallback(() => {
+    if (isDirty) return
 
-      if (emb?.typeId) {
-        const hasItems = typeItems?.length && positionItems?.length
-        if (hasItems && isMounted()) reset({ ...emb })
-      } else reset({ ...emb })
-    },
-    [reset, typeItems, positionItems, isDirty, isMounted]
-  )
+    if (embroidery?.typeId) {
+      const hasItems = typeItems?.length && positionItems?.length
+      if (hasItems && isMounted()) reset({ ...embroidery })
+    } else reset({ ...embroidery })
+  }, [reset, typeItems, positionItems, isDirty, isMounted, embroidery])
 
   useEffect(() => {
-    if (initialEmbroidery) updateForm(initialEmbroidery)
+    updateForm()
   }, [updateForm, initialEmbroidery])
 
   const fetchData = useCallback(async () => {
