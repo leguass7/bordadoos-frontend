@@ -82,6 +82,8 @@ async function paginate(
     'label',
     'name',
     'lock',
+    'points',
+    'developmentPrice',
     'qtd',
     'value'
   ]
