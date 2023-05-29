@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
@@ -8,11 +8,15 @@ import { Grid, IconButton, Switch, Tooltip, Typography } from '@mui/material'
 
 import { formatDate, toMoney } from '~/helpers/string'
 import { useIsMounted } from '~/hooks/useIsMounted'
+import type { IConfigPurchaseRules } from '~/serverSide/config/config.dto'
+import { calculatePurchaseOriginalValue } from '~/serverSide/purchases/purchase-configs/purchase-config.helper'
 import { putDefault } from '~/services/api'
+import { getConfig } from '~/services/api/config'
 
+import { CircleLoading } from '../CircleLoading'
 import { SimpleModal } from '../Common/SimpleModal'
-import { CardItem } from '../ListItems/CardItem'
-import { PurchaseWithRelations } from './PurchaseList'
+import { CardExpandMore, CardItem } from '../ListItems/CardItem'
+import type { PurchaseWithRelations } from './PurchaseList'
 import { PurchaseImages } from './PurchasePanel/steps/PurchaseImages/PurchaseImages'
 
 const overflowTextProps = {
@@ -21,59 +25,97 @@ const overflowTextProps = {
   overflow: 'hidden'
 }
 
-// interface CollapsibleContentProps {
-//   value?: number
-//   createdAt?: Date
-//   qtd?: number
-// }
+interface CollapsibleContentProps extends PurchaseWithRelations {}
 
-// const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ value = 0, createdAt, qtd = 0 }) => {
-//   const unityValue = value / qtd
+const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ qtd, points, developmentPrice }) => {
+  const [purchaseRules, setPurchaseRules] = useState<IConfigPurchaseRules>(null as IConfigPurchaseRules)
+  const [loading, setLoading] = useState(false)
+  const isMounted = useIsMounted()
 
-//   return (
-//     <Grid justify="space-between" align="stretch">
-//       <Grid align="flex-start">
-//         <Typography variant="subtitle1" {...overflowTextProps}>
-//           {qtd}x
-//         </Typography>
-//         <Typography variant="subtitle1" {...overflowTextProps}>
-//           {toMoney(unityValue)}
-//         </Typography>
-//       </Grid>
-//       <Grid align="flex-end">
-//         <Typography variant="caption" color="GrayText" {...overflowTextProps}>
-//           data de criação
-//         </Typography>
-//         <Typography variant="body1" {...overflowTextProps}>
-//           {createdAt && formatDate(createdAt, 'dd/MM/yyyy')}
-//         </Typography>
-//       </Grid>
-//     </Grid>
-//   )
-// }
+  const embValue = useMemo(() => {
+    let value = 0
+    if (purchaseRules) value = calculatePurchaseOriginalValue(qtd, points, 0, purchaseRules)
+
+    return value
+  }, [qtd, points, purchaseRules])
+
+  // const originalValue = useMemo(() => {
+  //   return embValue + developmentPrice
+  // }, [embValue, developmentPrice])
+
+  const fetchPurchaseRules = useCallback(async () => {
+    setLoading(true)
+    const response = await getConfig('purchaseRules')
+    if (isMounted()) {
+      setLoading(false)
+      if (response?.data?.meta) setPurchaseRules(response.data.meta as any)
+    }
+  }, [setPurchaseRules, isMounted])
+
+  const unityValue = useMemo(() => {
+    const value = embValue / qtd
+
+    return value || 0
+  }, [embValue, qtd])
+
+  useEffect(() => {
+    fetchPurchaseRules()
+  }, [fetchPurchaseRules])
+
+  return (
+    <Grid container justifyContent="space-between" alignItems="stretch">
+      <Grid item xs={6}>
+        <Typography color="GrayText" {...overflowTextProps}>
+          Peças
+        </Typography>
+        <Typography variant="subtitle1" {...overflowTextProps}>
+          {qtd}x
+        </Typography>
+        <Typography variant="subtitle1" {...overflowTextProps}>
+          {toMoney(unityValue)}
+        </Typography>
+        <Typography variant="subtitle1" {...overflowTextProps}>
+          subtotal: {toMoney(embValue)}
+        </Typography>
+      </Grid>
+      <Grid item xs={6}>
+        <Typography textAlign="right" color="GrayText" {...overflowTextProps}>
+          taxa de desenvolvimento
+        </Typography>
+        <Typography variant="body1" align="right" {...overflowTextProps}>
+          {toMoney(developmentPrice)}
+        </Typography>
+        <Typography textAlign="right" color="GrayText" {...overflowTextProps}>
+          Total
+        </Typography>
+        <Typography variant="body1" align="right" {...overflowTextProps}>
+          {toMoney(embValue)}
+        </Typography>
+      </Grid>
+      {loading ? <CircleLoading /> : null}
+    </Grid>
+  )
+}
 
 interface Props extends PurchaseWithRelations {
   isAdmin?: boolean
 }
 
-const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props }) => {
+const PurchaseItemComponent: React.FC<Props> = ({ isAdmin, ...props }) => {
+  const purchase = { ...props, isAdmin: undefined }
   const { value = 0, done = false, id, category, type, createdAt, client, deliveryDate, lock } = props
   const hasLabel = !!(type?.label || category?.label)
 
-  const frameRef = useRef<HTMLIFrameElement>(null)
+  const [expand, setExpand] = useState(false)
 
   const { push } = useRouter()
   const [itemDone, setItemDone] = useState(done)
   const [itemLock, setItemLock] = useState(!!lock)
   const [openImageModal, setOpenImageModal] = useState(false)
 
-  // const originalValue = purchaseItem?.[0]?.originalValue || value
-
   const toggleOpenImageModal = useCallback(() => {
     setOpenImageModal(old => !old)
   }, [])
-
-  // const [expand, setExpand] = useState(false)
 
   const isMounted = useIsMounted()
   const [loading, setLoading] = useState(false)
@@ -146,15 +188,10 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
   return (
     <>
       {/* <iframe ref={frameRef} style={{ display: 'none' }} title={`${id}`} name="printFrame" width="0" height="0" /> */}
-      <CardItem
-        spacing={4}
-        width="50%"
-        // expand={expand}
-        // CollapsibleContent={<CollapsibleContent value={originalValue} createdAt={createdAt} qtd={qtd} />}
-      >
+      <CardItem spacing={4} width="50%" expand={expand} CollapsibleContent={<CollapsibleContent {...purchase} />}>
         <Grid container>
           <Grid item xs={12} sm={6} alignItems="flex-start">
-            <Typography variant="caption">{name}</Typography>
+            <Typography variant="caption">{purchase?.name}</Typography>
             <Typography pt={1} variant="body1">{`${client?.name ?? '--'} `}</Typography>
 
             <Typography variant="subtitle1" {...overflowTextProps}>
@@ -167,7 +204,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
               )}
             </Typography>
             <Typography variant="h6" {...overflowTextProps}>
-              {label ?? '--'}
+              {purchase?.label ?? '--'}
             </Typography>
             <Grid container direction="column">
               <Switch
@@ -251,12 +288,14 @@ const PurchaseItemComponent: React.FC<Props> = ({ label, name, isAdmin, ...props
                   </IconButton>
                 </div>
               </Tooltip>
-              {/* <CardExpandMore
-                expand={expand}
-                onClick={() => setExpand(old => !old)}
-                aria-expanded={expand}
-                aria-label="saber mais"
-              /> */}
+              <div>
+                <CardExpandMore
+                  expand={expand}
+                  onClick={() => setExpand(old => !old)}
+                  aria-expanded={expand}
+                  aria-label="saber mais"
+                />
+              </div>
             </Grid>
           </Grid>
         </Grid>
