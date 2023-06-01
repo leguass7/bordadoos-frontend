@@ -89,7 +89,7 @@ const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ qtd, points, de
           Total
         </Typography>
         <Typography variant="body1" align="right" {...overflowTextProps}>
-          {toMoney(embValue)}
+          {toMoney(embValue + developmentPrice)}
         </Typography>
       </Grid>
       {loading ? <CircleLoading /> : null}
