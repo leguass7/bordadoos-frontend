@@ -83,6 +83,17 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
     updateTotalPrice()
   }, [priceRules?.length, updateTotalPrice])
 
+  const updateLazer = useCallback(() => {
+    if (!isDirty) {
+      setLazer(!additionals?.points)
+      updateTotalPrice()
+    }
+  }, [additionals?.points, updateTotalPrice, isDirty])
+
+  useEffect(() => {
+    updateLazer()
+  }, [updateLazer])
+
   const changeUnityValue = useCallback(e => setUnityValue(e.target?.value || 0), [])
 
   const onSubmit = useCallback(
