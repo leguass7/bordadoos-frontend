@@ -164,7 +164,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ isAdmin, ...props }) => {
       setTimeout(() => {
         page.print()
         page.close()
-      }, 0)
+      }, 100)
     }
 
     // console.log(a)
