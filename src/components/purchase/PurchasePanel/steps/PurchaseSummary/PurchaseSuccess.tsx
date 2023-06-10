@@ -38,7 +38,7 @@ export const PurchaseSuccess: React.FC<Props> = ({ purchaseId, goBack, edited })
       setTimeout(() => {
         page.print()
         page.close()
-      }, 0)
+      }, 100)
     }
   }, [purchaseId])
 

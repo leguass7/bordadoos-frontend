@@ -17,6 +17,7 @@ export const createPurchasesSchema = celebrate({
     label: Joi.string().allow(''),
     description: Joi.string().allow(''),
     points: Joi.number().allow(''),
+    unityValue: Joi.number().allow(''),
     entryDate: Joi.date(),
     rules: Joi.array().items(Joi.number()),
     colors: Joi.array().items(
@@ -52,6 +53,7 @@ export const updatePurchasesSchema = celebrate({
     label: Joi.string().allow(''),
     description: Joi.string().allow(''),
     points: Joi.number().allow(''),
+    unityValue: Joi.number().allow(''),
     entryDate: Joi.date(),
     rules: Joi.array().items(Joi.number()),
     colors: Joi.array().items(

@@ -85,7 +85,8 @@ async function paginate(
     'points',
     'developmentPrice',
     'qtd',
-    'value'
+    'value',
+    'unityValue'
   ]
 
   const spreadAllowed = (fields: (keyof Purchase)[]) =>
