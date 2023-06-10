@@ -16,6 +16,7 @@ function create(purchaseService: IPurchaseService, purchaseConfigService: IPurch
     // TEMP
     if (!req.body?.typeId) req.body.typeId = null
     if (!req.body?.categoryId) req.body.categoryId = null
+    if (!req.body?.points) req.body.points = null
 
     const data: any = {
       ...req.body,
@@ -53,6 +54,7 @@ function update(purchaseService: IPurchaseService, purchaseConfigService: IPurch
     // TEMP
     if (!req.body?.typeId) req.body.typeId = null
     if (!req.body?.categoryId) req.body.categoryId = null
+    if (!req.body?.points) req.body.points = null
 
     const data = { ...req.body, updatedBy: userId, rules: undefined }
     const isAdmin = level >= 8

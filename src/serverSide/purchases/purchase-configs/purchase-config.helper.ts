@@ -25,14 +25,18 @@ export function calculatePurchaseOriginalValue(
   qtd = 0,
   points = 0,
   developmentPrice = 0,
-  config?: IConfigPurchaseRules
+  config?: IConfigPurchaseRules,
+  uValue?: number
 ) {
   if (!config.retail || !config.wholesale) return 0
   const isRetail = !!(qtd <= config?.retail?.maxQtd)
 
-  const unityValue = isRetail
-    ? calculateRetailPrice(points, config?.retail)
-    : calculateWholesalePrice(points, config?.wholesale)
+  let unityValue = uValue
+
+  if (points || !uValue)
+    unityValue = isRetail
+      ? calculateRetailPrice(points, config?.retail)
+      : calculateWholesalePrice(points, config?.wholesale)
 
   const price = unityValue * qtd
   const originalValue = price + developmentPrice

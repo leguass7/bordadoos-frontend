@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { Grid, TextField } from '@mui/material'
+import { Chip, Grid, TextField } from '@mui/material'
 
 import { Field } from '~/components/Form/react-hook-form/Field'
 import { Switch } from '~/components/Form/react-hook-form/Switch'
@@ -31,6 +31,8 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
   const [unityValue, setUnityValue] = useState(formatPrice(0))
   const [purchaseRules, setPurchaseRules] = useState()
 
+  const [lazer, setLazer] = useState(!additionals?.points)
+
   const {
     control,
     handleSubmit,
@@ -44,7 +46,7 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
 
   const updateForm = useCallback(() => {
     if (!isDirty) reset({ ...additionals })
-  }, [additionals, isDirty, reset])
+  }, [additionals, reset, isDirty])
 
   useEffect(() => {
     updateForm()
@@ -66,8 +68,9 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
     const qtd = Number(data?.qtd) || 1
     const points = Number(data?.points) || 0
     const developmentPrice = Number(data?.developmentPrice) || 0
+    const unityValue = Number(data?.unityValue) || 0
 
-    const originalPrice = calculatePurchaseOriginalValue(qtd, points, developmentPrice, purchaseRules)
+    const originalPrice = calculatePurchaseOriginalValue(qtd, points, developmentPrice, purchaseRules, unityValue)
     const priceWithoutDevelopment = originalPrice - developmentPrice
 
     if (originalPrice) setUnityValue(formatPrice(priceWithoutDevelopment / qtd))
@@ -90,10 +93,38 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
     [changeAdditionals, onSuccess]
   )
 
+  const toggleLazer = useCallback(() => {
+    setLazer(old => {
+      if (old) setValue('unityValue', null)
+      else setValue('points', null)
+      return !old
+    })
+
+    const values = getValues()
+    onSubmit(values)
+    updateTotalPrice()
+  }, [setValue, getValues, onSubmit, updateTotalPrice])
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container>
+          <Grid item xs={12} pb={2}>
+            <Chip
+              clickable
+              onClick={toggleLazer}
+              label="Pontos"
+              color="primary"
+              variant={lazer ? 'outlined' : 'filled'}
+            />{' '}
+            <Chip
+              clickable
+              onClick={toggleLazer}
+              label="Lazer"
+              color="primary"
+              variant={lazer ? 'filled' : 'outlined'}
+            />
+          </Grid>
           <Grid item xs={12} sm={6}>
             <Field
               onBlur={handleSubmit(onSubmit)}
@@ -105,7 +136,6 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
               onChange={updateTotalPrice}
             />
           </Grid>
-          <Grid item sm={6}></Grid>
           <Grid item xs={12} sm={6}>
             <Field
               onBlur={handleSubmit(onSubmit)}
@@ -118,29 +148,51 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
               onChange={updateTotalPrice}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <Field
-              onBlur={handleSubmit(onSubmit)}
-              control={control}
-              name="points"
-              number
-              label="Qtd. de pontos do bordado"
-              onChange={updateTotalPrice}
-              autoComplete="off"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <div style={{ padding: 4 }}>
-              <TextField
-                fullWidth
-                disabled={true}
-                value={unityValue}
-                label="Valor unitário"
-                autoComplete="off"
-                onChange={changeUnityValue}
-              />
-            </div>
-          </Grid>
+
+          {lazer ? (
+            <>
+              <Grid item xs={12} sm={6}>
+                <Field
+                  onBlur={handleSubmit(onSubmit)}
+                  control={control}
+                  name="unityValue"
+                  number
+                  label="Valor da peça"
+                  onChange={updateTotalPrice}
+                  autoComplete="off"
+                />
+              </Grid>
+            </>
+          ) : null}
+
+          {!lazer ? (
+            <>
+              <Grid item xs={12} sm={6}>
+                <Field
+                  onBlur={handleSubmit(onSubmit)}
+                  control={control}
+                  name="points"
+                  number
+                  label="Qtd. de pontos do bordado"
+                  onChange={updateTotalPrice}
+                  autoComplete="off"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <div style={{ padding: 4 }}>
+                  <TextField
+                    fullWidth
+                    disabled={true}
+                    value={unityValue}
+                    label="Valor unitário"
+                    autoComplete="off"
+                    onChange={changeUnityValue}
+                  />
+                </div>
+              </Grid>
+            </>
+          ) : null}
+
           <Grid item xs={12} sm={6}>
             <div>
               <Field

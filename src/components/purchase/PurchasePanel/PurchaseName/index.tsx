@@ -42,7 +42,7 @@ export const PurchaseName: React.FC<Props> = () => {
     const counter = !!purchaseQtd ? purchaseQtd + 1 : 1
 
     return `${stringAvatar(name)}${counter}`
-  }, [user?.name, user?._count])
+  }, [user])
 
   const updatePurchaseName = useCallback(() => {
     if (purchaseCod) changeInfo({ name: purchaseCod })

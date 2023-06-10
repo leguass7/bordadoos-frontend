@@ -91,6 +91,7 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
                 <Grid container>
                   <Grid item xs={6}>
                     <Typography variant="body1">Quantidade:</Typography>
+                    {purchase.points ? <Typography variant="body1">Pontos:</Typography> : null}
                     <Typography variant="body1">Data de entrada:</Typography>
                     <Typography variant="body1">Data de entrega:</Typography>
                   </Grid>
@@ -98,6 +99,11 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
                     <Typography align="right" variant="body1">
                       {purchase.qtd}
                     </Typography>
+                    {purchase.points ? (
+                      <Typography align="right" variant="body1">
+                        {purchase.points}
+                      </Typography>
+                    ) : null}
                     <Typography align="right" variant="body1">
                       {formatDate(purchase.entryDate, 'dd/MM/yyyy HH:mm:ss') || '---'}
                     </Typography>
