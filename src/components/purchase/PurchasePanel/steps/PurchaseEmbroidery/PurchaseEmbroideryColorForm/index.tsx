@@ -38,9 +38,11 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
     if (!isDirty) {
       const colors = [...(embroidery?.colors ?? [])]
 
-      colors.forEach(c => {
-        append(c)
-      })
+      if (colors.length)
+        colors.forEach(c => {
+          append(c)
+        })
+      else append({ colors: [], label: '' })
     }
   }, [embroidery, isDirty, append])
 

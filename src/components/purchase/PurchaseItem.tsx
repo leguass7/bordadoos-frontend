@@ -27,17 +27,17 @@ const overflowTextProps = {
 
 interface CollapsibleContentProps extends PurchaseWithRelations {}
 
-const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ qtd, points, developmentPrice }) => {
+const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ qtd, points, developmentPrice, unityValue }) => {
   const [purchaseRules, setPurchaseRules] = useState<IConfigPurchaseRules>(null as IConfigPurchaseRules)
   const [loading, setLoading] = useState(false)
   const isMounted = useIsMounted()
 
   const embValue = useMemo(() => {
     let value = 0
-    if (purchaseRules) value = calculatePurchaseOriginalValue(qtd, points, 0, purchaseRules)
+    if (purchaseRules) value = calculatePurchaseOriginalValue(qtd, points, 0, purchaseRules, unityValue)
 
     return value
-  }, [qtd, points, purchaseRules])
+  }, [qtd, points, purchaseRules, unityValue])
 
   // const originalValue = useMemo(() => {
   //   return embValue + developmentPrice
@@ -52,11 +52,12 @@ const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ qtd, points, de
     }
   }, [setPurchaseRules, isMounted])
 
-  const unityValue = useMemo(() => {
+  const unityPrice = useMemo(() => {
+    if (unityValue) return unityValue
     const value = embValue / qtd
 
     return value || 0
-  }, [embValue, qtd])
+  }, [embValue, qtd, unityValue])
 
   useEffect(() => {
     fetchPurchaseRules()
@@ -72,7 +73,7 @@ const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ qtd, points, de
           {qtd}x
         </Typography>
         <Typography variant="subtitle1" {...overflowTextProps}>
-          {toMoney(unityValue)}
+          {toMoney(unityPrice)}
         </Typography>
         <Typography variant="subtitle1" {...overflowTextProps}>
           subtotal: {toMoney(embValue)}
@@ -164,7 +165,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ isAdmin, ...props }) => {
       setTimeout(() => {
         page.print()
         page.close()
-      }, 0)
+      }, 100)
     }
 
     // console.log(a)

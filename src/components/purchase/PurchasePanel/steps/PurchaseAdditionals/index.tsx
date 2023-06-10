@@ -20,7 +20,8 @@ export const PurchaseAdditionals: React.FC<Props> = ({ onNext, onPrev, purchaseI
   const { additionals } = usePurchasePanelContext()
 
   const disableNext = useMemo(() => {
-    return !(additionals?.points && additionals.qtd)
+    const isReady = !!(additionals?.points || additionals?.unityValue)
+    return !(isReady && additionals?.qtd)
   }, [additionals])
 
   return (

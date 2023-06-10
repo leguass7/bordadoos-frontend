@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useMemo } from 'react'
 
 import { PriceRules, Purchase } from '@prisma/client'
 
-import { removeInvalidValues } from '~/helpers/object'
+import { mergeDeep, removeInvalidValues } from '~/helpers/object'
 import { usePersistedState } from '~/hooks/usePersistedState'
 
 export interface PurchasePanelInfo {
@@ -18,6 +18,7 @@ export interface PurchaseAdditionals {
   points?: number
   value?: number
   paid?: boolean
+  unityValue?: number
   developmentPrice?: number
   done?: boolean
   qtd?: number
@@ -80,15 +81,33 @@ export const PurchasePanelProvider: React.FC<Props> = ({ children, persist, isEd
     (info: Purchase) => {
       setInfo(old => {
         const clientId = info?.clientId === null ? null : info?.clientId || old?.clientId
-        const clientObs = info?.clientObs || old?.clientObs
-        const employeeObs = info?.employeeObs || old?.employeeObs
-        const entryDate = info?.entryDate || old?.entryDate
-        const deliveryDate = info?.deliveryDate || old?.deliveryDate
+        const clientObs = info?.clientObs
+        const employeeObs = info?.employeeObs
+        const entryDate = info?.entryDate
+        const deliveryDate = info?.deliveryDate
         const name = info?.name || old?.name
 
-        const newInfo = { ...old, clientId, clientObs, employeeObs, entryDate, deliveryDate, name }
+        const dto = {
+          clientId,
+          clientObs,
+          employeeObs,
+          entryDate,
+          deliveryDate,
+          name
+        }
 
-        return removeInvalidValues(newInfo)
+        // const newInfo = removeInvalidValues<PurchasePanelInfo>({ ...old, ...dto })
+        const newInfo = removeInvalidValues<PurchasePanelInfo>(mergeDeep(old, dto))
+        // const newInfo = removeInvalidValues<PurchasePanelInfo>({
+        //   clientId,
+        //   clientObs,
+        //   employeeObs,
+        //   entryDate,
+        //   deliveryDate,
+        //   name
+        // })
+
+        return newInfo
       })
     },
     [setInfo]
@@ -97,14 +116,16 @@ export const PurchasePanelProvider: React.FC<Props> = ({ children, persist, isEd
   const changeEmbroidery = useCallback(
     (embroidery: Purchase) => {
       setEmbroidery(old => {
-        const colors = (embroidery?.colors as any) || old?.colors
-        const description = embroidery?.description || old?.description
-        const label = embroidery?.label || old?.label
-        const typeId = embroidery?.typeId === ('' as any) ? embroidery?.typeId : embroidery?.typeId || old?.typeId
-        const categoryId =
-          embroidery?.categoryId === ('' as any) ? embroidery?.categoryId : embroidery?.categoryId || old?.categoryId
+        const colors = embroidery?.colors as any
+        const description = embroidery?.description
+        const label = embroidery?.label
+        const typeId = embroidery?.typeId
+        const categoryId = embroidery?.categoryId
 
-        const newEmbroidery = { ...old, categoryId, colors, description, label, typeId }
+        const dto = { colors, description, label, typeId, categoryId }
+
+        const newEmbroidery = removeInvalidValues<PurchaseEmbroidery>(mergeDeep(old, dto))
+        // const newEmbroidery = { ...old, categoryId, colors, description, label, typeId }
 
         return removeInvalidValues(newEmbroidery)
       })
@@ -115,14 +136,20 @@ export const PurchasePanelProvider: React.FC<Props> = ({ children, persist, isEd
   const changeAdditionals = useCallback(
     (additionals: Purchase) => {
       setAdditionals(old => {
-        const done = typeof additionals?.done === 'boolean' ? additionals?.done : additionals?.done || old?.done
-        const paid = typeof additionals?.paid === 'boolean' ? additionals?.paid : additionals?.paid || old?.paid
-        const points = additionals?.points || old?.points
-        const qtd = additionals?.qtd || old?.qtd
-        const value = additionals?.value || old?.value
-        const developmentPrice = additionals?.developmentPrice || old?.developmentPrice
+        const done = !!additionals?.done
+        const paid = !!additionals?.paid
+        const qtd = additionals?.qtd
+        const value = additionals?.value
+        const developmentPrice = additionals?.developmentPrice
 
-        const newAdditionals = { ...old, done, paid, points, qtd, value, developmentPrice }
+        const points = additionals?.points
+        const unityValue = additionals?.unityValue
+
+        const dto = { done, paid, qtd, value, developmentPrice, points, unityValue }
+
+        const newAdditionals = removeInvalidValues<PurchaseAdditionals>(mergeDeep(old, dto))
+
+        // const newAdditionals = { ...old, done, paid, points, qtd, value, developmentPrice, unityValue }
 
         return removeInvalidValues(newAdditionals)
       })
