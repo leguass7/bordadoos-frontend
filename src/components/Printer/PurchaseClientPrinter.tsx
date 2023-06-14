@@ -16,6 +16,8 @@ interface Props {
 export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] }) => {
   const originalValue = purchase?.purchaseItem?.[0].originalValue || 0
 
+  const unityValue = purchase?.unityValue || originalValue / purchase.qtd
+
   return (
     <Content>
       <PurchasePrinterHeader purchase={purchase} />
@@ -118,7 +120,7 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
                     </Grid>
                     <Grid item xs={6}>
                       <Typography align="right" variant="body1">
-                        {formatPrice(originalValue / purchase.qtd)}
+                        {formatPrice(unityValue)}
                       </Typography>
                       <Typography align="right" variant="body1">
                         {purchase.qtd}
