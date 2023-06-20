@@ -7,16 +7,17 @@ import { PurchaseAdditionalsForm } from './PurchaseAdditionalsForm'
 
 interface Props {
   onSuccess?: () => void
+  purchaseId?: number
 }
 
-export const PurchaseAdditionalFormCard: React.FC<Props> = ({ onSuccess }) => {
+export const PurchaseAdditionalFormCard: React.FC<Props> = ({ onSuccess, purchaseId }) => {
   const { info } = usePurchasePanelContext()
 
   return (
     <Card>
       <CardTitle title={`Dados financeiros - ${info?.name}`} divider />
       <Grid item p={2} xs={12}>
-        <PurchaseAdditionalsForm onSuccess={onSuccess} />
+        <PurchaseAdditionalsForm onSuccess={onSuccess} purchaseId={purchaseId} />
       </Grid>
     </Card>
   )
