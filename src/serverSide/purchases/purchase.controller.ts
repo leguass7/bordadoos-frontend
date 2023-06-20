@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+import { removeInvalidValues } from '~/helpers/object'
 import { isDefined } from '~/helpers/variables'
 
 import { IResponseApi } from '../api.interface'
@@ -12,14 +13,15 @@ import type { IPurchaseService } from './purchase.service'
 function create(purchaseService: IPurchaseService, purchaseConfigService: IPurchaseConfigService) {
   return async (req: IRequestFilter, res: NextApiResponse) => {
     const { userId, level } = req.auth
+    const body = removeInvalidValues(req.body)
 
     // TEMP
-    if (!req.body?.typeId) req.body.typeId = null
-    if (!req.body?.categoryId) req.body.categoryId = null
-    if (!req.body?.points) req.body.points = null
+    // if (!req.body?.typeId) req.body.typeId = null
+    // if (!req.body?.categoryId) req.body.categoryId = null
+    // if (!req.body?.points) req.body.points = null
 
     const data: any = {
-      ...req.body,
+      ...body,
       updatedBy: userId,
       createdBy: userId,
       rules: undefined
@@ -47,15 +49,16 @@ function update(purchaseService: IPurchaseService, purchaseConfigService: IPurch
   return async (req: IRequestFilter, res: NextApiResponse<IResponsePurchase>) => {
     const { userId, level } = req.auth
     const { purchaseId } = req.query
+    const body = removeInvalidValues(req.body)
 
     if (!userId) throw ErrorApi({ status: 401, message: 'User not logged' })
 
     // TEMP
-    if (!req.body?.typeId) req.body.typeId = null
-    if (!req.body?.categoryId) req.body.categoryId = null
-    if (!req.body?.points) req.body.points = null
+    // if (!req.body?.typeId) req.body.typeId = null
+    // if (!req.body?.categoryId) req.body.categoryId = null
+    // if (!req.body?.points) req.body.points = null
 
-    const data = { ...req.body, updatedBy: userId, rules: undefined }
+    const data = { ...body, updatedBy: userId, rules: undefined }
     const isAdmin = level >= 8
 
     const updatedPurchase = await purchaseService.update(purchaseId, data)
