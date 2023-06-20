@@ -34,11 +34,10 @@ function create(purchaseService: IPurchaseService, purchaseConfigService: IPurch
 
     const config = await purchaseConfigService.save(createdPurchase, rules, isAdmin)
 
-    const diffValues = config?.totalValue !== createdPurchase?.value
-    const value = diffValues ? config.totalValue : createdPurchase?.value
+    const value = config?.totalValue
+    const isCustomValue = data?.value && isAdmin
 
-    const purchase =
-      diffValues && !isAdmin ? await purchaseService.update(createdPurchase.id, { value }) : createdPurchase
+    const purchase = isCustomValue ? createdPurchase : await purchaseService.update(createdPurchase.id, { value })
 
     return res.status(201).json({ purchase })
   }
@@ -64,11 +63,17 @@ function update(purchaseService: IPurchaseService, purchaseConfigService: IPurch
     const rules = req.body?.rules
 
     const config = await purchaseConfigService.save(updatedPurchase, rules, isAdmin)
-    const diffValues = config?.totalValue !== updatedPurchase?.value
-    const value = diffValues ? config.totalValue : updatedPurchase?.value
 
-    const purchase =
-      diffValues && !isAdmin ? await purchaseService.update(updatedPurchase.id, { value }) : updatedPurchase
+    const value = config?.totalValue
+    const isCustomValue = data?.value && isAdmin
+
+    const purchase = isCustomValue ? updatedPurchase : await purchaseService.update(updatedPurchase.id, { value })
+
+    // const diffValues = config?.totalValue !== updatedPurchase?.value
+    // const value = diffValues ? config.totalValue : updatedPurchase?.value
+
+    // const purchase =
+    //   diffValues && !isAdmin ? await purchaseService.update(updatedPurchase.id, { value }) : updatedPurchase
 
     return res.status(201).json({ purchase })
   }
