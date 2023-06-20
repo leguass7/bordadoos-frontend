@@ -21,11 +21,7 @@ interface Props {
   purchaseId?: number
 }
 
-const defaultValues: PurchaseAdditionals = {
-  developmentPrice: 35
-}
-
-export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
+export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess, purchaseId }) => {
   const { additionals, changeAdditionals, priceRules } = usePurchasePanelContext()
 
   const [unityValue, setUnityValue] = useState(formatPrice(0))
@@ -40,7 +36,7 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
     setValue,
     reset,
     formState: { isDirty }
-  } = useForm<PurchaseAdditionals>({ defaultValues })
+  } = useForm<PurchaseAdditionals>()
   const isAdmin = useHasAccess(8)
   const isMounted = useIsMounted()
 
@@ -76,7 +72,7 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
     if (originalPrice) setUnityValue(formatPrice(priceWithoutDevelopment / qtd))
     const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, priceRules)
 
-    setValue('value', Number(totalPrice.toFixed(2)))
+    setValue('value', Number(totalPrice.toFixed(2) as any))
   }, [purchaseRules, priceRules, getValues, setValue])
 
   useEffect(() => {
@@ -85,10 +81,11 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess }) => {
 
   const updateLazer = useCallback(() => {
     if (!isDirty) {
-      setLazer(!additionals?.points)
+      const newLazer = !!(purchaseId && !additionals?.points)
+      setLazer(newLazer)
       updateTotalPrice()
     }
-  }, [additionals?.points, updateTotalPrice, isDirty])
+  }, [additionals?.points, updateTotalPrice, isDirty, purchaseId])
 
   useEffect(() => {
     updateLazer()

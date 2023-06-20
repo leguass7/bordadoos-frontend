@@ -226,7 +226,7 @@ model Purchase {
 
   unityValue       Float? @default(0)
   value            Float  @default(0)
-  developmentPrice Float  @default(35)
+  developmentPrice Float  @default(0)
   qtd              Int?   @default(0)
 
   clientId   Int

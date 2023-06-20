@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+import { removeInvalidValues } from '~/helpers/object'
 import { isDefined } from '~/helpers/variables'
 
 import { IResponseApi } from '../api.interface'
@@ -12,14 +13,15 @@ import type { IPurchaseService } from './purchase.service'
 function create(purchaseService: IPurchaseService, purchaseConfigService: IPurchaseConfigService) {
   return async (req: IRequestFilter, res: NextApiResponse) => {
     const { userId, level } = req.auth
+    const body = removeInvalidValues(req.body)
 
     // TEMP
-    if (!req.body?.typeId) req.body.typeId = null
-    if (!req.body?.categoryId) req.body.categoryId = null
-    if (!req.body?.points) req.body.points = null
+    // if (!req.body?.typeId) req.body.typeId = null
+    // if (!req.body?.categoryId) req.body.categoryId = null
+    // if (!req.body?.points) req.body.points = null
 
     const data: any = {
-      ...req.body,
+      ...body,
       updatedBy: userId,
       createdBy: userId,
       rules: undefined
@@ -34,11 +36,10 @@ function create(purchaseService: IPurchaseService, purchaseConfigService: IPurch
 
     const config = await purchaseConfigService.save(createdPurchase, rules, isAdmin)
 
-    const diffValues = config?.totalValue !== createdPurchase?.value
-    const value = diffValues ? config.totalValue : createdPurchase?.value
+    const value = config?.totalValue
+    const isCustomValue = data?.value && isAdmin
 
-    const purchase =
-      diffValues && !isAdmin ? await purchaseService.update(createdPurchase.id, { value }) : createdPurchase
+    const purchase = isCustomValue ? createdPurchase : await purchaseService.update(createdPurchase.id, { value })
 
     return res.status(201).json({ purchase })
   }
@@ -48,15 +49,16 @@ function update(purchaseService: IPurchaseService, purchaseConfigService: IPurch
   return async (req: IRequestFilter, res: NextApiResponse<IResponsePurchase>) => {
     const { userId, level } = req.auth
     const { purchaseId } = req.query
+    const body = removeInvalidValues(req.body)
 
     if (!userId) throw ErrorApi({ status: 401, message: 'User not logged' })
 
     // TEMP
-    if (!req.body?.typeId) req.body.typeId = null
-    if (!req.body?.categoryId) req.body.categoryId = null
-    if (!req.body?.points) req.body.points = null
+    // if (!req.body?.typeId) req.body.typeId = null
+    // if (!req.body?.categoryId) req.body.categoryId = null
+    // if (!req.body?.points) req.body.points = null
 
-    const data = { ...req.body, updatedBy: userId, rules: undefined }
+    const data = { ...body, updatedBy: userId, rules: undefined }
     const isAdmin = level >= 8
 
     const updatedPurchase = await purchaseService.update(purchaseId, data)
@@ -64,11 +66,17 @@ function update(purchaseService: IPurchaseService, purchaseConfigService: IPurch
     const rules = req.body?.rules
 
     const config = await purchaseConfigService.save(updatedPurchase, rules, isAdmin)
-    const diffValues = config?.totalValue !== updatedPurchase?.value
-    const value = diffValues ? config.totalValue : updatedPurchase?.value
 
-    const purchase =
-      diffValues && !isAdmin ? await purchaseService.update(updatedPurchase.id, { value }) : updatedPurchase
+    const value = config?.totalValue
+    const isCustomValue = data?.value && isAdmin
+
+    const purchase = isCustomValue ? updatedPurchase : await purchaseService.update(updatedPurchase.id, { value })
+
+    // const diffValues = config?.totalValue !== updatedPurchase?.value
+    // const value = diffValues ? config.totalValue : updatedPurchase?.value
+
+    // const purchase =
+    //   diffValues && !isAdmin ? await purchaseService.update(updatedPurchase.id, { value }) : updatedPurchase
 
     return res.status(201).json({ purchase })
   }

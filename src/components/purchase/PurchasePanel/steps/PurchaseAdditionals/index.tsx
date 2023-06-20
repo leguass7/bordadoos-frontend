@@ -33,7 +33,7 @@ export const PurchaseAdditionals: React.FC<Props> = ({ onNext, onPrev, purchaseI
           </Grid>
         </PanelWrapper>
         <PanelWrapper>
-          <PurchaseAdditionalFormCard />
+          <PurchaseAdditionalFormCard purchaseId={purchaseId} />
         </PanelWrapper>
         <PanelWrapper>
           <Grid container>
