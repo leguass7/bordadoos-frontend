@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
-  const { embroidery, changeEmbroidery } = usePurchasePanelContext()
+  const { embroidery, changeEmbroidery, isEditing } = usePurchasePanelContext()
   const formRef = useRef<HTMLFormElement>(null)
 
   const {
@@ -42,9 +42,9 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
         colors.forEach(c => {
           append(c)
         })
-      else append({ colors: [], label: '' })
+      else if (!isEditing && !colors?.length) append({ colors: [], label: '' })
     }
-  }, [embroidery, isDirty, append])
+  }, [embroidery, append, isDirty, isEditing])
 
   useEffect(() => {
     updateForm()
