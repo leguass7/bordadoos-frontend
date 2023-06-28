@@ -3,7 +3,7 @@ import { GetServerSideProps, NextPage } from 'next'
 import { PriceRules } from '@prisma/client'
 import styled from 'styled-components'
 
-import { PurchaseClientPrinter } from '~/components/Printer/PurchaseClientPrinter'
+import { PurchaseClientPrinter } from '~/components/Printer/NewPurchaseClientPrinter'
 import { PurchaseOperatorPrinter } from '~/components/Printer/PurchaseOperatorPrinter'
 import { purchaseConfigService } from '~/serverSide/purchases/purchase-configs/purchase-config.service'
 import { PurchaseService } from '~/serverSide/purchases/purchase.service'
