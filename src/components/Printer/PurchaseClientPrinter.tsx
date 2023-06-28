@@ -28,16 +28,16 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
         <Grid container spacing={2} pt={1}>
           <Grid item xs={6}>
             <Grid justifyContent="space-between" container>
-              <Typography variant="h6" noWrap>
-                {purchase?.type?.label && purchase?.category?.label ? (
-                  <>
+              {purchase?.type?.label && purchase?.category?.label ? (
+                <>
+                  <Typography variant="h6" noWrap>
                     {purchase.type.label} {'>'} {purchase.category.label}
-                  </>
-                ) : null}
-                <br />
-                <Typography component="span" whiteSpace="pre-line" variant="h5">
-                  {purchase.label}
-                </Typography>
+                  </Typography>
+                  <br />
+                </>
+              ) : null}
+              <Typography component="span" width="100%" whiteSpace="pre-line" variant="h5">
+                {purchase.label}
               </Typography>
             </Grid>
 
@@ -90,7 +90,7 @@ export const PurchaseClientPrinter: React.FC<Props> = ({ purchase, rules = [] })
           </Grid>
           <Grid item xs={6}>
             <Grid container>
-              <Grid item xs={12} pt={0}>
+              <Grid item xs={12}>
                 <Typography variant="h6">Vendedor</Typography>
                 <Grid container justifyContent="space-between">
                   <Grid item xs={6}>
