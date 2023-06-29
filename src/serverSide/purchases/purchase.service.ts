@@ -28,7 +28,13 @@ async function update(purchaseId: number, data: Partial<Purchase>): Promise<Purc
 async function findById(purchaseId: number): Promise<PurchaseWithItems> {
   const purchase = await prisma.purchase.findFirst({
     where: { id: purchaseId },
-    include: { client: true, category: true, type: true, createdUser: true, purchaseItem: true }
+    include: {
+      client: true,
+      category: true,
+      type: true,
+      createdUser: true,
+      purchaseItem: { include: { priceRules: true } }
+    }
   })
   return purchase
 }
