@@ -53,9 +53,23 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess, purchaseId
     if (isMounted() && response?.data?.meta) setPurchaseRules(response.data.meta as any)
   }, [setPurchaseRules, isMounted])
 
+  const onSubmit = useCallback(
+    async (formData: PurchaseAdditionals) => {
+      changeAdditionals(formData)
+      onSuccess?.()
+    },
+    [changeAdditionals, onSuccess]
+  )
+
+  const submitForm = useCallback(() => {
+    const values = getValues()
+    onSubmit(values)
+  }, [onSubmit, getValues])
+
   useEffect(() => {
     fetchPurchaseRules()
-  }, [fetchPurchaseRules])
+    submitForm()
+  }, [fetchPurchaseRules, submitForm])
 
   const updateTotalPrice = useCallback(() => {
     if (!purchaseRules) return 0
@@ -92,14 +106,6 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess, purchaseId
   }, [updateLazer])
 
   const changeUnityValue = useCallback(e => setUnityValue(e.target?.value || 0), [])
-
-  const onSubmit = useCallback(
-    async (formData: PurchaseAdditionals) => {
-      changeAdditionals(formData)
-      onSuccess?.()
-    },
-    [changeAdditionals, onSuccess]
-  )
 
   const toggleLazer = useCallback(() => {
     setLazer(old => {
