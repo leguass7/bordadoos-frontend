@@ -11,7 +11,10 @@ interface Props {
 }
 
 export const ClientPrinterContent: React.FC<Props> = ({ purchase, rules }) => {
-  const originalValue = purchase?.purchaseItem?.[0].originalValue || 0
+  // originalValue with development price included
+  const totalOriginalValue = purchase?.purchaseItem?.[0].originalValue || 0
+  const originalValue = totalOriginalValue - purchase?.developmentPrice
+
   const unityValue = purchase?.unityValue || originalValue / purchase.qtd
 
   return (
