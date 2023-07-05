@@ -7,6 +7,7 @@ export interface PriceRuleFilter {
   actived?: boolean
   id?: number | number[]
   purchaseConfigId?: string
+  purchaseId?: number
 }
 
 export interface IRequestPriceRuleFilter extends Omit<AuthorizedApiRequest, 'query'> {

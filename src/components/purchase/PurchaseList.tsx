@@ -12,7 +12,7 @@ import { Paragraph } from '../shared/web/src/styled'
 import { PurchaseItem } from './PurchaseItem'
 
 export type PurchaseWithRelations = Prisma.PurchaseGetPayload<{
-  include: { category: true; client: true; type: true; purchaseItem: true }
+  include: { category: true; client: true; type: true; purchaseItem: { include: { priceRules: true } } }
 }>
 // We are using select, so some fields could not me found
 

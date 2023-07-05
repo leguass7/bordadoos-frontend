@@ -23,7 +23,7 @@ interface Props {
 
 // Depends on PurchasePanelProvider
 export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
-  const { changeAdditionals, changeEmbroidery, changeInfo } = usePurchasePanelContext()
+  const { changeAdditionals, changeEmbroidery, changeInfo, setPriceRules } = usePurchasePanelContext()
   const editing = purchaseId || (purchaseId && duplicated)
   const [step, setStep] = useState(editing ? 3 : 0)
   const { replace } = useRouter()
@@ -50,18 +50,15 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
       changeAdditionals(purchase)
       changeEmbroidery(purchase)
       changeInfo(purchase)
+      setPriceRules(purchase?.purchaseItem?.[0]?.priceRules)
 
       if (duplicated) toast('Informações copiadas com sucesso', { type: 'success' })
     }
-  }, [purchaseId, isMounted, changeAdditionals, changeEmbroidery, changeInfo, duplicated])
+  }, [purchaseId, isMounted, changeAdditionals, changeEmbroidery, changeInfo, duplicated, setPriceRules])
 
   useEffect(() => {
     updatePurchaseData()
   }, [updatePurchaseData])
-
-  const showSuccessMessage = useCallback(() => {
-    toast('Informações salvas com sucesso', { type: 'success' })
-  }, [])
 
   const handleChangeStep = useCallback(
     (step: number) => {

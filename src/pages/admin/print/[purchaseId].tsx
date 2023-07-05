@@ -3,7 +3,7 @@ import { GetServerSideProps, NextPage } from 'next'
 import { PriceRules } from '@prisma/client'
 import styled from 'styled-components'
 
-import { PurchaseClientPrinter } from '~/components/Printer/PurchaseClientPrinter'
+import { PurchaseClientPrinter } from '~/components/Printer/NewPurchaseClientPrinter'
 import { PurchaseOperatorPrinter } from '~/components/Printer/PurchaseOperatorPrinter'
 import { purchaseConfigService } from '~/serverSide/purchases/purchase-configs/purchase-config.service'
 import { PurchaseService } from '~/serverSide/purchases/purchase.service'
@@ -31,11 +31,14 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!purchaseId) return { props: { purchase: {} } }
   const purchase = await PurchaseService.findById(purchaseId)
 
+  // FIXME
   if (purchase?.category) purchase.category = serializedDto(purchase.category)
   if (purchase?.type) purchase.type = serializedDto(purchase.type)
   if (purchase?.client) purchase.client = serializedDto(purchase.client)
   if (purchase?.createdUser) purchase.createdUser = serializedDto(purchase.createdUser)
   if (purchase?.purchaseItem) purchase.purchaseItem = serializedDto(purchase?.purchaseItem)
+  if (purchase?.purchaseItem?.[0]?.priceRules)
+    purchase.purchaseItem[0].priceRules = serializedDto(purchase?.purchaseItem?.[0]?.priceRules)
 
   const purchaseConfig = await purchaseConfigService.getPurchaseConfig({ purchaseId })
   const rules = purchaseConfig?.priceRules ? serializedDto(purchaseConfig?.priceRules) : []

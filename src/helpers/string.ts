@@ -1,3 +1,4 @@
+import { cpf, cnpj } from 'cpf-cnpj-validator'
 import { format, isValid, parseISO } from 'date-fns'
 
 export function querystring(_str?: Record<string, any>): string
@@ -107,4 +108,14 @@ export function validNumber(value: string) {
 
 export function removeFileExtension(filename: string) {
   return filename.split('.').slice(0, -1).join('.')
+}
+
+export function formatDoc(src: string) {
+  const isCpf = cpf.isValid(src)
+  const isCnpj = cnpj.isValid(src)
+
+  if (isCpf) return cpf.format(src)
+  if (isCnpj) return cnpj.format(src)
+
+  return src
 }

@@ -21,13 +21,7 @@ function calculateWholesalePrice(points: number, { pricePerThousandPoints }: ICo
   return (points / 1000) * pricePerThousandPoints
 }
 
-export function calculatePurchaseOriginalValue(
-  qtd = 0,
-  points = 0,
-  developmentPrice = 0,
-  config?: IConfigPurchaseRules,
-  uValue?: number
-) {
+export function calculatePurchaseOriginalValue(qtd = 0, points = 0, config?: IConfigPurchaseRules, uValue?: number) {
   if (!config.retail || !config.wholesale) return 0
   const isRetail = !!(qtd <= config?.retail?.maxQtd)
 
@@ -38,22 +32,18 @@ export function calculatePurchaseOriginalValue(
       ? calculateRetailPrice(points, config?.retail)
       : calculateWholesalePrice(points, config?.wholesale)
 
-  const price = unityValue * qtd
-  const originalValue = price + developmentPrice
-
+  const originalValue = unityValue * qtd
   return originalValue
 }
 
-export function calculatePurchaseTotalValue(originalValue: number, qtd: number, rules: PriceRules[] = []) {
-  if (!rules?.length) return originalValue
-
+export function getPurchaseAdditionalPrice(originalValue = 0, qtd = 0, rules: PriceRules[] = []) {
   // adicionar valores percentuais primeiro para que não hajam discrepâncias com base na ordem das regras
   const sortedRules = rules.sort((a, b) => {
     const order = a.type === 'PERC' ? -1 : 0
     return order
   })
 
-  const totalPrice = sortedRules.reduce((ac, at) => {
+  const priceWithRules = sortedRules.reduce((ac, at) => {
     const { modality, type, value } = at
 
     const percValue = value / 100 + 1
@@ -68,5 +58,19 @@ export function calculatePurchaseTotalValue(originalValue: number, qtd: number, 
     return ac
   }, originalValue)
 
-  return totalPrice
+  return priceWithRules
+}
+
+export function calculatePurchaseTotalValue(
+  originalValue: number,
+  qtd: number,
+  rules: PriceRules[] = [],
+  developmentPrice = 0
+) {
+  // if (!rules?.length) return originalValue
+
+  const priceWithRules = getPurchaseAdditionalPrice(originalValue, qtd, rules)
+  const totalPrice = priceWithRules + developmentPrice
+
+  return Number(totalPrice.toFixed(2))
 }

@@ -36,7 +36,7 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
       return (
         <Grid key={`${label}-${value}-${index}`} item>
           <Typography variant="caption" pr={1}>
-            {value}
+            {index + 1}: {value}
           </Typography>
         </Grid>
       )
@@ -51,19 +51,21 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
       {purchase?.id ? (
         <Grid container spacing={2} pt={1}>
           <Grid item xs={6}>
-            <Grid justifyContent="space-between" container>
-              <Typography variant="h6" noWrap>
-                {purchase?.type?.label && purchase?.category?.label ? (
-                  <>
-                    {purchase.type.label} {'>'} {purchase.category.label}
-                  </>
-                ) : null}
-                <br />
-                <Typography component="span" whiteSpace="pre-line" variant="h5">
-                  {purchase.label}
+            {purchase?.type?.label || purchase?.category?.label ? (
+              <Grid justifyContent="space-between" container>
+                <Typography variant="h6" noWrap>
+                  {purchase?.type?.label && purchase?.category?.label ? (
+                    <>
+                      {purchase.type.label} {'>'} {purchase.category.label}
+                    </>
+                  ) : null}
+                  <br />
+                  <Typography component="span" whiteSpace="pre-line" variant="h5">
+                    {purchase.label}
+                  </Typography>
                 </Typography>
-              </Typography>
-            </Grid>
+              </Grid>
+            ) : null}
 
             <Grid container>
               <Grid item xs={12}>
@@ -116,26 +118,26 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
             </Grid>
           </Grid>
           <Grid item xs={6}>
-            <Grid container py={1} direction="column">
+            {/* <Grid container py={1} direction="column">
               <Typography variant="h6">Descrição</Typography>
               <Typography component="span" align="justify" variant="caption">
                 {purchase.description || '---'}
               </Typography>
-            </Grid>
+            </Grid> */}
 
-            <Grid container py={1} direction="column">
+            <Grid container direction="column">
               <Typography variant="h6">Obs funcionário</Typography>
               <Typography component="span" align="justify" variant="caption">
                 {purchase.employeeObs || '---'}
               </Typography>
             </Grid>
 
-            <Grid container py={1} direction="column">
+            {/* <Grid container py={1} direction="column">
               <Typography variant="h6">Obs cliente</Typography>
               <Typography component="span" align="justify" variant="caption">
                 {purchase.clientObs || '---'}
               </Typography>
-            </Grid>
+            </Grid> */}
 
             {colors?.length ? (
               <Grid container>
@@ -153,11 +155,17 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
                   >
                     {colors?.map(({ label, colors }, index) => {
                       return (
-                        <Grid item key={`color-${label}`} xs={6} width="100%">
+                        <Grid item key={`color-${label}`} xs={12} sm={6} md={4}>
                           <Typography variant="body1" lineHeight={1} {...overflowTextProps}>
                             {label}
                           </Typography>
-                          <Grid container flexWrap="wrap" columnSpacing={0} justifyContent="flex-start">
+                          <Grid
+                            container
+                            flexWrap="wrap"
+                            columnSpacing={0}
+                            flexDirection="row"
+                            justifyContent="flex-start"
+                          >
                             {renderColors(label, colors)}
                           </Grid>
                         </Grid>

@@ -53,9 +53,23 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess, purchaseId
     if (isMounted() && response?.data?.meta) setPurchaseRules(response.data.meta as any)
   }, [setPurchaseRules, isMounted])
 
+  const onSubmit = useCallback(
+    async (formData: PurchaseAdditionals) => {
+      changeAdditionals(formData)
+      onSuccess?.()
+    },
+    [changeAdditionals, onSuccess]
+  )
+
+  const submitForm = useCallback(() => {
+    const values = getValues()
+    onSubmit(values)
+  }, [onSubmit, getValues])
+
   useEffect(() => {
     fetchPurchaseRules()
-  }, [fetchPurchaseRules])
+    submitForm()
+  }, [fetchPurchaseRules, submitForm])
 
   const updateTotalPrice = useCallback(() => {
     if (!purchaseRules) return 0
@@ -66,14 +80,16 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess, purchaseId
     const developmentPrice = Number(data?.developmentPrice) || 0
     const unityValue = Number(data?.unityValue) || 0
 
-    const originalPrice = calculatePurchaseOriginalValue(qtd, points, developmentPrice, purchaseRules, unityValue)
-    const priceWithoutDevelopment = originalPrice - developmentPrice
+    const originalPrice = calculatePurchaseOriginalValue(qtd, points, purchaseRules, unityValue)
+    // const priceWithoutDevelopment = originalPrice - developmentPrice
 
-    if (originalPrice) setUnityValue(formatPrice(priceWithoutDevelopment / qtd))
-    const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, priceRules)
+    if (originalPrice) setUnityValue(formatPrice(originalPrice / qtd))
+    const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, priceRules, developmentPrice)
 
-    setValue('value', Number(totalPrice.toFixed(2) as any))
-  }, [purchaseRules, priceRules, getValues, setValue])
+    setValue('value', totalPrice)
+
+    submitForm()
+  }, [purchaseRules, priceRules, getValues, setValue, submitForm])
 
   useEffect(() => {
     updateTotalPrice()
@@ -92,14 +108,6 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess, purchaseId
   }, [updateLazer])
 
   const changeUnityValue = useCallback(e => setUnityValue(e.target?.value || 0), [])
-
-  const onSubmit = useCallback(
-    async (formData: PurchaseAdditionals) => {
-      changeAdditionals(formData)
-      onSuccess?.()
-    },
-    [changeAdditionals, onSuccess]
-  )
 
   const toggleLazer = useCallback(() => {
     setLazer(old => {

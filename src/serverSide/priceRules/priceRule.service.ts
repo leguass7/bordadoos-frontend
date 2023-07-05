@@ -4,11 +4,13 @@ import prisma from '../database/prisma'
 import ErrorApi from '../ErrorApi'
 import { PriceRuleFilter } from './priceRule.dto'
 
-async function listRules(initialFilter: PriceRuleFilter) {
+async function listRules({ purchaseId, ...initialFilter }: PriceRuleFilter) {
   const id = Array.isArray(initialFilter?.id) ? { in: initialFilter.id } : initialFilter?.id
-  const filter = { ...initialFilter, id: undefined } as any
+  const purchaseConfigs = { every: { purchaseId } }
 
-  const where: Prisma.PriceRulesWhereInput = { ...filter, actived: true, id }
+  const filter = { ...initialFilter, purchaseConfigs: undefined, id: undefined } as any
+
+  const where: Prisma.PriceRulesWhereInput = { ...filter, actived: true, id, purchaseConfigs }
   const rules = await prisma.priceRules.findMany({ where })
   return rules
 }

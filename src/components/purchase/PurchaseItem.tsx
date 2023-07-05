@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
@@ -9,7 +9,10 @@ import { Grid, IconButton, Switch, Tooltip, Typography } from '@mui/material'
 import { formatDate, toMoney } from '~/helpers/string'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import type { IConfigPurchaseRules } from '~/serverSide/config/config.dto'
-import { calculatePurchaseOriginalValue } from '~/serverSide/purchases/purchase-configs/purchase-config.helper'
+import {
+  calculatePurchaseOriginalValue,
+  getPurchaseAdditionalPrice
+} from '~/serverSide/purchases/purchase-configs/purchase-config.helper'
 import { putDefault } from '~/services/api'
 import { getConfig } from '~/services/api/config'
 
@@ -27,14 +30,22 @@ const overflowTextProps = {
 
 interface CollapsibleContentProps extends PurchaseWithRelations {}
 
-const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ qtd, points, developmentPrice, unityValue }) => {
+const CollapsibleContent: React.FC<CollapsibleContentProps> = ({
+  id,
+  qtd,
+  points,
+  developmentPrice,
+  unityValue,
+  purchaseItem,
+  value
+}) => {
   const [purchaseRules, setPurchaseRules] = useState<IConfigPurchaseRules>(null as IConfigPurchaseRules)
   const [loading, setLoading] = useState(false)
   const isMounted = useIsMounted()
 
   const embValue = useMemo(() => {
     let value = 0
-    if (purchaseRules) value = calculatePurchaseOriginalValue(qtd, points, 0, purchaseRules, unityValue)
+    if (purchaseRules) value = calculatePurchaseOriginalValue(qtd, points, purchaseRules, unityValue)
 
     return value
   }, [qtd, points, purchaseRules, unityValue])
@@ -59,6 +70,16 @@ const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ qtd, points, de
     return value || 0
   }, [embValue, qtd, unityValue])
 
+  const additionalValue = useMemo(() => {
+    const purchaseConfig = purchaseItem?.[0]
+    if (!purchaseConfig) return 0
+
+    const priceWithRules = getPurchaseAdditionalPrice(purchaseConfig?.originalValue, qtd, purchaseConfig?.priceRules)
+    const additional = priceWithRules - purchaseConfig?.originalValue
+
+    return additional
+  }, [purchaseItem, qtd])
+
   useEffect(() => {
     fetchPurchaseRules()
   }, [fetchPurchaseRules])
@@ -78,6 +99,12 @@ const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ qtd, points, de
         <Typography variant="subtitle1" {...overflowTextProps}>
           subtotal: {toMoney(embValue)}
         </Typography>
+        <Typography color="GrayText" {...overflowTextProps}>
+          Preço adicional
+        </Typography>
+        <Typography variant="body1" {...overflowTextProps}>
+          {toMoney(additionalValue)}
+        </Typography>
       </Grid>
       <Grid item xs={6}>
         <Typography textAlign="right" color="GrayText" {...overflowTextProps}>
@@ -86,11 +113,12 @@ const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ qtd, points, de
         <Typography variant="body1" align="right" {...overflowTextProps}>
           {toMoney(developmentPrice)}
         </Typography>
+
         <Typography textAlign="right" color="GrayText" {...overflowTextProps}>
           Total
         </Typography>
         <Typography variant="body1" align="right" {...overflowTextProps}>
-          {toMoney(embValue + developmentPrice)}
+          {toMoney(value)}
         </Typography>
       </Grid>
       {loading ? <CircleLoading /> : null}
@@ -277,7 +305,7 @@ const PurchaseItemComponent: React.FC<Props> = ({ isAdmin, ...props }) => {
               </Tooltip>
               <Tooltip title="Imagens">
                 <div>
-                  <IconButton onClick={toggleOpenImageModal}>
+                  <IconButton disabled={itemLock || loading} onClick={toggleOpenImageModal}>
                     <AddPhotoAlternateIcon />
                   </IconButton>
                 </div>
