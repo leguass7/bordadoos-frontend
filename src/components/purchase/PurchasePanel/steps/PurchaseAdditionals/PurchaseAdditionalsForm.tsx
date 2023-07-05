@@ -80,14 +80,16 @@ export const PurchaseAdditionalsForm: React.FC<Props> = ({ onSuccess, purchaseId
     const developmentPrice = Number(data?.developmentPrice) || 0
     const unityValue = Number(data?.unityValue) || 0
 
-    const originalPrice = calculatePurchaseOriginalValue(qtd, points, developmentPrice, purchaseRules, unityValue)
-    const priceWithoutDevelopment = originalPrice - developmentPrice
+    const originalPrice = calculatePurchaseOriginalValue(qtd, points, purchaseRules, unityValue)
+    // const priceWithoutDevelopment = originalPrice - developmentPrice
 
-    if (originalPrice) setUnityValue(formatPrice(priceWithoutDevelopment / qtd))
-    const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, priceRules)
+    if (originalPrice) setUnityValue(formatPrice(originalPrice / qtd))
+    const totalPrice = calculatePurchaseTotalValue(originalPrice, qtd, priceRules, developmentPrice)
 
-    setValue('value', Number(totalPrice.toFixed(2) as any))
-  }, [purchaseRules, priceRules, getValues, setValue])
+    setValue('value', totalPrice)
+
+    submitForm()
+  }, [purchaseRules, priceRules, getValues, setValue, submitForm])
 
   useEffect(() => {
     updateTotalPrice()

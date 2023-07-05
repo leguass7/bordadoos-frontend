@@ -14,14 +14,14 @@ async function save(purchase: Purchase, ruleIds: number[], isAdmin = false) {
   const config = await configService.getOne<IConfigPurchaseRules>('purchaseRules')
   if (!config?.meta) return null
 
-  const originalValue = calculatePurchaseOriginalValue(qtd, points, developmentPrice, config?.meta, unityValue)
+  const originalValue = calculatePurchaseOriginalValue(qtd, points, config?.meta, unityValue)
   const isRetail = !!(purchase.qtd <= config.meta.retail.maxQtd)
 
   const rules = await priceRuleService.listRules({ id: ruleIds })
   if (!rules) return null
 
   const forceValue = !!(isAdmin && value)
-  const totalValue = forceValue ? value : calculatePurchaseTotalValue(originalValue, qtd, rules)
+  const totalValue = forceValue ? value : calculatePurchaseTotalValue(originalValue, qtd, rules, developmentPrice)
 
   const purchaseRule: PurchaseRules = isRetail ? 'RETAIL' : 'WHOLESALE'
 

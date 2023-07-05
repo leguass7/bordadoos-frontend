@@ -65,20 +65,24 @@ function update(purchaseService: IPurchaseService, purchaseConfigService: IPurch
 
     const rules = req.body?.rules
 
-    const config = await purchaseConfigService.save(updatedPurchase, rules, isAdmin)
+    if (rules) {
+      const config = await purchaseConfigService.save(updatedPurchase, rules, isAdmin)
 
-    const value = config?.totalValue
-    const isCustomValue = data?.value && isAdmin
+      const value = config?.totalValue
+      const isCustomValue = data?.value && isAdmin
 
-    const purchase = isCustomValue ? updatedPurchase : await purchaseService.update(updatedPurchase.id, { value })
+      const purchase = isCustomValue ? updatedPurchase : await purchaseService.update(updatedPurchase.id, { value })
+
+      return res.status(201).json({ purchase })
+    }
+
+    return res.status(201).json({ purchase: updatedPurchase })
 
     // const diffValues = config?.totalValue !== updatedPurchase?.value
     // const value = diffValues ? config.totalValue : updatedPurchase?.value
 
     // const purchase =
     //   diffValues && !isAdmin ? await purchaseService.update(updatedPurchase.id, { value }) : updatedPurchase
-
-    return res.status(201).json({ purchase })
   }
 }
 

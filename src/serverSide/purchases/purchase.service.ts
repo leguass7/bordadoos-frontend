@@ -127,7 +127,15 @@ async function paginate(
       },
       purchaseItem: {
         select: {
-          originalValue: true
+          originalValue: true,
+          priceRules: {
+            select: {
+              label: true,
+              modality: true,
+              type: true,
+              value: true
+            }
+          }
         }
       }
     }
