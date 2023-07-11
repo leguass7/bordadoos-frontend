@@ -101,22 +101,20 @@ export const ClientPrinterContent: React.FC<Props> = ({ purchase, rules }) => {
                 <Grid item xs={12}>
                   <Typography variant="h6">Pedido</Typography>
                 </Grid>
-                <Typography variant="body2" component="span" pr={2}>
+                <Typography variant="caption" pr={2}>
                   Vendedor:
                 </Typography>
-                <Typography variant="body2" component="span">
+                <Typography variant="caption">
                   {purchase?.createdUser?.id} - {purchase?.createdUser?.name}
                 </Typography>
               </Grid>
 
               {purchase?.description ? (
                 <Grid item xs={12}>
-                  <Typography variant="body2" component="span" pr={2}>
+                  <Typography variant="caption" pr={2}>
                     Descrição:
                   </Typography>
-                  <Typography variant="body2" component="span">
-                    {purchase.description}
-                  </Typography>
+                  <Typography variant="caption">{purchase.description}</Typography>
                 </Grid>
               ) : null}
 
