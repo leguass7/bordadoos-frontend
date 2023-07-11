@@ -25,10 +25,9 @@ export const ClientPrinterContent: React.FC<Props> = ({ purchase, rules }) => {
             <Typography variant="h6" noWrap>
               {purchase.type.label} {'>'} {purchase.category.label}
             </Typography>
-            <br />
           </>
         ) : null}
-        <Typography component="span" width="100%" whiteSpace="pre-line" variant="h5">
+        <Typography component="span" width="100%" whiteSpace="pre-line" variant="h6">
           {purchase.label}
         </Typography>
       </Grid>
