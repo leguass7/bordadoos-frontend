@@ -34,8 +34,8 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
 
     return colors.map((value, index) => {
       return (
-        <Grid key={`${label}-${value}-${index}`} item>
-          <Typography variant="caption" pr={1}>
+        <Grid key={`${label}-${value}-${index}`} item xs={12}>
+          <Typography variant="caption">
             {index + 1}: {value}
           </Typography>
         </Grid>
@@ -116,6 +116,12 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
                 </Grid>
               </Grid>
             </Grid>
+            <Grid container direction="column">
+              <Typography variant="h6">Obs funcionário</Typography>
+              <Typography component="span" align="justify" variant="caption">
+                {purchase.employeeObs || '---'}
+              </Typography>
+            </Grid>
           </Grid>
           <Grid item xs={6}>
             {/* <Grid container py={1} direction="column">
@@ -124,13 +130,6 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
                 {purchase.description || '---'}
               </Typography>
             </Grid> */}
-
-            <Grid container direction="column">
-              <Typography variant="h6">Obs funcionário</Typography>
-              <Typography component="span" align="justify" variant="caption">
-                {purchase.employeeObs || '---'}
-              </Typography>
-            </Grid>
 
             {/* <Grid container py={1} direction="column">
               <Typography variant="h6">Obs cliente</Typography>
