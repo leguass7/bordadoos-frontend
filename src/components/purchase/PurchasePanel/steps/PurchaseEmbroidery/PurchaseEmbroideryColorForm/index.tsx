@@ -26,7 +26,11 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess, purcha
   const { embroidery, changeEmbroidery, updated, isEditing } = usePurchasePanelContext()
   const formRef = useRef<HTMLFormElement>(null)
 
-  const { control, handleSubmit } = useForm<PurchaseEmbroideryColorFormFields>()
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty }
+  } = useForm<PurchaseEmbroideryColorFormFields>()
 
   const { fields, append, remove } = useFieldArray({
     name: 'colors',
@@ -34,18 +38,20 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess, purcha
   })
 
   const updateForm = useCallback(() => {
-    if (!purchaseId) {
-      append(defaultColor)
-      return
+    if (!isDirty) {
+      if (!purchaseId) {
+        append(defaultColor)
+        return
+      }
+
+      const colors = [...(embroidery?.colors ?? [])]
+
+      if (updated && colors?.length)
+        colors.forEach(c => {
+          append(c)
+        })
     }
-
-    const colors = [...(embroidery?.colors ?? [])]
-
-    if (updated && colors?.length)
-      colors.forEach(c => {
-        append(c)
-      })
-  }, [embroidery?.colors, append, updated, purchaseId])
+  }, [embroidery?.colors, append, updated, purchaseId, isDirty])
 
   useEffect(() => {
     updateForm()
