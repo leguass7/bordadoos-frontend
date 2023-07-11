@@ -23,7 +23,7 @@ interface Props {
 
 // Depends on PurchasePanelProvider
 export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
-  const { changeAdditionals, changeEmbroidery, changeInfo, setPriceRules } = usePurchasePanelContext()
+  const { changeAdditionals, changeEmbroidery, changeInfo, setPriceRules, toggleUpdated } = usePurchasePanelContext()
   const editing = purchaseId || (purchaseId && duplicated)
   const [step, setStep] = useState(editing ? 3 : 0)
   const { replace } = useRouter()
@@ -51,10 +51,11 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
       changeEmbroidery(purchase)
       changeInfo(purchase)
       setPriceRules(purchase?.purchaseItem?.[0]?.priceRules)
+      toggleUpdated()
 
       if (duplicated) toast('Informações copiadas com sucesso', { type: 'success' })
     }
-  }, [purchaseId, isMounted, changeAdditionals, changeEmbroidery, changeInfo, duplicated, setPriceRules])
+  }, [purchaseId, isMounted, changeAdditionals, changeEmbroidery, changeInfo, duplicated, setPriceRules, toggleUpdated])
 
   useEffect(() => {
     updatePurchaseData()
@@ -75,7 +76,7 @@ export const PurchasePanel: React.FC<Props> = ({ purchaseId, duplicated }) => {
         <Divider sx={{ py: 1, mb: 2 }} />
         {step === 0 ? <PurchaseInfo onNext={handleNext} /> : null}
 
-        {step === 1 ? <PurchaseEmbroidery onPrev={handlePrev} onNext={handleNext} /> : null}
+        {step === 1 ? <PurchaseEmbroidery purchaseId={purchaseId} onPrev={handlePrev} onNext={handleNext} /> : null}
 
         {step === 2 ? <PurchaseAdditionals purchaseId={purchaseId} onPrev={handlePrev} onNext={handleNext} /> : null}
 
