@@ -31,11 +31,12 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
 
   const renderColors = useCallback((label: string, colors: PurchaseEmbroideryColor['colors']) => {
     if (!colors?.length) return null
+    const columns = colors.length > 6 ? 6 : 12
 
     return colors.map((value, index) => {
       return (
-        <Grid key={`${label}-${value}-${index}`} item>
-          <Typography variant="caption" pr={1}>
+        <Grid key={`${label}-${value}-${index}`} item xs={columns}>
+          <Typography variant="caption">
             {index + 1}: {value}
           </Typography>
         </Grid>
@@ -116,6 +117,12 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
                 </Grid>
               </Grid>
             </Grid>
+            <Grid container direction="column">
+              <Typography variant="h6">Obs funcionário</Typography>
+              <Typography component="span" align="justify" variant="caption">
+                {purchase.employeeObs || '---'}
+              </Typography>
+            </Grid>
           </Grid>
           <Grid item xs={6}>
             {/* <Grid container py={1} direction="column">
@@ -124,13 +131,6 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
                 {purchase.description || '---'}
               </Typography>
             </Grid> */}
-
-            <Grid container direction="column">
-              <Typography variant="h6">Obs funcionário</Typography>
-              <Typography component="span" align="justify" variant="caption">
-                {purchase.employeeObs || '---'}
-              </Typography>
-            </Grid>
 
             {/* <Grid container py={1} direction="column">
               <Typography variant="h6">Obs cliente</Typography>
@@ -148,25 +148,21 @@ export const PurchaseOperatorPrinter: React.FC<Props> = ({ purchase, rules = [] 
                   <Grid
                     container
                     overflow="hidden"
-                    width="100%"
+                    // width="100%"
                     flexWrap="wrap"
-                    justifyContent="flex-start"
-                    alignItems="flex-start"
                   >
                     {colors?.map(({ label, colors }, index) => {
                       return (
-                        <Grid item key={`color-${label}`} xs={12} sm={6} md={4}>
-                          <Typography variant="body1" lineHeight={1} {...overflowTextProps}>
-                            {label}
-                          </Typography>
-                          <Grid
-                            container
-                            flexWrap="wrap"
-                            columnSpacing={0}
-                            flexDirection="row"
-                            justifyContent="flex-start"
-                          >
-                            {renderColors(label, colors)}
+                        <Grid item key={`color-${label}`} xs={6}>
+                          <Grid container>
+                            <Grid item xs={12}>
+                              <Typography variant="body1" lineHeight={1} {...overflowTextProps}>
+                                {label}
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                              <Grid container>{renderColors(label, colors)}</Grid>
+                            </Grid>
                           </Grid>
                         </Grid>
                       )

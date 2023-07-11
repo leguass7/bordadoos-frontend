@@ -13,9 +13,10 @@ interface Props {
   onNext?: () => void
   onPrev?: () => void
   onSuccess?: () => void
+  purchaseId?: number
 }
 
-export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev }) => {
+export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev, purchaseId }) => {
   const { embroidery } = usePurchasePanelContext()
 
   const disableNext = useMemo(() => {
@@ -30,7 +31,7 @@ export const PurchaseEmbroidery: React.FC<Props> = ({ onNext, onPrev }) => {
         </PanelWrapper>
 
         <PanelWrapper>
-          <PurchaseEmbroideryColorCard />
+          <PurchaseEmbroideryColorCard purchaseId={purchaseId} />
         </PanelWrapper>
 
         <PanelWrapper>

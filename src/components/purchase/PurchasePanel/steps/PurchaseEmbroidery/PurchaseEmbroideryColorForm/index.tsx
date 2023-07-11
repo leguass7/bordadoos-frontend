@@ -15,12 +15,15 @@ export interface PurchaseEmbroideryColorFormFields {
   colors: Color[]
 }
 
+const defaultColor = { colors: [], label: '' }
+
 interface Props {
   onSuccess?: () => void
+  purchaseId?: number
 }
 
-export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
-  const { embroidery, changeEmbroidery, isEditing } = usePurchasePanelContext()
+export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess, purchaseId }) => {
+  const { embroidery, changeEmbroidery, updated, isEditing } = usePurchasePanelContext()
   const formRef = useRef<HTMLFormElement>(null)
 
   const {
@@ -36,15 +39,19 @@ export const PurchaseEmbroideryColorForm: React.FC<Props> = ({ onSuccess }) => {
 
   const updateForm = useCallback(() => {
     if (!isDirty) {
+      if (!purchaseId) {
+        append(defaultColor)
+        return
+      }
+
       const colors = [...(embroidery?.colors ?? [])]
 
-      if (colors.length)
+      if (updated && colors?.length)
         colors.forEach(c => {
           append(c)
         })
-      else if (!isEditing && !colors?.length) append({ colors: [], label: '' })
     }
-  }, [embroidery, append, isDirty, isEditing])
+  }, [embroidery?.colors, append, updated, purchaseId, isDirty])
 
   useEffect(() => {
     updateForm()

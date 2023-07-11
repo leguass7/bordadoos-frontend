@@ -25,10 +25,9 @@ export const ClientPrinterContent: React.FC<Props> = ({ purchase, rules }) => {
             <Typography variant="h6" noWrap>
               {purchase.type.label} {'>'} {purchase.category.label}
             </Typography>
-            <br />
           </>
         ) : null}
-        <Typography component="span" width="100%" whiteSpace="pre-line" variant="h5">
+        <Typography component="span" width="100%" whiteSpace="pre-line" variant="h6">
           {purchase.label}
         </Typography>
       </Grid>
@@ -101,22 +100,20 @@ export const ClientPrinterContent: React.FC<Props> = ({ purchase, rules }) => {
                 <Grid item xs={12}>
                   <Typography variant="h6">Pedido</Typography>
                 </Grid>
-                <Typography variant="body2" component="span" pr={2}>
+                <Typography variant="caption" pr={2}>
                   Vendedor:
                 </Typography>
-                <Typography variant="body2" component="span">
+                <Typography variant="caption">
                   {purchase?.createdUser?.id} - {purchase?.createdUser?.name}
                 </Typography>
               </Grid>
 
               {purchase?.description ? (
                 <Grid item xs={12}>
-                  <Typography variant="body2" component="span" pr={2}>
+                  <Typography variant="caption" pr={2}>
                     Descrição:
                   </Typography>
-                  <Typography variant="body2" component="span">
-                    {purchase.description}
-                  </Typography>
+                  <Typography variant="caption">{purchase.description}</Typography>
                 </Grid>
               ) : null}
 

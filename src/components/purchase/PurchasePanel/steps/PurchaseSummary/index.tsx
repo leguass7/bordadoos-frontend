@@ -77,7 +77,7 @@ export const PurchaseSummary: React.FC<Props> = ({ onPrev, initialPurchaseId, on
           <PurchaseEmbroideryCard onSuccess={onSuccess} />
         </PanelWrapper>
         <PanelWrapper>
-          <PurchaseEmbroideryColorCard onSuccess={onSuccess} />
+          <PurchaseEmbroideryColorCard purchaseId={purchaseId} onSuccess={onSuccess} />
         </PanelWrapper>
         <PanelWrapper>
           <Grid container>

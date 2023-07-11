@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
 import { PriceRules, Purchase } from '@prisma/client'
 
@@ -49,6 +49,8 @@ interface PurchaseContext {
   changeAdditionals: (additionals: PurchaseAdditionals | Purchase) => void
   clearAll?: () => void
   isEditing?: boolean
+  updated?: boolean
+  toggleUpdated?: () => void
 }
 
 export const PurchasePanelContext = createContext({} as PurchaseContext)
@@ -63,6 +65,7 @@ export const PurchasePanelProvider: React.FC<Props> = ({ children, persist, isEd
   const [embroidery, setEmbroidery] = usePersistedState<PurchaseEmbroidery>('purchase-panel-embroidery', {}, persist)
 
   const [priceRules, setPriceRules] = usePersistedState<PriceRules[]>('purchase-panel-price-rules', [], persist)
+  const [updated, setUpdated] = useState(false)
 
   const [additionals, setAdditionals] = usePersistedState<PurchaseAdditionals>(
     'purchase-panel-additionals',
@@ -157,6 +160,10 @@ export const PurchasePanelProvider: React.FC<Props> = ({ children, persist, isEd
     [setAdditionals]
   )
 
+  const toggleUpdated = useCallback(() => {
+    setUpdated(old => !old)
+  }, [])
+
   return (
     <PurchasePanelContext.Provider
       value={{
@@ -169,7 +176,9 @@ export const PurchasePanelProvider: React.FC<Props> = ({ children, persist, isEd
         additionals,
         changeAdditionals,
         clearAll,
-        isEditing
+        isEditing,
+        toggleUpdated,
+        updated
       }}
     >
       {children}
